@@ -1,0 +1,58 @@
+{
+  "name": "Promotion",
+  "type": "object",
+  "properties": {
+    "title_th": {
+      "type": "string"
+    },
+    "title_en": {
+      "type": "string"
+    },
+    "description_th": {
+      "type": "string"
+    },
+    "description_en": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "discount_type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed_amount"
+      ],
+      "default": "percentage"
+    },
+    "discount_value": {
+      "type": "number"
+    },
+    "code": {
+      "type": "string"
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "usage_limit": {
+      "type": "number"
+    },
+    "times_used": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title_th",
+    "title_en"
+  ]
+}

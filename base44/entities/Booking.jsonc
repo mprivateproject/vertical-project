@@ -1,0 +1,99 @@
+{
+  "name": "Booking",
+  "type": "object",
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Customer record ID"
+    },
+    "customer_name": {
+      "type": "string"
+    },
+    "line_user_id": {
+      "type": "string"
+    },
+    "service_id": {
+      "type": "string"
+    },
+    "service_name": {
+      "type": "string"
+    },
+    "therapist_id": {
+      "type": "string"
+    },
+    "therapist_name": {
+      "type": "string"
+    },
+    "booking_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "e.g. 14:00"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "e.g. 15:30"
+    },
+    "duration_minutes": {
+      "type": "number"
+    },
+    "price": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "checked_in",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "no_show"
+      ],
+      "default": "pending"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "unpaid",
+        "pending",
+        "paid",
+        "refunded"
+      ],
+      "default": "unpaid"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "promptpay",
+        "bank_transfer",
+        "truemoney",
+        "rabbit_line_pay",
+        "credit_card",
+        "cash"
+      ],
+      "description": "Payment method used"
+    },
+    "staff_notes": {
+      "type": "string"
+    },
+    "customer_notes": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number"
+    },
+    "review_text": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "customer_id",
+    "service_id",
+    "booking_date",
+    "start_time"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "name": "Customer",
+  "type": "object",
+  "properties": {
+    "line_user_id": {
+      "type": "string",
+      "description": "LINE User ID - primary identifier"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "picture_url": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Staff notes about this customer"
+    },
+    "preferred_language": {
+      "type": "string",
+      "enum": [
+        "th",
+        "en"
+      ],
+      "default": "th"
+    },
+    "total_visits": {
+      "type": "number",
+      "default": 0
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0
+    },
+    "loyalty_points": {
+      "type": "number",
+      "default": 0
+    },
+    "membership_tier": {
+      "type": "string",
+      "enum": [
+        "none",
+        "silver",
+        "gold",
+        "platinum"
+      ],
+      "default": "none"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "last_visit_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "line_user_id",
+    "display_name"
+  ]
+}
