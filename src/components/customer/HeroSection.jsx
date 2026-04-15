@@ -17,7 +17,7 @@ export default function HeroSection() {
         alt="Spa" className="w-full h-full object-cover" />
         
         
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80 hidden" />
+        
       </div>
 
       {/* Header controls */}
