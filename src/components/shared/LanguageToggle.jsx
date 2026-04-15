@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLang } from '@/lib/LanguageContext';
-import { motion } from 'framer-motion';
 
 export default function LanguageToggle() {
   const { lang, toggleLang } = useLang();
@@ -8,21 +7,27 @@ export default function LanguageToggle() {
   return (
     <button
       onClick={toggleLang}
-      className="relative flex items-center gap-1 px-3 py-1.5 rounded-full bg-secondary/80 backdrop-blur-sm text-xs font-medium transition-all active:scale-95"
+      className="flex items-center rounded-full border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden"
+      style={{ padding: '3px' }}
     >
-      <motion.span
-        animate={{ opacity: lang === 'th' ? 1 : 0.4 }}
-        className="text-secondary-foreground"
+      <span
+        className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-200 ${
+          lang === 'th'
+            ? 'bg-white text-black'
+            : 'text-white/60'
+        }`}
       >
         TH
-      </motion.span>
-      <span className="text-muted-foreground">/</span>
-      <motion.span
-        animate={{ opacity: lang === 'en' ? 1 : 0.4 }}
-        className="text-secondary-foreground"
+      </span>
+      <span
+        className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-200 ${
+          lang === 'en'
+            ? 'bg-white text-black'
+            : 'text-white/60'
+        }`}
       >
         EN
-      </motion.span>
+      </span>
     </button>
   );
 }
