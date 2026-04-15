@@ -1,31 +1,43 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const LineContext = createContext();
 
-// Simulated LINE LIFF profile for development
-// In production, this would use actual LIFF SDK
-const MOCK_LINE_PROFILE = {
-  lineUserId: 'U1234567890abcdef',
-  displayName: 'สมชาย',
-  pictureUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-  statusMessage: 'Relaxing at Vertical Project 🧖‍♂️',
-};
+const LIFF_ID = '2009806106-7u8AyzZg';
 
 export function LineProvider({ children }) {
   const [lineProfile, setLineProfile] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const loginWithLine = async () => {
-    setIsLoading(true);
-    // Simulate LIFF login delay
-    await new Promise(r => setTimeout(r, 800));
-    setLineProfile(MOCK_LINE_PROFILE);
-    setIsLoggedIn(true);
-    setIsLoading(false);
+  useEffect(() => {
+    const initLiff = async () => {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (liff.isLoggedIn()) {
+          const profile = await liff.getProfile();
+          setLineProfile({
+            lineUserId: profile.userId,
+            displayName: profile.displayName,
+            pictureUrl: profile.pictureUrl,
+            statusMessage: profile.statusMessage,
+          });
+          setIsLoggedIn(true);
+        }
+      } catch (err) {
+        console.error('LIFF init failed:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initLiff();
+  }, []);
+
+  const loginWithLine = () => {
+    liff.login();
   };
 
   const logout = () => {
+    liff.logout();
     setLineProfile(null);
     setIsLoggedIn(false);
   };
