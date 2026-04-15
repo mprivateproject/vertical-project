@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BookOpen, User } from 'lucide-react';
+import { Home, BookOpen } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 
 const navItems = [
   { key: 'home', icon: Home, path: '/' },
   { key: 'bookingHistory', icon: BookOpen, path: '/bookings' },
-  { key: 'profile', icon: User, path: '/profile' },
 ];
 
 export default function BottomNav() {
@@ -24,7 +23,7 @@ export default function BottomNav() {
             <Link
               key={key}
               to={path}
-              className="flex flex-col items-center gap-1 py-2 px-5 transition-all active:scale-90"
+              className="flex flex-col items-center gap-1 py-2 px-8 transition-all active:scale-90"
             >
               <Icon
                 strokeWidth={isActive ? 2 : 1.5}
