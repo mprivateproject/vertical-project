@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Layers, BookOpen, User } from 'lucide-react';
+import { Home, BookOpen, User } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 
 const navItems = [
   { key: 'home', icon: Home, path: '/' },
-  { key: 'services', icon: Layers, path: '/services' },
   { key: 'bookingHistory', icon: BookOpen, path: '/bookings' },
   { key: 'profile', icon: User, path: '/profile' },
 ];
