@@ -12,10 +12,10 @@ export default function HeroSection() {
     <div className="relative overflow-hidden" style={{ height: '72vw', maxHeight: '340px', minHeight: '260px' }}>
       {/* Background image */}
       <div className="absolute inset-0">
-        <img
-          src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=900&q=85"
-          alt="Spa"
-          className="w-full h-full object-cover" />
+        <img src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/1839da3f1_IMG_7982.png"
+
+        alt="Spa" className="w-full h-full object-cover" />
+        
         
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80 hidden" />
       </div>
