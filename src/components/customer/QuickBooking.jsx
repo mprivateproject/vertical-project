@@ -10,9 +10,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const SERVICES = [
-  { id: '90min', name_th: 'นวด 90 นาที', name_en: '90 Min Massage', duration_minutes: 90, price: 2450 },
-  { id: '120min', name_th: 'นวด 120 นาที', name_en: '120 Min Massage', duration_minutes: 120, price: 2950 },
-];
+{ id: '90min', name_th: 'นวด 90 นาที', name_en: '90 Min Massage', duration_minutes: 90, price: 2450 },
+{ id: '120min', name_th: 'นวด 120 นาที', name_en: '120 Min Massage', duration_minutes: 120, price: 2950 }];
+
 
 function generateSlots(start = '10:00', end = '20:00', interval = 60) {
   const slots = [];
@@ -48,16 +48,16 @@ export default function QuickBooking() {
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-quick', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
     queryFn: () => base44.entities.Booking.filter({ booking_date: format(selectedDate, 'yyyy-MM-dd') }),
-    enabled: !!selectedDate,
+    enabled: !!selectedDate
   });
 
   const bookedSlots = useMemo(() =>
-    existingBookings.filter(b => b.status !== 'cancelled').map(b => b.start_time),
-    [existingBookings]
+  existingBookings.filter((b) => b.status !== 'cancelled').map((b) => b.start_time),
+  [existingBookings]
   );
 
   const now = new Date();
-  const availableSlots = TIME_SLOTS.filter(slot => {
+  const availableSlots = TIME_SLOTS.filter((slot) => {
     if (bookedSlots.includes(slot)) return false;
     if (selectedDate && isToday(selectedDate)) {
       const [h, m] = slot.split(':').map(Number);
@@ -86,13 +86,13 @@ export default function QuickBooking() {
         duration_minutes: duration,
         price: svc?.price || 0,
         status: 'pending',
-        payment_status: 'unpaid',
+        payment_status: 'unpaid'
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setDone(true);
-    },
+    }
   });
 
   if (done) {
@@ -100,8 +100,8 @@ export default function QuickBooking() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="rounded-2xl border border-border bg-card p-8 text-center space-y-4"
-      >
+        className="rounded-2xl border border-border bg-card p-8 text-center space-y-4">
+        
         <div className="w-12 h-12 rounded-full bg-foreground mx-auto flex items-center justify-center">
           <Check className="w-6 h-6 text-background" />
         </div>
@@ -113,44 +113,44 @@ export default function QuickBooking() {
         </div>
         <Link
           to="/bookings"
-          className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors"
-        >
+          className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors">
+          
           {t('viewBookings')} <ChevronRight className="w-3.5 h-3.5" />
         </Link>
-      </motion.div>
-    );
+      </motion.div>);
+
   }
 
   return (
     <div className="space-y-6">
       {/* Service selector */}
-      {services.length > 0 && (
-        <div>
+      {services.length > 0 &&
+      <div>
           <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
             {t('service')}
           </p>
           <div className="flex gap-2">
-              {services.map(svc => {
-                const name = lang === 'th' ? svc.name_th : svc.name_en;
-                const isSelected = selectedService?.id === svc.id;
-                return (
-                  <button
-                    key={svc.id}
-                    onClick={() => setSelectedService(svc)}
-                    className={`px-4 py-2 rounded-full text-[12px] font-medium border transition-all duration-150 whitespace-nowrap ${
-                      isSelected
-                        ? 'bg-foreground text-background border-foreground'
-                        : 'bg-transparent text-muted-foreground border-border'
-                    }`}
-                  >
-                    <span className="block">{name}</span>
+              {services.map((svc) => {
+            const name = lang === 'th' ? svc.name_th : svc.name_en;
+            const isSelected = selectedService?.id === svc.id;
+            return (
+              <button
+                key={svc.id}
+                onClick={() => setSelectedService(svc)}
+                className={`px-4 py-2 rounded-full text-[12px] font-medium border transition-all duration-150 whitespace-nowrap ${
+                isSelected ?
+                'bg-foreground text-background border-foreground' :
+                'bg-transparent text-muted-foreground border-border'}`
+                }>
+                
+                    <span className="normal-case block">{name}</span>
                     <span className="opacity-60 text-[11px]">฿{svc.price?.toLocaleString()}</span>
-                  </button>
-                );
-              })}
+                  </button>);
+
+          })}
           </div>
         </div>
-      )}
+      }
 
       {/* Date selector */}
       <div>
@@ -159,26 +159,26 @@ export default function QuickBooking() {
         </p>
         <div className="overflow-x-auto -mx-6 px-6" style={{ scrollbarWidth: 'none' }}>
           <div className="flex gap-2 pb-0.5" style={{ width: 'max-content' }}>
-            {dates.map(date => {
+            {dates.map((date) => {
               const isSelected = selectedDate && format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
               const dayLabel = format(date, 'EEE', { locale }).toUpperCase();
               const dayNum = format(date, 'd');
               return (
                 <button
                   key={date.toISOString()}
-                  onClick={() => { setSelectedDate(date); setSelectedTime(null); }}
+                  onClick={() => {setSelectedDate(date);setSelectedTime(null);}}
                   className={`flex flex-col items-center px-3.5 py-3 rounded-xl border transition-all duration-150 min-w-[52px] ${
-                    isSelected
-                      ? 'bg-foreground text-background border-foreground'
-                      : 'bg-card text-foreground border-border'
-                  }`}
-                >
+                  isSelected ?
+                  'bg-foreground text-background border-foreground' :
+                  'bg-card text-foreground border-border'}`
+                  }>
+                  
                   <span className={`text-[10px] font-medium tracking-wider mb-1 ${isSelected ? 'text-background/60' : 'text-muted-foreground'}`}>
                     {dayLabel}
                   </span>
                   <span className="text-[15px] font-semibold leading-none">{dayNum}</span>
-                </button>
-              );
+                </button>);
+
             })}
           </div>
         </div>
@@ -186,65 +186,65 @@ export default function QuickBooking() {
 
       {/* Time slots */}
       <AnimatePresence>
-        {selectedDate && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
+        {selectedDate &&
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}>
+          
             <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
               {t('time')}
             </p>
             <div className="grid grid-cols-4 gap-2">
-              {availableSlots.map(slot => (
-                <button
-                  key={slot}
-                  onClick={() => setSelectedTime(slot)}
-                  className={`py-2.5 rounded-lg border text-[13px] font-medium transition-all duration-150 ${
-                    selectedTime === slot
-                      ? 'bg-foreground text-background border-foreground'
-                      : 'bg-card text-foreground border-border'
-                  }`}
-                >
+              {availableSlots.map((slot) =>
+            <button
+              key={slot}
+              onClick={() => setSelectedTime(slot)}
+              className={`py-2.5 rounded-lg border text-[13px] font-medium transition-all duration-150 ${
+              selectedTime === slot ?
+              'bg-foreground text-background border-foreground' :
+              'bg-card text-foreground border-border'}`
+              }>
+              
                   {slot}
                 </button>
-              ))}
-              {availableSlots.length === 0 && (
-                <p className="col-span-4 text-center text-muted-foreground text-[13px] py-4">
+            )}
+              {availableSlots.length === 0 &&
+            <p className="col-span-4 text-center text-muted-foreground text-[13px] py-4">
                   ไม่มีช่วงเวลาว่าง
                 </p>
-              )}
+            }
             </div>
           </motion.div>
-        )}
+        }
       </AnimatePresence>
 
       {/* Confirm button */}
       <AnimatePresence>
-        {selectedDate && selectedTime && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-          >
-            {!isLoggedIn ? (
-              <p className="text-center text-[12px] text-muted-foreground py-2">
+        {selectedDate && selectedTime &&
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}>
+          
+            {!isLoggedIn ?
+          <p className="text-center text-[12px] text-muted-foreground py-2">
                 กรุณาเข้าสู่ระบบด้วย LINE เพื่อจอง
-              </p>
-            ) : (
-              <button
-                onClick={() => createBooking.mutate()}
-                disabled={createBooking.isPending}
-                className="w-full py-4 rounded-xl bg-foreground text-background font-semibold text-[14px] tracking-wide disabled:opacity-50 transition-all active:scale-[0.98]"
-                style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}
-              >
+              </p> :
+
+          <button
+            onClick={() => createBooking.mutate()}
+            disabled={createBooking.isPending}
+            className="w-full py-4 rounded-xl bg-foreground text-background font-semibold text-[14px] tracking-wide disabled:opacity-50 transition-all active:scale-[0.98]"
+            style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
+            
                 {createBooking.isPending ? '...' : t('confirmBooking')}
               </button>
-            )}
+          }
           </motion.div>
-        )}
+        }
       </AnimatePresence>
-    </div>
-  );
+    </div>);
+
 }
