@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const LineContext = createContext();
 
 const LIFF_ID = '2009806106-7u8AyzZg';
+const liff = window.liff;
 
 export function LineProvider({ children }) {
   const [lineProfile, setLineProfile] = useState(null);
