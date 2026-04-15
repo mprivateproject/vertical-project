@@ -9,6 +9,11 @@ import { Check, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
+const SERVICES = [
+  { id: '90min', name_th: 'นวด 90 นาที', name_en: '90 Min Massage', duration_minutes: 90, price: 2450 },
+  { id: '120min', name_th: 'นวด 120 นาที', name_en: '120 Min Massage', duration_minutes: 120, price: 2950 },
+];
+
 function generateSlots(start = '10:00', end = '20:00', interval = 60) {
   const slots = [];
   const [sh, sm] = start.split(':').map(Number);
@@ -35,13 +40,10 @@ export default function QuickBooking() {
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setSelectedService] = useState(SERVICES[0]);
   const [done, setDone] = useState(false);
 
-  const { data: services = [] } = useQuery({
-    queryKey: ['services-active'],
-    queryFn: () => base44.entities.Service.filter({ is_active: true }, 'sort_order', 20),
-  });
+  const services = SERVICES;
 
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-quick', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
@@ -66,7 +68,7 @@ export default function QuickBooking() {
 
   const createBooking = useMutation({
     mutationFn: () => {
-      const svc = selectedService || services[0];
+      const svc = selectedService;
       const duration = svc?.duration_minutes || 60;
       const [h, m] = selectedTime.split(':').map(Number);
       const endTotal = h * 60 + m + duration;
@@ -127,11 +129,10 @@ export default function QuickBooking() {
           <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
             {t('service')}
           </p>
-          <div className="overflow-x-auto -mx-6 px-6" style={{ scrollbarWidth: 'none' }}>
-            <div className="flex gap-2" style={{ width: 'max-content' }}>
+          <div className="flex gap-2">
               {services.map(svc => {
                 const name = lang === 'th' ? svc.name_th : svc.name_en;
-                const isSelected = (selectedService?.id || services[0]?.id) === svc.id;
+                const isSelected = selectedService?.id === svc.id;
                 return (
                   <button
                     key={svc.id}
@@ -142,14 +143,11 @@ export default function QuickBooking() {
                         : 'bg-transparent text-muted-foreground border-border'
                     }`}
                   >
-                    {name}
-                    <span className="ml-2 opacity-60 text-[11px]">
-                      ฿{svc.price?.toLocaleString()}
-                    </span>
+                    <span className="block">{name}</span>
+                    <span className="opacity-60 text-[11px]">฿{svc.price?.toLocaleString()}</span>
                   </button>
                 );
               })}
-            </div>
           </div>
         </div>
       )}
