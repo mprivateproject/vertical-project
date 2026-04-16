@@ -6,7 +6,8 @@ import { useLine } from '@/lib/LineContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { ArrowLeft, Check, Clock, CalendarDays } from 'lucide-react';
+import { Check, Clock } from 'lucide-react';
+import MobileHeader from '@/components/shared/MobileHeader';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import TherapistPicker from '@/components/customer/TherapistPicker';
@@ -202,30 +203,15 @@ export default function BookingFlow() {
   }
 
   return (
-    <div className="px-5 pt-14 pb-24">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={() => step > 0 ? setStep(s => s - 1) : navigate(-1)}
-          className="p-2 rounded-lg hover:bg-secondary transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 text-foreground" />
-        </button>
-        <div className="flex-1">
-          <h1 className="font-semibold text-foreground">{serviceName}</h1>
-          {service && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-              <Clock className="w-3 h-3" />
-              <span>{service.duration_minutes} {t('minutes')}</span>
-              <span>•</span>
-              <span className="font-medium text-primary">฿{service.price?.toLocaleString()}</span>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="pb-24">
+      <MobileHeader
+        title={serviceName}
+        subtitle={service ? `${service.duration_minutes} ${t('minutes')} · ฿${service.price?.toLocaleString()}` : undefined}
+        onBack={() => step > 0 ? setStep(s => s - 1) : navigate(-1)}
+      />
 
       {/* Progress */}
-      <div className="flex gap-1.5 mb-8">
+      <div className="flex gap-1.5 mb-8 px-5">
         {STEPS.map((_, i) => (
           <div
             key={i}
@@ -237,6 +223,7 @@ export default function BookingFlow() {
       </div>
 
       {/* Step content */}
+      <div className="px-5">
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -292,6 +279,7 @@ export default function BookingFlow() {
           )}
         </motion.div>
       </AnimatePresence>
+      </div>
 
       {/* Bottom action */}
       <div className="fixed bottom-20 left-0 right-0 px-5 max-w-lg mx-auto">

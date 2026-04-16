@@ -131,7 +131,7 @@ button, a, nav, [role="button"] {
   -webkit-user-select: none;
 }
 
-svg {
+nav svg, header svg, button svg {
   user-select: none;
   -webkit-user-select: none;
   pointer-events: none;

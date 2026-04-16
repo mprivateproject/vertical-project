@@ -4,8 +4,8 @@ import { Home, BookOpen } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 
 const navItems = [
-  { key: 'home', icon: Home, path: '/' },
-  { key: 'bookingHistory', icon: BookOpen, path: '/bookings' },
+  { key: 'home', icon: Home, path: '/', exact: true },
+  { key: 'bookingHistory', icon: BookOpen, path: '/bookings', exact: false },
 ];
 
 export default function BottomNav() {
@@ -16,8 +16,9 @@ export default function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/96 backdrop-blur-xl border-t border-border/60" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <div className="flex items-center justify-around max-w-lg mx-auto px-2 py-2">
         {navItems.map(({ key, icon: Icon, path }) => {
-          const isActive = location.pathname === path ||
-            (path !== '/' && location.pathname.startsWith(path));
+          const isActive = exact
+            ? location.pathname === path
+            : location.pathname === path || location.pathname.startsWith(path);
 
           return (
             <Link

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
+import PullToRefresh from '@/components/shared/PullToRefresh';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { CalendarDays, Clock, User, ChevronRight } from 'lucide-react';
@@ -25,11 +26,14 @@ export default function BookingHistory() {
   const { lineProfile } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [tab, setTab] = useState('upcoming');
+  const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['my-bookings', lineProfile?.lineUserId],
     queryFn: () => base44.entities.Booking.list('-booking_date', 100),
   });
+
+  const handleRefresh = () => queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const filtered = bookings.filter(b => {
@@ -40,6 +44,7 @@ export default function BookingHistory() {
   });
 
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="px-5 pt-14 pb-6 space-y-5">
       <h1 className="font-display text-2xl font-semibold text-foreground">
         {t('bookingHistory')}
@@ -125,5 +130,6 @@ export default function BookingHistory() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }
