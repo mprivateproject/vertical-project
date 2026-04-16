@@ -3,10 +3,12 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
+import { useAuth } from '@/lib/AuthContext';
 import PullToRefresh from '@/components/shared/PullToRefresh';
+import LineLoginButton from '@/components/customer/LineLoginButton';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, User, ChevronRight } from 'lucide-react';
+import { CalendarDays, Clock, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,14 +25,16 @@ const statusStyles = {
 
 export default function BookingHistory() {
   const { t, lang } = useLang();
-  const { lineProfile } = useLine();
+  const { lineProfile, isLoggedIn } = useLine();
+  const { user } = useAuth();
   const locale = lang === 'th' ? th : enUS;
   const [tab, setTab] = useState('upcoming');
   const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
-    queryKey: ['my-bookings', lineProfile?.lineUserId],
+    queryKey: ['my-bookings', user?.id],
     queryFn: () => base44.entities.Booking.list('-booking_date', 100),
+    enabled: !!user,
   });
 
   const handleRefresh = () => queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
@@ -42,6 +46,17 @@ export default function BookingHistory() {
     if (tab === 'cancelled') return b.status === 'cancelled';
     return true;
   });
+
+  if (!isLoggedIn) {
+    return (
+      <div className="px-5 pt-20 pb-6 space-y-6 text-center">
+        <CalendarDays className="w-12 h-12 text-muted-foreground/30 mx-auto" />
+        <h2 className="font-display text-xl font-semibold">{t('bookingHistory')}</h2>
+        <p className="text-muted-foreground text-sm">กรุณาเข้าสู่ระบบเพื่อดูประวัติการจอง</p>
+        <LineLoginButton />
+      </div>
+    );
+  }
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>

@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
+import { useAuth } from '@/lib/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -21,6 +22,7 @@ const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 export default function BookingFlow() {
   const { t, lang } = useLang();
   const { lineProfile, isLoggedIn } = useLine();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
@@ -76,9 +78,9 @@ export default function BookingFlow() {
       })();
 
       return base44.entities.Booking.create({
-        customer_id: lineProfile?.lineUserId || 'guest',
-        customer_name: lineProfile?.displayName || 'Guest',
-        line_user_id: lineProfile?.lineUserId || '',
+        customer_id: user?.id || lineProfile?.lineUserId || 'guest',
+        customer_name: user?.full_name || lineProfile?.displayName || 'Guest',
+        line_user_id: lineProfile?.lineUserId || user?.data?.lineUserId || '',
         service_id: serviceId,
         service_name: lang === 'th' ? service?.name_th : service?.name_en,
         therapist_id: selectedTherapist?.id || '',
