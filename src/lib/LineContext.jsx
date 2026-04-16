@@ -1,50 +1,43 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 
 const LineContext = createContext();
 
-const LIFF_ID = '2009806106-7u8AyzZg';
-const liff = window.liff;
-
 export function LineProvider({ children }) {
+  const { user, isAuthenticated, isLoadingAuth, logout: authLogout } = useAuth();
   const [lineProfile, setLineProfile] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const initLiff = async () => {
-      try {
-        await liff.init({ liffId: LIFF_ID });
-        if (liff.isLoggedIn()) {
-          const profile = await liff.getProfile();
-          setLineProfile({
-            lineUserId: profile.userId,
-            displayName: profile.displayName,
-            pictureUrl: profile.pictureUrl,
-            statusMessage: profile.statusMessage,
-          });
-          setIsLoggedIn(true);
-        }
-      } catch (err) {
-        console.error('LIFF init failed:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    initLiff();
-  }, []);
+    if (isAuthenticated && user) {
+      setLineProfile({
+        lineUserId: user.data?.lineUserId || user.id,
+        displayName: user.full_name || user.data?.displayName,
+        pictureUrl: user.data?.pictureUrl,
+        statusMessage: user.data?.statusMessage,
+      });
+    } else {
+      setLineProfile(null);
+    }
+  }, [isAuthenticated, user]);
 
   const loginWithLine = () => {
-    liff.login();
+    base44.auth.redirectToLogin(window.location.href);
   };
 
   const logout = () => {
-    liff.logout();
+    authLogout();
     setLineProfile(null);
-    setIsLoggedIn(false);
   };
 
   return (
-    <LineContext.Provider value={{ lineProfile, isLoggedIn, isLoading, loginWithLine, logout }}>
+    <LineContext.Provider value={{
+      lineProfile,
+      isLoggedIn: isAuthenticated,
+      isLoading: isLoadingAuth,
+      loginWithLine,
+      logout,
+    }}>
       {children}
     </LineContext.Provider>
   );
