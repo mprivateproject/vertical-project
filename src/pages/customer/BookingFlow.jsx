@@ -92,6 +92,25 @@ export default function BookingFlow() {
         payment_method: paymentMethod,
       });
     },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['bookings'] });
+      const previousBookings = queryClient.getQueryData(['bookings']);
+      const optimisticBooking = {
+        id: `temp-${Date.now()}`,
+        customer_name: lineProfile?.displayName || 'Guest',
+        service_name: lang === 'th' ? service?.name_th : service?.name_en,
+        booking_date: format(selectedDate, 'yyyy-MM-dd'),
+        start_time: selectedTime,
+        status: 'confirmed',
+      };
+      queryClient.setQueryData(['bookings'], (old = []) => [...old, optimisticBooking]);
+      return { previousBookings };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousBookings) {
+        queryClient.setQueryData(['bookings'], context.previousBookings);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setBookingComplete(true);

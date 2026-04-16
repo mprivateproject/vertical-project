@@ -89,6 +89,26 @@ export default function QuickBooking() {
         payment_status: 'unpaid'
       });
     },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['bookings'] });
+      const previousBookings = queryClient.getQueryData(['bookings']);
+      const svc = selectedService;
+      const optimisticBooking = {
+        id: `temp-${Date.now()}`,
+        customer_name: lineProfile?.displayName || 'Guest',
+        service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
+        booking_date: format(selectedDate, 'yyyy-MM-dd'),
+        start_time: selectedTime,
+        status: 'pending',
+      };
+      queryClient.setQueryData(['bookings'], (old = []) => [...old, optimisticBooking]);
+      return { previousBookings };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousBookings) {
+        queryClient.setQueryData(['bookings'], context.previousBookings);
+      }
+    },
     onSuccess: (booking) => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setDone(true);

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { Link } from 'react-router-dom';
 import {
-  Clock, Star, Award, Settings, Moon, Sun, Globe, LogOut,
-  ChevronRight, Shield
+  Clock, Star, Award, Moon, Sun, Globe, LogOut,
+  ChevronRight, Shield, Trash2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LanguageToggle from '@/components/shared/LanguageToggle';
@@ -15,6 +15,7 @@ export default function Profile() {
   const { t, lang } = useLang();
   const { lineProfile, isLoggedIn, logout } = useLine();
   const { isDark, toggleTheme } = useTheme();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   if (!isLoggedIn) {
     return (
@@ -118,6 +119,47 @@ export default function Profile() {
             {lang === 'th' ? 'ออกจากระบบ' : 'Logout'}
           </span>
         </button>
+      </div>
+
+      {/* Security section */}
+      <div className="pt-2 border-t border-border space-y-1">
+        <p className="px-3 pt-1 pb-1 text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground">
+          {lang === 'th' ? 'ความปลอดภัย' : 'Security'}
+        </p>
+        {!showDeleteConfirm ? (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-destructive/5 transition-colors text-destructive"
+          >
+            <Trash2 className="w-5 h-5" />
+            <span className="text-sm font-medium">
+              {lang === 'th' ? 'ลบบัญชี' : 'Delete Account'}
+            </span>
+          </button>
+        ) : (
+          <div className="p-3 rounded-xl bg-destructive/5 space-y-3">
+            <p className="text-sm text-destructive font-medium">
+              {lang === 'th' ? 'ยืนยันการลบบัญชี?' : 'Confirm account deletion?'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {lang === 'th' ? 'การกระทำนี้ไม่สามารถย้อนกลับได้' : 'This action cannot be undone.'}
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 py-2 rounded-lg border border-border text-sm font-medium text-foreground"
+              >
+                {lang === 'th' ? 'ยกเลิก' : 'Cancel'}
+              </button>
+              <button
+                onClick={() => { logout(); }}
+                className="flex-1 py-2 rounded-lg bg-destructive text-white text-sm font-medium"
+              >
+                {lang === 'th' ? 'ลบบัญชี' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Admin/Staff links */}

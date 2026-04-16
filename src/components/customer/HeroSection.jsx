@@ -21,7 +21,7 @@ export default function HeroSection() {
       </div>
 
       {/* Header controls */}
-      <div className="relative z-10 flex items-center justify-between px-6 pt-12 pb-4">
+      <div className="relative z-10 flex items-center justify-between px-6 pb-4" style={{ paddingTop: 'calc(3rem + env(safe-area-inset-top))' }}>
         <div className="flex items-center gap-2.5">
           {isLoggedIn && lineProfile?.pictureUrl &&
           <img
