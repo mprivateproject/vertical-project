@@ -3,12 +3,10 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
-import { useAuth } from '@/lib/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { Check, Clock, ArrowLeft } from 'lucide-react';
-import MobileHeader from '@/components/shared/MobileHeader';
+import { ArrowLeft, Check, Clock, CalendarDays } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import TherapistPicker from '@/components/customer/TherapistPicker';
@@ -22,7 +20,6 @@ const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 export default function BookingFlow() {
   const { t, lang } = useLang();
   const { lineProfile, isLoggedIn } = useLine();
-  const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
@@ -78,9 +75,9 @@ export default function BookingFlow() {
       })();
 
       return base44.entities.Booking.create({
-        customer_id: user?.id || lineProfile?.lineUserId || 'guest',
-        customer_name: user?.full_name || lineProfile?.displayName || 'Guest',
-        line_user_id: lineProfile?.lineUserId || user?.data?.lineUserId || '',
+        customer_id: lineProfile?.lineUserId || 'guest',
+        customer_name: lineProfile?.displayName || 'Guest',
+        line_user_id: lineProfile?.lineUserId || '',
         service_id: serviceId,
         service_name: lang === 'th' ? service?.name_th : service?.name_en,
         therapist_id: selectedTherapist?.id || '',
@@ -94,25 +91,6 @@ export default function BookingFlow() {
         payment_status: paymentMethod === 'cash' ? 'unpaid' : 'paid',
         payment_method: paymentMethod,
       });
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['bookings'] });
-      const previousBookings = queryClient.getQueryData(['bookings']);
-      const optimisticBooking = {
-        id: `temp-${Date.now()}`,
-        customer_name: lineProfile?.displayName || 'Guest',
-        service_name: lang === 'th' ? service?.name_th : service?.name_en,
-        booking_date: format(selectedDate, 'yyyy-MM-dd'),
-        start_time: selectedTime,
-        status: 'confirmed',
-      };
-      queryClient.setQueryData(['bookings'], (old = []) => [...old, optimisticBooking]);
-      return { previousBookings };
-    },
-    onError: (_err, _vars, context) => {
-      if (context?.previousBookings) {
-        queryClient.setQueryData(['bookings'], context.previousBookings);
-      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
@@ -205,15 +183,30 @@ export default function BookingFlow() {
   }
 
   return (
-    <div className="pb-24">
-      <MobileHeader
-        title={serviceName}
-        subtitle={service ? `${service.duration_minutes} ${t('minutes')} · ฿${service.price?.toLocaleString()}` : undefined}
-        onBack={() => step > 0 ? setStep(s => s - 1) : navigate(-1)}
-      />
+    <div className="px-5 pt-14 pb-24">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          onClick={() => step > 0 ? setStep(s => s - 1) : navigate(-1)}
+          className="p-2 rounded-lg hover:bg-secondary transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 text-foreground" />
+        </button>
+        <div className="flex-1">
+          <h1 className="font-semibold text-foreground">{serviceName}</h1>
+          {service && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+              <Clock className="w-3 h-3" />
+              <span>{service.duration_minutes} {t('minutes')}</span>
+              <span>•</span>
+              <span className="font-medium text-primary">฿{service.price?.toLocaleString()}</span>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Progress */}
-      <div className="flex gap-1.5 mb-8 px-5">
+      <div className="flex gap-1.5 mb-8">
         {STEPS.map((_, i) => (
           <div
             key={i}
@@ -225,7 +218,6 @@ export default function BookingFlow() {
       </div>
 
       {/* Step content */}
-      <div className="px-5">
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -281,7 +273,6 @@ export default function BookingFlow() {
           )}
         </motion.div>
       </AnimatePresence>
-      </div>
 
       {/* Bottom action */}
       <div className="fixed bottom-20 left-0 right-0 px-5 max-w-lg mx-auto">

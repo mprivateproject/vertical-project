@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
-import { useAuth } from '@/lib/AuthContext';
-import PullToRefresh from '@/components/shared/PullToRefresh';
-import LineLoginButton from '@/components/customer/LineLoginButton';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, User } from 'lucide-react';
+import { CalendarDays, Clock, User, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -25,19 +22,14 @@ const statusStyles = {
 
 export default function BookingHistory() {
   const { t, lang } = useLang();
-  const { lineProfile, isLoggedIn } = useLine();
-  const { user } = useAuth();
+  const { lineProfile } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [tab, setTab] = useState('upcoming');
-  const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
-    queryKey: ['my-bookings', user?.id],
+    queryKey: ['my-bookings', lineProfile?.lineUserId],
     queryFn: () => base44.entities.Booking.list('-booking_date', 100),
-    enabled: !!user,
   });
-
-  const handleRefresh = () => queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const filtered = bookings.filter(b => {
@@ -47,19 +39,7 @@ export default function BookingHistory() {
     return true;
   });
 
-  if (!isLoggedIn) {
-    return (
-      <div className="px-5 pt-20 pb-6 space-y-6 text-center">
-        <CalendarDays className="w-12 h-12 text-muted-foreground/30 mx-auto" />
-        <h2 className="font-display text-xl font-semibold">{t('bookingHistory')}</h2>
-        <p className="text-muted-foreground text-sm">กรุณาเข้าสู่ระบบเพื่อดูประวัติการจอง</p>
-        <LineLoginButton />
-      </div>
-    );
-  }
-
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
     <div className="px-5 pt-14 pb-6 space-y-5">
       <h1 className="font-display text-2xl font-semibold text-foreground">
         {t('bookingHistory')}
@@ -145,6 +125,5 @@ export default function BookingHistory() {
         </div>
       )}
     </div>
-    </PullToRefresh>
   );
 }

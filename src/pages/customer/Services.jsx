@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import ServiceCard from '@/components/customer/ServiceCard';
 import CategoryFilter from '@/components/customer/CategoryFilter';
-import PullToRefresh from '@/components/shared/PullToRefresh';
 
 export default function Services() {
   const { t, lang } = useLang();
   const [category, setCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const queryClient = useQueryClient();
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['services'],
@@ -26,10 +24,7 @@ export default function Services() {
     return catMatch && searchMatch;
   });
 
-  const handleRefresh = () => queryClient.invalidateQueries({ queryKey: ['services'] });
-
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
     <div className="px-5 pt-14 pb-6 space-y-5">
       <h1 className="font-display text-2xl font-semibold text-foreground">
         {t('selectService')}
@@ -68,6 +63,5 @@ export default function Services() {
         </div>
       )}
     </div>
-    </PullToRefresh>
   );
 }

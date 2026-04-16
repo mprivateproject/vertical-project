@@ -3,12 +3,15 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
-import { useAuth } from '@/lib/AuthContext';
 import { format, addDays, isToday } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { Check, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+
+const SERVICES = [
+{ id: '90min', name_th: 'นวด 90 นาที', name_en: '90 Min Massage', duration_minutes: 90, price: 2450 },
+{ id: '120min', name_th: 'นวด 120 นาที', name_en: '120 Min Massage', duration_minutes: 120, price: 2950 }];
 
 
 function generateSlots(start = '10:00', end = '20:00', interval = 60) {
@@ -29,7 +32,6 @@ const TIME_SLOTS = generateSlots('10:00', '20:00', 60);
 export default function QuickBooking() {
   const { t, lang } = useLang();
   const { lineProfile, isLoggedIn } = useLine();
-  const { user } = useAuth();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
 
@@ -38,14 +40,10 @@ export default function QuickBooking() {
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedService, setSelectedService] = useState(SERVICES[0]);
   const [done, setDone] = useState(false);
 
-  // ดึง services จาก DB จริง
-  const { data: services = [] } = useQuery({
-    queryKey: ['services-active'],
-    queryFn: () => base44.entities.Service.filter({ is_active: true }, 'sort_order', 10),
-  });
+  const services = SERVICES;
 
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-quick', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
@@ -68,19 +66,17 @@ export default function QuickBooking() {
     return true;
   });
 
-  const currentService = selectedService || (services.length > 0 ? services[0] : null);
-
   const createBooking = useMutation({
     mutationFn: () => {
-      const svc = currentService;
+      const svc = selectedService;
       const duration = svc?.duration_minutes || 60;
       const [h, m] = selectedTime.split(':').map(Number);
       const endTotal = h * 60 + m + duration;
       const endTime = `${String(Math.floor(endTotal / 60)).padStart(2, '0')}:${String(endTotal % 60).padStart(2, '0')}`;
       return base44.entities.Booking.create({
-        customer_id: user?.id || lineProfile?.lineUserId || 'guest',
-        customer_name: user?.full_name || lineProfile?.displayName || 'Guest',
-        line_user_id: lineProfile?.lineUserId || user?.data?.lineUserId || '',
+        customer_id: lineProfile?.lineUserId || 'guest',
+        customer_name: lineProfile?.displayName || 'Guest',
+        line_user_id: lineProfile?.lineUserId || '',
         service_id: svc?.id || '',
         service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
         therapist_name: t('anyTherapist'),
@@ -93,31 +89,11 @@ export default function QuickBooking() {
         payment_status: 'unpaid'
       });
     },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['bookings'] });
-      const previousBookings = queryClient.getQueryData(['bookings']);
-      const svc = currentService;
-      const optimisticBooking = {
-        id: `temp-${Date.now()}`,
-        customer_name: lineProfile?.displayName || 'Guest',
-        service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
-        booking_date: format(selectedDate, 'yyyy-MM-dd'),
-        start_time: selectedTime,
-        status: 'pending',
-      };
-      queryClient.setQueryData(['bookings'], (old = []) => [...old, optimisticBooking]);
-      return { previousBookings };
-    },
-    onError: (_err, _vars, context) => {
-      if (context?.previousBookings) {
-        queryClient.setQueryData(['bookings'], context.previousBookings);
-      }
-    },
     onSuccess: (booking) => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setDone(true);
       // Send LINE notifications
-      const svc = currentService;
+      const svc = selectedService;
       base44.functions.invoke('lineNotify', {
         type: lineProfile?.lineUserId ? 'booking_confirmation' : 'admin_notify',
         lineUserId: lineProfile?.lineUserId || null,
@@ -165,10 +141,10 @@ export default function QuickBooking() {
           <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
             {t('service')}
           </p>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2">
               {services.map((svc) => {
             const name = lang === 'th' ? svc.name_th : svc.name_en;
-            const isSelected = (selectedService?.id || services[0]?.id) === svc.id;
+            const isSelected = selectedService?.id === svc.id;
             return (
               <button
                 key={svc.id}
