@@ -90,21 +90,9 @@ export default function QuickBooking() {
         payment_status: 'unpaid'
       });
     },
-    onSuccess: (booking) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setDone(true);
-      // Send LINE notifications
-      const svc = selectedService;
-      base44.functions.invoke('lineNotify', {
-        type: lineProfile?.lineUserId ? 'booking_confirmation' : 'admin_notify',
-        lineUserId: lineProfile?.lineUserId || null,
-        bookingData: {
-          serviceName: lang === 'th' ? svc?.name_th : svc?.name_en,
-          bookingDate: format(selectedDate, 'yyyy-MM-dd'),
-          startTime: selectedTime,
-          price: svc?.price || 0,
-        },
-      }).catch(() => {}); // fire and forget
     }
   });
 
