@@ -108,10 +108,10 @@ export default function QuickBooking() {
     <div className="space-y-6">
       {/* Service selector */}
       <div>
-        <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
+        <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-4">
           {t('service')}
         </p>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {SERVICES.map((svc) => {
             const name = lang === 'th' ? svc.name_th : svc.name_en;
             const isSelected = selectedService?.id === svc.id;
@@ -119,13 +119,13 @@ export default function QuickBooking() {
               <button
                 key={svc.id}
                 onClick={() => setSelectedService(svc)}
-                className={`px-4 py-2 rounded-full text-[12px] font-medium border transition-all duration-150 whitespace-nowrap ${
+                className={`px-6 py-3 rounded-2xl text-[13px] font-medium border transition-all duration-150 whitespace-nowrap ${
                   isSelected
-                    ? 'bg-foreground text-background border-foreground'
-                    : 'bg-transparent text-muted-foreground border-border'
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
+                    : 'bg-transparent text-muted-foreground border-border hover:border-primary/40'
                 }`}>
-                <span className="normal-case block">{name}</span>
-                <span className="opacity-60 text-[11px]">฿{svc.price?.toLocaleString()}</span>
+                <span className="normal-case block font-semibold">{name}</span>
+                <span className={`text-[12px] mt-0.5 block ${isSelected ? 'opacity-80' : 'opacity-60'}`}>฿{svc.price?.toLocaleString()}</span>
               </button>
             );
           })}
