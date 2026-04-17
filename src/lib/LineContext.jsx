@@ -1,61 +1,29 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useAuth } from '@/lib/AuthContext';
+import { base44 } from '@/api/base44Client';
 
+// LineContext now bridges to AuthContext (no LIFF)
 const LineContext = createContext();
 
-const LIFF_ID = '2009806106-7u8AyzZg';
-
 export function LineProvider({ children }) {
-  const [lineProfile, setLineProfile] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const initLiff = async () => {
-      try {
-        await window.liff.init({ liffId: LIFF_ID });
-
-        if (window.liff.isLoggedIn()) {
-          const profile = await window.liff.getProfile();
-          setLineProfile({
-            lineUserId: profile.userId,
-            displayName: profile.displayName,
-            pictureUrl: profile.pictureUrl,
-            statusMessage: profile.statusMessage,
-          });
-          setIsLoggedIn(true);
-        }
-      } catch (err) {
-        console.error('LIFF init error:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initLiff();
-  }, []);
-
-  const loginWithLine = () => {
-    window.liff.login();
-  };
-
-  const logout = () => {
-    if (window.liff && window.liff.isLoggedIn()) {
-      window.liff.logout();
-      window.location.reload();
-    }
-    setLineProfile(null);
-    setIsLoggedIn(false);
-  };
-
-  return (
-    <LineContext.Provider value={{ lineProfile, isLoggedIn, isLoading, loginWithLine, logout }}>
-      {children}
-    </LineContext.Provider>
-  );
+  return <LineContext.Provider value={{}}>{children}</LineContext.Provider>;
 }
 
 export function useLine() {
-  const ctx = useContext(LineContext);
-  if (!ctx) throw new Error('useLine must be used within LineProvider');
-  return ctx;
+  const { user, isAuthenticated, isLoadingAuth, logout } = useAuth();
+
+  const lineProfile = user ? {
+    lineUserId: user.data?.lineUserId || user.id,
+    displayName: user.full_name,
+    pictureUrl: user.data?.pictureUrl || null,
+    statusMessage: user.data?.statusMessage || null,
+  } : null;
+
+  return {
+    lineProfile,
+    isLoggedIn: isAuthenticated,
+    isLoading: isLoadingAuth,
+    loginWithLine: () => base44.auth.redirectToLogin(window.location.href),
+    logout: () => logout(true),
+  };
 }
