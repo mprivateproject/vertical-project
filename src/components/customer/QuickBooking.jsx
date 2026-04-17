@@ -3,19 +3,31 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
-import { format, isToday, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isBefore, startOfDay, addMonths, subMonths } from 'date-fns';
+import { format, addDays, isToday } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { Check, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const SERVICES = [
-  { id: 'sport', name_th: '90 นาที', name_en: '90 Min', duration_minutes: 90, price: 2950 },
-  { id: 'aroma', name_th: '120 นาที', name_en: '120 Min', duration_minutes: 120, price: 3450 },
-];
+{ id: '90min', name_th: 'นวด 90 นาที', name_en: '90 Min Massage', duration_minutes: 90, price: 2450 },
+{ id: '120min', name_th: 'นวด 120 นาที', name_en: '120 Min Massage', duration_minutes: 120, price: 2950 }];
 
 
-const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
+function generateSlots(start = '10:00', end = '20:00', interval = 60) {
+  const slots = [];
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  let cur = sh * 60 + sm;
+  const endMin = eh * 60 + em;
+  while (cur + interval <= endMin) {
+    slots.push(`${String(Math.floor(cur / 60)).padStart(2, '0')}:${String(cur % 60).padStart(2, '0')}`);
+    cur += interval;
+  }
+  return slots;
+}
+
+const TIME_SLOTS = generateSlots('10:00', '20:00', 60);
 
 export default function QuickBooking() {
   const { t, lang } = useLang();
@@ -24,12 +36,12 @@ export default function QuickBooking() {
   const locale = lang === 'th' ? th : enUS;
 
   const today = new Date();
+  const dates = Array.from({ length: 14 }, (_, i) => addDays(today, i));
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedService, setSelectedService] = useState(SERVICES[0]);
   const [done, setDone] = useState(false);
-  const [calendarMonth, setCalendarMonth] = useState(new Date());
 
   const services = SERVICES;
 
@@ -77,9 +89,21 @@ export default function QuickBooking() {
         payment_status: 'unpaid'
       });
     },
-    onSuccess: () => {
+    onSuccess: (booking) => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setDone(true);
+      // Send LINE notifications
+      const svc = selectedService;
+      base44.functions.invoke('lineNotify', {
+        type: lineProfile?.lineUserId ? 'booking_confirmation' : 'admin_notify',
+        lineUserId: lineProfile?.lineUserId || null,
+        bookingData: {
+          serviceName: lang === 'th' ? svc?.name_th : svc?.name_en,
+          bookingDate: format(selectedDate, 'yyyy-MM-dd'),
+          startTime: selectedTime,
+          price: svc?.price || 0,
+        },
+      }).catch(() => {}); // fire and forget
     }
   });
 
@@ -140,69 +164,34 @@ export default function QuickBooking() {
         </div>
       }
 
-      {/* Date selector - Calendar */}
+      {/* Date selector */}
       <div>
         <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
           {t('date')}
         </p>
-        <div className="bg-card border border-border rounded-2xl p-4">
-          {/* Month navigation */}
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => setCalendarMonth(m => subMonths(m, 1))}
-              className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4 text-foreground" />
-            </button>
-            <span className="text-[13px] font-semibold text-foreground">
-              {format(calendarMonth, 'MMMM yyyy', { locale })}
-            </span>
-            <button
-              onClick={() => setCalendarMonth(m => addMonths(m, 1))}
-              className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
-            >
-              <ChevronRight className="w-4 h-4 text-foreground" />
-            </button>
-          </div>
-          {/* Day headers */}
-          <div className="grid grid-cols-7 mb-2">
-            {(lang === 'th'
-              ? ['อา','จ','อ','พ','พฤ','ศ','ส']
-              : ['Su','Mo','Tu','We','Th','Fr','Sa']
-            ).map(d => (
-              <div key={d} className="text-center text-[10px] font-medium text-muted-foreground py-1">{d}</div>
-            ))}
-          </div>
-          {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-y-1">
-            {(() => {
-              const start = startOfMonth(calendarMonth);
-              const end = endOfMonth(calendarMonth);
-              const days = eachDayOfInterval({ start, end });
-              const startPad = getDay(start); // 0=Sun
-              const cells = [];
-              for (let i = 0; i < startPad; i++) cells.push(<div key={`pad-${i}`} />);
-              days.forEach(day => {
-                const isPast = isBefore(day, startOfDay(today));
-                const isSelected = selectedDate && isSameDay(day, selectedDate);
-                const isCurrentDay = isToday(day);
-                cells.push(
-                  <button
-                    key={day.toISOString()}
-                    disabled={isPast}
-                    onClick={() => { setSelectedDate(day); setSelectedTime(null); }}
-                    className={`aspect-square flex items-center justify-center rounded-full text-[12px] font-medium transition-all duration-150 mx-auto w-8 h-8
-                      ${isSelected ? 'bg-foreground text-background' :
-                        isCurrentDay ? 'border border-foreground text-foreground' :
-                        isPast ? 'text-muted-foreground/40 cursor-not-allowed' :
-                        'text-foreground hover:bg-secondary'}`}
-                  >
-                    {format(day, 'd')}
-                  </button>
-                );
-              });
-              return cells;
-            })()}
+        <div className="overflow-x-auto -mx-6 px-6" style={{ scrollbarWidth: 'none' }}>
+          <div className="flex gap-2 pb-0.5" style={{ width: 'max-content' }}>
+            {dates.map((date) => {
+              const isSelected = selectedDate && format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+              const dayLabel = format(date, 'EEE', { locale }).toUpperCase();
+              const dayNum = format(date, 'd');
+              return (
+                <button
+                  key={date.toISOString()}
+                  onClick={() => {setSelectedDate(date);setSelectedTime(null);}}
+                  className={`flex flex-col items-center px-3.5 py-3 rounded-xl border transition-all duration-150 min-w-[52px] ${
+                  isSelected ?
+                  'bg-foreground text-background border-foreground' :
+                  'bg-card text-foreground border-border'}`
+                  }>
+                  
+                  <span className={`text-[10px] font-medium tracking-wider mb-1 ${isSelected ? 'text-background/60' : 'text-muted-foreground'}`}>
+                    {dayLabel}
+                  </span>
+                  <span className="text-[15px] font-semibold leading-none">{dayNum}</span>
+                </button>);
+
+            })}
           </div>
         </div>
       </div>
