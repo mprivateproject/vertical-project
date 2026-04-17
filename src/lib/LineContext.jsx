@@ -21,19 +21,32 @@ export function LineProvider({ children }) {
 
   const initLiff = async () => {
     try {
+      // 1️⃣ Initialize LIFF with proper ID
+      console.log('🔄 LIFF: Initializing with ID:', LIFF_ID);
       await liff.init({ liffId: LIFF_ID });
       setLiffReady(true);
+      console.log('✅ LIFF: Initialization complete');
 
-      // If NOT logged in → show login prompt and STOP
+      // 2️⃣ Check login status
       if (!liff.isLoggedIn()) {
+        console.warn('⚠️ LIFF: User not logged in');
         setIsLoading(false);
         setIsLoggedIn(false);
         return;
       }
 
-      // User is logged in → sync with backend
-      const profile = await liff.getProfile();
+      console.log('✅ LIFF: User is logged in');
+
+      // 3️⃣ Get token AFTER verifying login
       const token = liff.getIDToken();
+      if (!token) {
+        throw new Error('Failed to get LIFF ID Token after login');
+      }
+      console.log('✅ LIFF: ID Token retrieved, length:', token.length);
+
+      // 4️⃣ Get profile data
+      const profile = await liff.getProfile();
+      console.log('✅ LIFF: Profile retrieved:', { userId: profile.userId, displayName: profile.displayName });
       
       const profileData = {
         lineUserId: profile.userId,
@@ -46,15 +59,17 @@ export function LineProvider({ children }) {
       setLineProfile(profileData);
       setIdToken(token);
 
-      // Sync with backend to get user and customer
+      // 5️⃣ Sync with backend to get user and customer
+      console.log('🔄 LIFF: Syncing with backend...');
       const result = await syncWithBackend(profileData, token);
+      console.log('✅ LIFF: Backend sync complete');
       
       setUser(result.user);
       setCustomer(result.customer);
       setIsLoggedIn(true);
       setIsLoading(false);
     } catch (err) {
-      console.error('LIFF init failed:', err);
+      console.error('❌ LIFF init failed:', err);
       setIsLoading(false);
       setIsLoggedIn(false);
     }

@@ -6,16 +6,26 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { action, idToken, bookingData } = body;
 
+    // 🔐 DEBUG: Log incoming request
+    console.log('🔐 LIFF SYNC BACKEND REQUEST', {
+      action,
+      hasIdToken: !!idToken,
+      idTokenLength: idToken ? idToken.length : 0,
+      timestamp: new Date().toISOString(),
+    });
+
     // =========================
     // 🔐 1. REQUIRE ID TOKEN
     // =========================
     if (!idToken) {
+      console.error('❌ LIFF SYNC: Missing idToken');
       return Response.json({ error: 'idToken required' }, { status: 401 });
     }
 
     // =========================
     // 🔐 2. VERIFY TOKEN WITH LINE
     // =========================
+    console.log('🔐 LIFF SYNC: Verifying token with LINE API...');
     const verifyRes = await fetch('https://api.line.me/oauth2/v2.1/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -26,13 +36,16 @@ Deno.serve(async (req) => {
     });
 
     if (!verifyRes.ok) {
+      console.error('❌ LIFF SYNC: Token verification failed', { status: verifyRes.status });
       return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
     }
 
     const payload = await verifyRes.json();
+    console.log('✅ LIFF SYNC: Token verified successfully');
 
     // ✅ LINE user identity (เชื่ออันนี้เท่านั้น)
     const lineUserId = payload.sub;
+    console.log('✅ LIFF SYNC: Extracted lineUserId:', lineUserId);
 
     // =========================
     // 👤 3. SYNC USER / CUSTOMER
@@ -98,13 +111,16 @@ Deno.serve(async (req) => {
 
     // 1️⃣ SYNC CUSTOMER
     if (action === 'syncCustomer') {
+      console.log('🔄 LIFF SYNC: Syncing customer...');
       const { profile } = body;
       const result = await syncCustomer(profile);
+      console.log('✅ LIFF SYNC: Customer synced:', { userId: result.user.id, customerId: result.customer.id });
       return Response.json(result);
     }
 
     // 2️⃣ CREATE BOOKING
     if (action === 'createBooking') {
+      console.log('🔄 LIFF SYNC: Creating booking...');
       if (!bookingData) {
         return Response.json({ error: 'bookingData required' }, { status: 400 });
       }
@@ -117,33 +133,43 @@ Deno.serve(async (req) => {
         line_user_id: lineUserId,
       });
 
+      console.log('✅ LIFF SYNC: Booking created:', { bookingId: booking.id, status: booking.status });
       return Response.json({ booking });
     }
 
     // 3️⃣ GET BOOKINGS (ของ user นี้เท่านั้น)
     if (action === 'getBookings') {
+      console.log('🔄 LIFF SYNC: Fetching bookings for lineUserId:', lineUserId);
       const bookings = await base44.asServiceRole.entities.Booking.filter({
         line_user_id: lineUserId,
       });
 
+      console.log('✅ LIFF SYNC: Bookings retrieved:', { count: bookings.length });
       return Response.json({ bookings });
     }
 
     // 4️⃣ GET BOOKINGS BY DATE (admin use)
     if (action === 'getBookingsByDate') {
+      console.log('🔄 LIFF SYNC: Fetching bookings for date:', body.bookingDate);
       const { bookingDate } = body;
 
       const bookings = await base44.asServiceRole.entities.Booking.filter({
         booking_date: bookingDate,
       });
 
+      console.log('✅ LIFF SYNC: Bookings retrieved:', { count: bookings.length, date: bookingDate });
       return Response.json({ bookings });
     }
 
+    console.error('❌ LIFF SYNC: Unknown action:', action);
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 
   } catch (error) {
-    console.error('liffSync error:', error);
+    console.error('❌ LIFF SYNC ERROR', {
+      message: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString(),
+    });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
