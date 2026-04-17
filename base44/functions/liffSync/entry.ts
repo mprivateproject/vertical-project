@@ -4,13 +4,34 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    const { action, lineUserId, displayName, pictureUrl, email } = body;
+    const { action, lineUserId, displayName, pictureUrl, email, idToken } = body;
 
     if (!lineUserId) {
       return Response.json({ error: 'lineUserId required' }, { status: 400 });
     }
 
     if (action === 'syncCustomer') {
+      // Verify idToken with LINE to establish valid session
+      if (idToken) {
+        const LINE_CHANNEL_ID = Deno.env.get('sso_client_id');
+        const tokenVerifyUrl = 'https://api.line.me/oauth2/v2.1/tokeninfo';
+        
+        try {
+          const verifyRes = await fetch(tokenVerifyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ id_token: idToken, client_id: LINE_CHANNEL_ID }),
+          });
+          
+          if (!verifyRes.ok) {
+            console.error('LINE token verification failed:', verifyRes.status);
+            return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
+          }
+        } catch (verifyErr) {
+          console.error('Token verification error:', verifyErr);
+          return Response.json({ error: 'Token verification failed' }, { status: 401 });
+        }
+      }
       // 1. Find User where line_user_id = lineUserId
       const existingUsers = await base44.asServiceRole.entities.User.filter({ line_user_id: lineUserId });
       

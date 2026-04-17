@@ -51,12 +51,14 @@ export function LineProvider({ children }) {
 
   const syncWithBackend = async (profile) => {
     try {
+      const idToken = liff.getIDToken();
       await base44.functions.invoke('liffSync', {
         action: 'syncCustomer',
         lineUserId: profile.lineUserId,
         displayName: profile.displayName,
         pictureUrl: profile.pictureUrl,
         email: profile.email || '',
+        idToken,
       });
     } catch (err) {
       console.error('Failed to sync with backend:', err);
