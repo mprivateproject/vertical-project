@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LanguageToggle from '@/components/shared/LanguageToggle';
-import LineLoginButton from '@/components/customer/LineLoginButton.jsx';
+import LineLoginButton from '@/components/customer/LineLoginButton';
 
 export default function Profile() {
   const { t, lang } = useLang();
