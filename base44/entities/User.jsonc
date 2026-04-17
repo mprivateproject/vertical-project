@@ -1,0 +1,28 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "line_user_id": {
+      "type": "string",
+      "description": "LINE User ID for authentication"
+    },
+    "picture_url": {
+      "type": "string",
+      "description": "User profile picture URL"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "customer",
+        "staff",
+        "admin"
+      ],
+      "default": "customer",
+      "description": "User role in the application"
+    }
+  },
+  "required": [
+    "line_user_id",
+    "role"
+  ]
+}
