@@ -26,7 +26,8 @@ export default function LineLoginButton() {
       )}
     </button>
     <p className="text-center text-[11px] text-muted-foreground leading-relaxed mt-3 px-2">
-      การเข้าสู่ระบบถือว่าคุณยอมรับเงื่อนไขการใช้งาน และอนุญาตให้เราใช้ที่อยู่อีเมลเพื่อการสื่อสารเกี่ยวกับบริการ
+      การเข้าสู่ระบบถือว่าคุณยอมรับเงื่อนไขการใช้งาน และอนุญาตให้เราใช้ที่อยู่อีเมลเพื่อการสื่อสารเกี่ยวกับบริการ{' '}
+      <a href="/privacy-policy" className="underline hover:text-foreground transition-colors">นโยบายความเป็นส่วนตัว</a>
     </p>
     </>
   );

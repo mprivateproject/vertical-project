@@ -27,6 +27,7 @@ import AdminCustomers from '@/pages/admin/AdminCustomers';
 import AdminReports from '@/pages/admin/AdminReports';
 import AdminPromotions from '@/pages/admin/AdminPromotions';
 import AdminSettings from '@/pages/admin/AdminSettings';
+import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 
 // Layouts
 import CustomerLayout from '@/components/shared/CustomerLayout';
@@ -64,6 +65,7 @@ const AuthenticatedApp = () => {
         <Route path="/book" element={<BookingFlow />} />
         <Route path="/bookings" element={<BookingHistory />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Route>
 
       {/* Staff routes */}
