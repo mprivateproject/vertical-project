@@ -120,13 +120,10 @@ export default function BookingHistory() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+              <div className="mt-3 pt-3 border-t border-border">
                 <span className="font-bold text-primary text-sm">
                   ฿{booking.price?.toLocaleString()}
                 </span>
-                <Badge variant="outline" className="text-[10px]">
-                  {t(booking.payment_status || 'unpaid')}
-                </Badge>
               </div>
             </motion.div>
           ))}
