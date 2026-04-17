@@ -4,13 +4,36 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    const { action, lineUserId, displayName, pictureUrl, email } = body;
+    const { action, lineUserId, displayName, pictureUrl, email, idToken } = body;
 
     if (!lineUserId) {
       return Response.json({ error: 'lineUserId required' }, { status: 400 });
     }
 
     if (action === 'syncCustomer') {
+      if (!idToken) {
+        return Response.json({ error: 'idToken required' }, { status: 400 });
+      }
+
+      // Verify idToken with LINE
+      const LINE_CHANNEL_ID = Deno.env.get('sso_client_id');
+      const tokenVerifyUrl = 'https://api.line.me/oauth2/v2.1/tokeninfo';
+      
+      try {
+        const verifyRes = await fetch(tokenVerifyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ id_token: idToken, client_id: LINE_CHANNEL_ID }),
+        });
+        
+        if (!verifyRes.ok) {
+          return Response.json({ error: 'Invalid idToken' }, { status: 401 });
+        }
+      } catch (verifyErr) {
+        console.error('Token verification error:', verifyErr);
+        return Response.json({ error: 'Token verification failed' }, { status: 401 });
+      }
+
       const existing = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
 
       let customer;
@@ -33,7 +56,14 @@ Deno.serve(async (req) => {
           membership_tier: 'none',
         });
       }
-      return Response.json({ customer });
+
+      // Create app session token
+      const sessionToken = await base44.auth.createAppToken({
+        lineUserId,
+        customerId: customer.id,
+      });
+
+      return Response.json({ customer, sessionToken });
     }
 
     if (action === 'createBooking') {

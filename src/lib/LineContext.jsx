@@ -45,14 +45,19 @@ export function LineProvider({ children }) {
 
   const syncCustomer = async (profile) => {
     try {
+      const idToken = liff.getIDToken();
       const res = await base44.functions.invoke('liffSync', {
         action: 'syncCustomer',
         lineUserId: profile.lineUserId,
         displayName: profile.displayName,
         pictureUrl: profile.pictureUrl,
         email: profile.email || '',
+        idToken,
       });
       setCustomer(res.data.customer);
+      if (res.data.sessionToken) {
+        localStorage.setItem('sessionToken', res.data.sessionToken);
+      }
     } catch (err) {
       console.error('Failed to sync customer:', err);
     }
