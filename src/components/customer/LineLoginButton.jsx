@@ -4,7 +4,7 @@ import { useLine } from '@/lib/LineContext';
 import { Loader2 } from 'lucide-react';
 
 export default function LineLoginButton() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { loginWithLine, isLoading } = useLine();
 
   return (
@@ -26,8 +26,13 @@ export default function LineLoginButton() {
       )}
     </button>
     <p className="text-center text-[11px] text-muted-foreground leading-relaxed mt-3 px-2">
-      By signing in, you agree to our Terms of Service and allow us to use your email address for service-related communications.{' '}
-      <a href="/privacy-policy" className="underline hover:text-foreground transition-colors">Privacy Policy</a>
+      {lang === 'th'
+        ? 'การเข้าสู่ระบบถือว่าคุณยอมรับเงื่อนไขการใช้งาน และอนุญาตให้เราใช้ที่อยู่อีเมลเพื่อการสื่อสารเกี่ยวกับบริการ'
+        : 'By signing in, you agree to our Terms of Service and allow us to use your email address for service-related communications.'
+      }{' '}
+      <a href="/privacy-policy" className="underline hover:text-foreground transition-colors">
+        {lang === 'th' ? 'นโยบายความเป็นส่วนตัว' : 'Privacy Policy'}
+      </a>
     </p>
     </>
   );
