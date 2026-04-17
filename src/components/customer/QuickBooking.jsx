@@ -10,8 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const SERVICES = [
-  { id: 'sport', name_th: 'Sport Massage', name_en: 'Sport Massage', duration_minutes: 90, price: 2950 },
-  { id: 'aroma', name_th: 'Aromatherapy Massage', name_en: 'Aromatherapy Massage', duration_minutes: 60, price: 3450 },
+  { id: 'sport', name_th: 'Sport Massage 90 นาที', name_en: 'Sport Massage 90 Min', duration_minutes: 90, price: 2950 },
+  { id: 'aroma', name_th: 'Aromatherapy Massage 120 นาที', name_en: 'Aromatherapy Massage 120 Min', duration_minutes: 120, price: 3450 },
 ];
 
 
