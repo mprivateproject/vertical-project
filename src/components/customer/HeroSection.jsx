@@ -13,11 +13,8 @@ export default function HeroSection() {
       {/* Background image */}
       <div className="absolute inset-0">
         <img src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/1839da3f1_IMG_7982.png"
-
-        alt="Spa" className="opacity-100 w-full h-full object-cover" />
-        
-        
-        
+        alt="Spa" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Header controls */}
