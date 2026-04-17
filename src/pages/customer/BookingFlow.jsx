@@ -130,17 +130,17 @@ export default function BookingFlow() {
 
   if (bookingComplete) {
     return (
-      <div className="px-6 pt-24 pb-6 text-center space-y-8">
+      <div className="px-5 pt-20 pb-6 text-center space-y-6">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 rounded-full bg-foreground mx-auto flex items-center justify-center"
+          className="w-20 h-20 rounded-full bg-primary/10 mx-auto flex items-center justify-center"
         >
-          <Check className="w-8 h-8 text-background" />
+          <Check className="w-10 h-10 text-primary" />
         </motion.div>
-        <div className="space-y-3">
-          <h1 className="font-display text-3xl font-light text-foreground">
+        <div className="space-y-2">
+          <h1 className="font-display text-2xl font-semibold text-foreground">
             {t('bookingConfirmed')}
           </h1>
           <p className="text-muted-foreground text-sm">
@@ -150,13 +150,13 @@ export default function BookingFlow() {
         <div className="space-y-3 pt-4">
           <Link
             to="/bookings"
-            className="block w-full py-3 rounded-sm bg-primary text-primary-foreground font-light text-center"
+            className="block w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-center"
           >
             {t('viewBookings')}
           </Link>
           <Link
             to="/"
-            className="block w-full py-3 rounded-sm bg-secondary text-secondary-foreground font-light text-center"
+            className="block w-full py-3 rounded-xl bg-secondary text-secondary-foreground font-medium text-center"
           >
             {t('backToHome')}
           </Link>
@@ -167,8 +167,8 @@ export default function BookingFlow() {
 
   if (showPaymentQR) {
     return (
-      <div className="px-6 pt-16 pb-6">
-        <button onClick={() => setShowPaymentQR(false)} className="flex items-center gap-2 text-muted-foreground mb-8 text-sm">
+      <div className="px-5 pt-14 pb-6">
+        <button onClick={() => setShowPaymentQR(false)} className="flex items-center gap-2 text-muted-foreground mb-6">
           <ArrowLeft className="w-4 h-4" /> {t('back')}
         </button>
         <PromptPayQR
@@ -181,8 +181,8 @@ export default function BookingFlow() {
 
   if (!isLoggedIn) {
     return (
-      <div className="px-6 pt-24 pb-6 space-y-8 text-center">
-        <h2 className="font-display text-2xl font-light">{t('bookNow')}</h2>
+      <div className="px-5 pt-20 pb-6 space-y-6 text-center">
+        <h2 className="font-display text-xl font-semibold">{t('bookNow')}</h2>
         <p className="text-muted-foreground text-sm">กรุณาเข้าสู่ระบบด้วย LINE เพื่อจองคิว</p>
         <LineLoginButton />
       </div>
@@ -190,35 +190,35 @@ export default function BookingFlow() {
   }
 
   return (
-    <div className="px-6 pt-16 pb-24">
+    <div className="px-5 pt-14 pb-24">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => step > 0 ? setStep(s => s - 1) : navigate(-1)}
-          className="p-2 hover:bg-secondary transition-colors"
+          className="p-2 rounded-lg hover:bg-secondary transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <div className="flex-1">
-          <h1 className="font-display text-lg font-light text-foreground">{serviceName}</h1>
+          <h1 className="font-semibold text-foreground">{serviceName}</h1>
           {service && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
               <Clock className="w-3 h-3" />
-              <span>{service.duration_minutes} min</span>
+              <span>{service.duration_minutes} {t('minutes')}</span>
               <span>•</span>
-              <span className="text-foreground">฿{service.price?.toLocaleString()}</span>
+              <span className="font-medium text-primary">฿{service.price?.toLocaleString()}</span>
             </div>
           )}
         </div>
       </div>
 
       {/* Progress */}
-      <div className="flex gap-2 mb-10">
+      <div className="flex gap-1.5 mb-8">
         {STEPS.map((_, i) => (
           <div
             key={i}
-            className={`h-0.5 flex-1 transition-colors ${
-              i <= step ? 'bg-foreground' : 'bg-border'
+            className={`h-1 flex-1 rounded-full transition-colors ${
+              i <= step ? 'bg-primary' : 'bg-border'
             }`}
           />
         ))}
@@ -257,36 +257,36 @@ export default function BookingFlow() {
             />
           )}
           {step === 3 && (
-           <div className="space-y-6">
-             <h3 className="font-display text-lg font-light text-foreground">{t('bookingSummary')}</h3>
-             <div className="bg-card border border-border rounded-sm p-6 space-y-4">
-               <SummaryRow label={t('service')} value={serviceName} />
-               <SummaryRow label={t('therapist')} value={selectedTherapist?.nickname || t('anyTherapist')} />
-               <SummaryRow
-                 label={t('date')}
-                 value={selectedDate ? format(selectedDate, 'd MMM', { locale }) : ''}
-               />
-               <SummaryRow label={t('time')} value={selectedTime} />
-               <SummaryRow label={t('duration')} value={`${service?.duration_minutes} min`} />
-               <SummaryRow label={t('paymentMethod')} value={t(paymentMethod)} />
-               <div className="border-t border-border pt-4 flex justify-between">
-                 <span className="font-light text-foreground">{t('total')}</span>
-                 <span className="text-lg text-foreground">
-                   ฿{service?.price?.toLocaleString()}
-                 </span>
-               </div>
-             </div>
-           </div>
+            <div className="space-y-4">
+              <h3 className="font-semibold text-foreground">{t('bookingSummary')}</h3>
+              <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
+                <SummaryRow label={t('service')} value={serviceName} />
+                <SummaryRow label={t('therapist')} value={selectedTherapist?.nickname || t('anyTherapist')} />
+                <SummaryRow
+                  label={t('date')}
+                  value={selectedDate ? format(selectedDate, 'EEEE d MMMM yyyy', { locale }) : ''}
+                />
+                <SummaryRow label={t('time')} value={selectedTime} />
+                <SummaryRow label={t('duration')} value={`${service?.duration_minutes} ${t('minutes')}`} />
+                <SummaryRow label={t('paymentMethod')} value={t(paymentMethod)} />
+                <div className="border-t border-border pt-3 flex justify-between">
+                  <span className="font-semibold text-foreground">{t('total')}</span>
+                  <span className="font-bold text-lg text-primary">
+                    ฿{service?.price?.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
           )}
         </motion.div>
       </AnimatePresence>
 
       {/* Bottom action */}
-      <div className="fixed bottom-20 left-0 right-0 px-6 max-w-lg mx-auto">
+      <div className="fixed bottom-20 left-0 right-0 px-5 max-w-lg mx-auto">
         <Button
           onClick={handleNext}
           disabled={!canProceed() || createBookingMutation.isPending}
-          className="w-full h-12 rounded-sm bg-primary text-primary-foreground font-light text-base"
+          className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-base shadow-lg shadow-primary/20"
         >
           {step === STEPS.length - 1
             ? t('confirmBooking')
@@ -301,8 +301,8 @@ export default function BookingFlow() {
 function SummaryRow({ label, value }) {
   return (
     <div className="flex justify-between text-sm">
-      <span className="text-muted-foreground font-light">{label}</span>
-      <span className="text-foreground font-light">{value}</span>
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium text-foreground">{value}</span>
     </div>
   );
 }

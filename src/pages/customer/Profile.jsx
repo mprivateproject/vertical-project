@@ -18,16 +18,14 @@ export default function Profile() {
 
   if (!isLoggedIn) {
     return (
-      <div className="px-6 pt-24 pb-6 space-y-8 text-center">
-        <div className="w-16 h-16 rounded-full bg-muted mx-auto flex items-center justify-center">
-          <Shield className="w-7 h-7 text-muted-foreground" />
+      <div className="px-5 pt-20 pb-6 space-y-6 text-center">
+        <div className="w-20 h-20 rounded-full bg-secondary mx-auto flex items-center justify-center">
+          <Shield className="w-8 h-8 text-muted-foreground" />
         </div>
-        <div>
-          <h2 className="font-display text-2xl font-light text-foreground">{t('profile')}</h2>
-          <p className="text-muted-foreground text-sm mt-2">
-            {lang === 'th' ? 'กรุณาเข้าสู่ระบบเพื่อดูโปรไฟล์' : 'Please login to view your profile'}
-          </p>
-        </div>
+        <h2 className="font-display text-xl font-semibold">{t('profile')}</h2>
+        <p className="text-muted-foreground text-sm">
+          {lang === 'th' ? 'กรุณาเข้าสู่ระบบเพื่อดูโปรไฟล์' : 'Please login to view your profile'}
+        </p>
         <LineLoginButton />
       </div>
     );
@@ -40,71 +38,71 @@ export default function Profile() {
   ];
 
   return (
-    <div className="px-6 pt-16 pb-6 space-y-8">
+    <div className="px-5 pt-14 pb-6 space-y-6">
       {/* Profile header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-4"
+        className="text-center space-y-3"
       >
         {lineProfile.pictureUrl ? (
           <img
             src={lineProfile.pictureUrl}
             alt={lineProfile.displayName}
-            className="w-24 h-24 rounded-full mx-auto border-2 border-border object-cover"
+            className="w-20 h-20 rounded-full mx-auto border-4 border-primary/10 object-cover"
           />
         ) : (
-          <div className="w-24 h-24 rounded-full mx-auto border-2 border-border bg-secondary flex items-center justify-center">
-            <span className="text-3xl font-light text-muted-foreground">
+          <div className="w-20 h-20 rounded-full mx-auto border-4 border-primary/10 bg-secondary flex items-center justify-center">
+            <span className="text-2xl font-bold text-muted-foreground">
               {lineProfile.displayName?.[0]?.toUpperCase() || '?'}
             </span>
           </div>
         )}
         <div>
-          <h2 className="font-display text-2xl font-light text-foreground">{lineProfile.displayName}</h2>
+          <h2 className="font-semibold text-lg text-foreground">{lineProfile.displayName}</h2>
           {lineProfile.email && (
-            <p className="text-sm text-muted-foreground mt-1">{lineProfile.email}</p>
+            <p className="text-xs text-muted-foreground">{lineProfile.email}</p>
           )}
         </div>
       </motion.div>
 
       {/* Membership card */}
-      <div className="bg-card border border-border rounded-sm p-6">
+      <div className="bg-gradient-to-br from-primary/10 via-accent/20 to-secondary rounded-2xl p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">{t('membership')}</p>
-            <p className="font-display text-lg font-light text-foreground mt-1 capitalize">
+            <p className="text-xs text-muted-foreground">{t('membership')}</p>
+            <p className="font-semibold text-foreground mt-0.5 capitalize">
               {customer?.membership_tier === 'none' ? 'Member' : `${customer?.membership_tier} Member`}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">{t('loyalty')}</p>
-            <p className="font-display text-lg font-light text-foreground mt-1">{customer?.loyalty_points || 0}</p>
+            <p className="text-xs text-muted-foreground">{t('loyalty')}</p>
+            <p className="font-bold text-primary text-lg">{customer?.loyalty_points || 0}</p>
           </div>
         </div>
       </div>
 
       {/* Menu items */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         {menuItems.map(({ icon: Icon, label, path }, i) => (
           <Link
             key={i}
             to={path}
-            className="flex items-center gap-3 p-4 border border-border hover:bg-secondary transition-colors"
+            className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors"
           >
             <Icon className="w-5 h-5 text-muted-foreground" />
-            <span className="flex-1 text-sm text-foreground font-light">{label}</span>
+            <span className="flex-1 text-sm text-foreground">{label}</span>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </Link>
         ))}
       </div>
 
       {/* Settings */}
-      <div className="space-y-2 pt-4 border-t border-border">
-        <div className="flex items-center justify-between p-4 border border-border">
+      <div className="space-y-1 pt-2 border-t border-border">
+        <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-3">
             <Globe className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm text-foreground font-light">
+            <span className="text-sm text-foreground">
               {lang === 'th' ? 'ภาษา' : 'Language'}
             </span>
           </div>
@@ -113,11 +111,11 @@ export default function Profile() {
         
         <button
           onClick={toggleTheme}
-          className="flex items-center justify-between w-full p-4 border border-border hover:bg-secondary transition-colors"
+          className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-secondary transition-colors"
         >
           <div className="flex items-center gap-3">
             {isDark ? <Moon className="w-5 h-5 text-muted-foreground" /> : <Sun className="w-5 h-5 text-muted-foreground" />}
-            <span className="text-sm text-foreground font-light">
+            <span className="text-sm text-foreground">
               {isDark ? 'Dark Mode' : 'Light Mode'}
             </span>
           </div>
@@ -125,26 +123,26 @@ export default function Profile() {
 
         <button
           onClick={logout}
-          className="flex items-center gap-3 w-full p-4 border border-destructive/30 hover:bg-destructive/5 transition-colors text-destructive"
+          className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-destructive/5 transition-colors text-destructive"
         >
           <LogOut className="w-5 h-5" />
-          <span className="text-sm font-light">
+          <span className="text-sm font-medium">
             {lang === 'th' ? 'ออกจากระบบ' : 'Logout'}
           </span>
         </button>
       </div>
 
       {/* Admin/Staff links */}
-      <div className="pt-6 border-t border-border space-y-2">
+      <div className="pt-4 border-t border-border space-y-2">
         <Link
           to="/staff"
-          className="block text-center text-xs text-muted-foreground hover:text-foreground py-3 font-light"
+          className="block text-center text-xs text-muted-foreground hover:text-foreground py-2"
         >
           {t('staffDashboard')} →
         </Link>
         <Link
           to="/admin"
-          className="block text-center text-xs text-muted-foreground hover:text-foreground py-3 font-light"
+          className="block text-center text-xs text-muted-foreground hover:text-foreground py-2"
         >
           {t('adminDashboard')} →
         </Link>

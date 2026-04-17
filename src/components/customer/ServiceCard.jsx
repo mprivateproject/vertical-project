@@ -15,17 +15,17 @@ export default function ServiceCard({ service, index = 0 }) {
       transition={{ delay: index * 0.04, duration: 0.4 }}
     >
       <Link to={`/book?serviceId=${service.id}`} className="block group">
-        <div className="overflow-hidden rounded-sm bg-card border border-border active:opacity-80 transition-opacity duration-150">
+        <div className="overflow-hidden rounded-xl bg-card border border-border/60 active:scale-[0.98] transition-transform duration-150">
           {/* Image */}
           {service.image_url && (
-            <div className="relative h-40 overflow-hidden bg-muted">
+            <div className="relative h-36 overflow-hidden">
               <img
                 src={service.image_url}
                 alt={name}
-                className="w-full h-full object-cover group-hover:opacity-95 transition-opacity duration-300"
+                className="w-full h-full object-cover group-active:scale-[1.02] transition-transform duration-500"
               />
               {service.original_price && service.original_price > service.price && (
-                <span className="absolute top-3 right-3 px-2 py-0.5 bg-foreground text-background text-[10px] font-medium">
+                <span className="absolute top-2.5 right-2.5 px-2 py-0.5 bg-black/75 text-white text-[10px] font-medium rounded tracking-wider">
                   -{Math.round((1 - service.price / service.original_price) * 100)}%
                 </span>
               )}
@@ -33,22 +33,22 @@ export default function ServiceCard({ service, index = 0 }) {
           )}
 
           {/* Content */}
-          <div className="p-5 space-y-3">
-            <h3 className="font-display text-sm font-light text-foreground leading-snug">
+          <div className="p-4 space-y-3">
+            <h3 className="font-semibold text-foreground text-[13px] leading-snug tracking-tight">
               {name}
             </h3>
 
-            <div className="flex items-end justify-between pt-1">
-              <span className="text-xs text-muted-foreground tracking-wide">
-                {service.duration_minutes} min
+            <div className="flex items-end justify-between pt-0.5">
+              <span className="text-muted-foreground text-[11px] tracking-wide">
+                {service.duration_minutes} {t('minutes')}
               </span>
               <div className="text-right">
                 {service.original_price && service.original_price > service.price && (
-                  <span className="text-[11px] text-muted-foreground/50 line-through block leading-none mb-1">
+                  <span className="text-[10px] text-muted-foreground/60 line-through block leading-none mb-0.5">
                     ฿{service.original_price.toLocaleString()}
                   </span>
                 )}
-                <span className="text-base font-light text-foreground">
+                <span className="text-sm font-bold text-foreground tracking-tight">
                   ฿{service.price.toLocaleString()}
                 </span>
               </div>
