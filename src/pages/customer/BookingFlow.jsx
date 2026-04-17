@@ -51,10 +51,14 @@ export default function BookingFlow() {
 
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-for-date', selectedDate],
-    queryFn: () => {
+    queryFn: async () => {
       if (!selectedDate) return [];
-      const dateStr = format(selectedDate, 'yyyy-MM-dd');
-      return base44.entities.Booking.filter({ booking_date: dateStr });
+      const res = await base44.functions.invoke('liffSync', {
+        action: 'getBookingsByDate',
+        lineUserId: lineProfile?.lineUserId || '',
+        bookingDate: format(selectedDate, 'yyyy-MM-dd'),
+      });
+      return res.data.bookings || [];
     },
     enabled: !!selectedDate,
   });
@@ -68,29 +72,32 @@ export default function BookingFlow() {
 
   const createBookingMutation = useMutation({
     mutationFn: async () => {
-      const endMinutes = (() => {
-        const [h, m] = selectedTime.split(':').map(Number);
-        const total = h * 60 + m + (service?.duration_minutes || 60);
-        return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
-      })();
+      const [h, m] = selectedTime.split(':').map(Number);
+      const total = h * 60 + m + (service?.duration_minutes || 60);
+      const endMinutes = `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 
-      return base44.entities.Booking.create({
-        customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
-        customer_name: lineProfile?.displayName || 'Guest',
-        line_user_id: lineProfile?.lineUserId || '',
-        service_id: serviceId,
-        service_name: lang === 'th' ? service?.name_th : service?.name_en,
-        therapist_id: selectedTherapist?.id || '',
-        therapist_name: selectedTherapist?.nickname || t('anyTherapist'),
-        booking_date: format(selectedDate, 'yyyy-MM-dd'),
-        start_time: selectedTime,
-        end_time: endMinutes,
-        duration_minutes: service?.duration_minutes || 60,
-        price: service?.price || 0,
-        status: 'confirmed',
-        payment_status: paymentMethod === 'cash' ? 'unpaid' : 'paid',
-        payment_method: paymentMethod,
+      const res = await base44.functions.invoke('liffSync', {
+        action: 'createBooking',
+        lineUserId: lineProfile?.lineUserId || '',
+        bookingData: {
+          customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
+          customer_name: lineProfile?.displayName || 'Guest',
+          line_user_id: lineProfile?.lineUserId || '',
+          service_id: serviceId,
+          service_name: lang === 'th' ? service?.name_th : service?.name_en,
+          therapist_id: selectedTherapist?.id || '',
+          therapist_name: selectedTherapist?.nickname || t('anyTherapist'),
+          booking_date: format(selectedDate, 'yyyy-MM-dd'),
+          start_time: selectedTime,
+          end_time: endMinutes,
+          duration_minutes: service?.duration_minutes || 60,
+          price: service?.price || 0,
+          status: 'confirmed',
+          payment_status: paymentMethod === 'cash' ? 'unpaid' : 'paid',
+          payment_method: paymentMethod,
+        },
       });
+      return res.data.booking;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });

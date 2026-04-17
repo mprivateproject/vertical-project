@@ -28,7 +28,15 @@ export default function BookingHistory() {
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['my-bookings', lineProfile?.lineUserId],
-    queryFn: () => base44.entities.Booking.list('-booking_date', 100),
+    queryFn: async () => {
+      if (!lineProfile?.lineUserId) return [];
+      const res = await base44.functions.invoke('liffSync', {
+        action: 'getBookings',
+        lineUserId: lineProfile.lineUserId,
+      });
+      return res.data.bookings || [];
+    },
+    enabled: !!lineProfile?.lineUserId,
   });
 
   const today = format(new Date(), 'yyyy-MM-dd');

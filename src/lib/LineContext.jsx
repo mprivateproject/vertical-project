@@ -45,28 +45,14 @@ export function LineProvider({ children }) {
 
   const syncCustomer = async (profile) => {
     try {
-      const existing = await base44.entities.Customer.filter({ line_user_id: profile.lineUserId });
-      if (existing.length > 0) {
-        const updated = await base44.entities.Customer.update(existing[0].id, {
-          display_name: profile.displayName,
-          picture_url: profile.pictureUrl,
-          email: profile.email || existing[0].email,
-        });
-        setCustomer(updated);
-      } else {
-        const created = await base44.entities.Customer.create({
-          line_user_id: profile.lineUserId,
-          display_name: profile.displayName,
-          email: profile.email || '',
-          picture_url: profile.pictureUrl || '',
-          preferred_language: 'th',
-          total_visits: 0,
-          total_spent: 0,
-          loyalty_points: 0,
-          membership_tier: 'none',
-        });
-        setCustomer(created);
-      }
+      const res = await base44.functions.invoke('liffSync', {
+        action: 'syncCustomer',
+        lineUserId: profile.lineUserId,
+        displayName: profile.displayName,
+        pictureUrl: profile.pictureUrl,
+        email: profile.email || '',
+      });
+      setCustomer(res.data.customer);
     } catch (err) {
       console.error('Failed to sync customer:', err);
     }

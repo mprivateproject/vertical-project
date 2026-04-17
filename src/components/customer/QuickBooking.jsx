@@ -32,7 +32,14 @@ export default function QuickBooking() {
 
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-quick', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
-    queryFn: () => base44.entities.Booking.filter({ booking_date: format(selectedDate, 'yyyy-MM-dd') }),
+    queryFn: async () => {
+      const res = await base44.functions.invoke('liffSync', {
+        action: 'getBookingsByDate',
+        lineUserId: lineProfile?.lineUserId || '',
+        bookingDate: format(selectedDate, 'yyyy-MM-dd'),
+      });
+      return res.data.bookings || [];
+    },
     enabled: !!selectedDate
   });
 
@@ -52,27 +59,32 @@ export default function QuickBooking() {
   });
 
   const createBooking = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       const svc = selectedService;
       const duration = svc?.duration_minutes || 90;
       const [h, m] = selectedTime.split(':').map(Number);
       const endTotal = h * 60 + m + duration;
       const endTime = `${String(Math.floor(endTotal / 60)).padStart(2, '0')}:${String(endTotal % 60).padStart(2, '0')}`;
-      return base44.entities.Booking.create({
-        customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
-        customer_name: lineProfile?.displayName || 'Guest',
-        line_user_id: lineProfile?.lineUserId || '',
-        service_id: svc?.id || '',
-        service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
-        therapist_name: t('anyTherapist'),
-        booking_date: format(selectedDate, 'yyyy-MM-dd'),
-        start_time: selectedTime,
-        end_time: endTime,
-        duration_minutes: duration,
-        price: svc?.price || 0,
-        status: 'pending',
-        payment_status: 'unpaid'
+      const res = await base44.functions.invoke('liffSync', {
+        action: 'createBooking',
+        lineUserId: lineProfile?.lineUserId || '',
+        bookingData: {
+          customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
+          customer_name: lineProfile?.displayName || 'Guest',
+          line_user_id: lineProfile?.lineUserId || '',
+          service_id: svc?.id || '',
+          service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
+          therapist_name: t('anyTherapist'),
+          booking_date: format(selectedDate, 'yyyy-MM-dd'),
+          start_time: selectedTime,
+          end_time: endTime,
+          duration_minutes: duration,
+          price: svc?.price || 0,
+          status: 'pending',
+          payment_status: 'unpaid',
+        },
       });
+      return res.data.booking;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
