@@ -6,10 +6,6 @@
       "type": "string",
       "description": "LINE User ID for authentication"
     },
-    "name": {
-      "type": "string",
-      "description": "User display name"
-    },
     "picture_url": {
       "type": "string",
       "description": "User profile picture URL"
@@ -24,9 +20,5 @@
       "default": "customer",
       "description": "User role in the application"
     }
-  },
-  "required": [
-    "line_user_id",
-    "role"
-  ]
+  }
 }

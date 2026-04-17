@@ -18,13 +18,15 @@ Deno.serve(async (req) => {
       let user;
       if (existingUsers.length > 0) {
         user = await base44.asServiceRole.entities.User.update(existingUsers[0].id, {
-          name: displayName,
+          full_name: displayName,
+          email: email || `${lineUserId}@line.local`,
           picture_url: pictureUrl || '',
         });
       } else {
         user = await base44.asServiceRole.entities.User.create({
+          full_name: displayName,
+          email: email || `${lineUserId}@line.local`,
           line_user_id: lineUserId,
-          name: displayName,
           picture_url: pictureUrl || '',
           role: 'customer',
         });
