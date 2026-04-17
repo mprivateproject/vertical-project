@@ -4,11 +4,12 @@ import { base44 } from '@/api/base44Client';
 
 const LineContext = createContext();
 
-const LIFF_ID = '2009806106-7u8AyzZg';
+const LIFF_ID = Deno.env.get('LIFF_ID') || '2009806106-7u8AyzZg';
 
 export function LineProvider({ children }) {
   const [liffReady, setLiffReady] = useState(false);
   const [lineProfile, setLineProfile] = useState(null);
+  const [user, setUser] = useState(null);
   const [customer, setCustomer] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,17 +25,17 @@ export function LineProvider({ children }) {
 
       if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
-        const email = liff.getDecodedIDToken()?.email || '';
+        const decodedToken = liff.getDecodedIDToken();
         const profileData = {
           lineUserId: profile.userId,
           displayName: profile.displayName,
           pictureUrl: profile.pictureUrl,
           statusMessage: profile.statusMessage || '',
-          email,
+          email: decodedToken?.email || '',
         };
         setLineProfile(profileData);
-        setIsLoggedIn(true);
         await syncCustomer(profileData);
+        setIsLoggedIn(true);
       }
     } catch (err) {
       console.error('LIFF init failed:', err);
@@ -45,21 +46,23 @@ export function LineProvider({ children }) {
 
   const syncCustomer = async (profile) => {
     try {
-      const idToken = liff.getIDToken();
       const res = await base44.functions.invoke('liffSync', {
         action: 'syncCustomer',
         lineUserId: profile.lineUserId,
         displayName: profile.displayName,
         pictureUrl: profile.pictureUrl,
         email: profile.email || '',
-        idToken,
       });
-      setCustomer(res.data.customer);
-      if (res.data.sessionToken) {
-        localStorage.setItem('sessionToken', res.data.sessionToken);
+      
+      if (res.data.user) {
+        setUser(res.data.user);
+      }
+      if (res.data.customer) {
+        setCustomer(res.data.customer);
       }
     } catch (err) {
       console.error('Failed to sync customer:', err);
+      setIsLoggedIn(false);
     }
   };
 
@@ -74,13 +77,14 @@ export function LineProvider({ children }) {
       liff.logout();
     }
     setLineProfile(null);
+    setUser(null);
     setCustomer(null);
     setIsLoggedIn(false);
     window.location.reload();
   };
 
   return (
-    <LineContext.Provider value={{ lineProfile, customer, isLoggedIn, isLoading, loginWithLine, logout }}>
+    <LineContext.Provider value={{ lineProfile, user, customer, isLoggedIn, isLoading, loginWithLine, logout }}>
       {children}
     </LineContext.Provider>
   );

@@ -2,20 +2,17 @@
   "name": "Customer",
   "type": "object",
   "properties": {
-    "line_user_id": {
+    "user_id": {
       "type": "string",
-      "description": "LINE User ID - primary identifier"
+      "description": "Reference to User.id"
     },
     "display_name": {
       "type": "string"
     },
-    "picture_url": {
+    "email": {
       "type": "string"
     },
     "phone": {
-      "type": "string"
-    },
-    "email": {
       "type": "string"
     },
     "notes": {
@@ -64,7 +61,52 @@
     }
   },
   "required": [
-    "line_user_id",
+    "user_id",
     "display_name"
-  ]
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "id": "{{user.id}}"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }

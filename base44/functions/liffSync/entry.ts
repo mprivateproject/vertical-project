@@ -4,51 +4,43 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    const { action, lineUserId, displayName, pictureUrl, email, idToken } = body;
+    const { action, lineUserId, displayName, pictureUrl, email } = body;
 
     if (!lineUserId) {
       return Response.json({ error: 'lineUserId required' }, { status: 400 });
     }
 
     if (action === 'syncCustomer') {
-      if (!idToken) {
-        return Response.json({ error: 'idToken required' }, { status: 400 });
-      }
-
-      // Verify idToken with LINE
-      const LINE_CHANNEL_ID = Deno.env.get('sso_client_id');
-      const tokenVerifyUrl = 'https://api.line.me/oauth2/v2.1/tokeninfo';
+      // Find or create User with line_user_id
+      const existingUsers = await base44.asServiceRole.entities.User.filter({ line_user_id: lineUserId });
       
-      try {
-        const verifyRes = await fetch(tokenVerifyUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ id_token: idToken, client_id: LINE_CHANNEL_ID }),
+      let user;
+      if (existingUsers.length > 0) {
+        user = await base44.asServiceRole.entities.User.update(existingUsers[0].id, {
+          picture_url: pictureUrl || '',
         });
-        
-        if (!verifyRes.ok) {
-          return Response.json({ error: 'Invalid idToken' }, { status: 401 });
-        }
-      } catch (verifyErr) {
-        console.error('Token verification error:', verifyErr);
-        return Response.json({ error: 'Token verification failed' }, { status: 401 });
+      } else {
+        user = await base44.asServiceRole.entities.User.create({
+          line_user_id: lineUserId,
+          picture_url: pictureUrl || '',
+          role: 'customer',
+        });
       }
 
-      const existing = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
-
+      // Find or create Customer linked to User
+      const existingCustomers = await base44.asServiceRole.entities.Customer.filter({ user_id: user.id });
+      
       let customer;
-      if (existing.length > 0) {
-        customer = await base44.asServiceRole.entities.Customer.update(existing[0].id, {
+      if (existingCustomers.length > 0) {
+        customer = await base44.asServiceRole.entities.Customer.update(existingCustomers[0].id, {
           display_name: displayName,
-          picture_url: pictureUrl,
-          ...(email ? { email } : {}),
+          email: email || '',
         });
       } else {
         customer = await base44.asServiceRole.entities.Customer.create({
-          line_user_id: lineUserId,
+          user_id: user.id,
           display_name: displayName,
           email: email || '',
-          picture_url: pictureUrl || '',
           preferred_language: 'th',
           total_visits: 0,
           total_spent: 0,
@@ -57,13 +49,7 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Create app session token
-      const sessionToken = await base44.auth.createAppToken({
-        lineUserId,
-        customerId: customer.id,
-      });
-
-      return Response.json({ customer, sessionToken });
+      return Response.json({ user, customer });
     }
 
     if (action === 'createBooking') {
