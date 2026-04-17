@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
       // Verify idToken with LINE to establish valid session
       if (idToken) {
         const LINE_CHANNEL_ID = Deno.env.get('sso_client_id');
-        const tokenVerifyUrl = 'https://api.line.me/oauth2/v2.1/tokeninfo';
+        const tokenVerifyUrl = 'https://api.line.me/oauth2/v2.1/verify';
         
         try {
           const verifyRes = await fetch(tokenVerifyUrl, {
