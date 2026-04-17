@@ -42,6 +42,37 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'bookingData required' }, { status: 400 });
       }
       const booking = await base44.asServiceRole.entities.Booking.create(bookingData);
+
+      // Send LINE notifications (non-blocking)
+      const LINE_CHANNEL_ACCESS_TOKEN = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
+      const LINE_NOTIFY_TOKEN = Deno.env.get('LINE_NOTIFY_TOKEN');
+
+      const notifyPromises = [];
+
+      if (LINE_CHANNEL_ACCESS_TOKEN && lineUserId) {
+        const customerMsg = `✅ ยืนยันการจอง\n\nบริการ: ${bookingData.service_name || '-'}\nวันที่: ${bookingData.booking_date || '-'}\nเวลา: ${bookingData.start_time || '-'}\nราคา: ฿${Number(bookingData.price || 0).toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
+        notifyPromises.push(
+          fetch('https://api.line.me/v2/bot/message/push', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
+            body: JSON.stringify({ to: lineUserId, messages: [{ type: 'text', text: customerMsg }] }),
+          }).catch(e => console.error('Customer notify error:', e))
+        );
+      }
+
+      if (LINE_NOTIFY_TOKEN) {
+        const adminMsg = `\n📅 มีการจองใหม่!\nลูกค้า: ${bookingData.customer_name || '-'}\nบริการ: ${bookingData.service_name || '-'}\nวันที่: ${bookingData.booking_date || '-'} เวลา: ${bookingData.start_time || '-'}\nราคา: ฿${Number(bookingData.price || 0).toLocaleString()}`;
+        notifyPromises.push(
+          fetch('https://notify-api.line.me/api/notify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': `Bearer ${LINE_NOTIFY_TOKEN}` },
+            body: new URLSearchParams({ message: adminMsg }),
+          }).catch(e => console.error('Admin notify error:', e))
+        );
+      }
+
+      await Promise.all(notifyPromises);
+
       return Response.json({ booking });
     }
 

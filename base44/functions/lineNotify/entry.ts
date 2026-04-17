@@ -4,7 +4,8 @@ const LINE_CHANNEL_ACCESS_TOKEN = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
 const LINE_NOTIFY_TOKEN = Deno.env.get('LINE_NOTIFY_TOKEN');
 
 // Send message to LINE user via Messaging API
-async function sendLineMessage(lineUserId, message) {
+export async function sendLineMessage(lineUserId, message) {
+  if (!LINE_CHANNEL_ACCESS_TOKEN || !lineUserId) return false;
   const res = await fetch('https://api.line.me/v2/bot/message/push', {
     method: 'POST',
     headers: {
@@ -16,11 +17,16 @@ async function sendLineMessage(lineUserId, message) {
       messages: [{ type: 'text', text: message }],
     }),
   });
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('sendLineMessage error:', err);
+  }
   return res.ok;
 }
 
 // Send admin alert via LINE Notify
-async function sendLineNotify(message) {
+export async function sendLineNotify(message) {
+  if (!LINE_NOTIFY_TOKEN) return false;
   const res = await fetch('https://notify-api.line.me/api/notify', {
     method: 'POST',
     headers: {
@@ -29,27 +35,23 @@ async function sendLineNotify(message) {
     },
     body: new URLSearchParams({ message }),
   });
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('sendLineNotify error:', err);
+  }
   return res.ok;
 }
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { type, lineUserId, bookingData } = await req.json();
 
     if (type === 'booking_confirmation' && lineUserId && bookingData) {
-      const { serviceName, bookingDate, startTime, price } = bookingData;
+      const { serviceName, bookingDate, startTime, price, customerName } = bookingData;
 
-      // Message to customer
-      const customerMsg = `✅ ยืนยันการจอง\n\nบริการ: ${serviceName}\nวันที่: ${bookingDate}\nเวลา: ${startTime}\nราคา: ฿${price?.toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
-
-      // Admin alert
-      const adminMsg = `\n📅 มีการจองใหม่!\nบริการ: ${serviceName}\nวันที่: ${bookingDate} เวลา: ${startTime}\nราคา: ฿${price?.toLocaleString()}`;
+      const customerMsg = `✅ ยืนยันการจอง\n\nบริการ: ${serviceName}\nวันที่: ${bookingDate}\nเวลา: ${startTime}\nราคา: ฿${Number(price).toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
+      const adminMsg = `\n📅 มีการจองใหม่!\nลูกค้า: ${customerName || '-'}\nบริการ: ${serviceName}\nวันที่: ${bookingDate} เวลา: ${startTime}\nราคา: ฿${Number(price).toLocaleString()}`;
 
       const [customerOk, adminOk] = await Promise.all([
         sendLineMessage(lineUserId, customerMsg),
@@ -59,11 +61,32 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, customerOk, adminOk });
     }
 
-    if (type === 'admin_notify' && bookingData) {
-      const { serviceName, bookingDate, startTime, price } = bookingData;
-      const adminMsg = `\n📅 มีการจองใหม่!\nบริการ: ${serviceName}\nวันที่: ${bookingDate} เวลา: ${startTime}\nราคา: ฿${price?.toLocaleString()}`;
-      const adminOk = await sendLineNotify(adminMsg);
-      return Response.json({ success: true, adminOk });
+    if (type === 'status_changed' && bookingData) {
+      const { lineUserId: uid, serviceName, bookingDate, startTime, status, customerName } = bookingData;
+
+      const statusLabels = {
+        confirmed: '✅ ยืนยันแล้ว',
+        checked_in: '🏠 เช็คอินแล้ว',
+        in_progress: '💆 กำลังรับบริการ',
+        completed: '⭐ เสร็จสิ้น ขอบคุณที่ใช้บริการ!',
+        cancelled: '❌ ยกเลิกการจอง',
+        no_show: '⚠️ ไม่มาตามนัด',
+      };
+
+      const label = statusLabels[status] || status;
+
+      const promises = [];
+
+      if (uid) {
+        const customerMsg = `${label}\n\nบริการ: ${serviceName}\nวันที่: ${bookingDate} เวลา: ${startTime}`;
+        promises.push(sendLineMessage(uid, customerMsg));
+      }
+
+      const adminMsg = `\n🔄 สถานะการจองเปลี่ยน: ${label}\nลูกค้า: ${customerName || '-'}\nบริการ: ${serviceName}\nวันที่: ${bookingDate} เวลา: ${startTime}`;
+      promises.push(sendLineNotify(adminMsg));
+
+      await Promise.all(promises);
+      return Response.json({ success: true });
     }
 
     return Response.json({ error: 'Invalid type' }, { status: 400 });
