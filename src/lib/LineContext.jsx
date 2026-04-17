@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 
 const LineContext = createContext();
 
-const LIFF_ID = Deno.env.get('LIFF_ID') || '2009806106-7u8AyzZg';
+const LIFF_ID = '2009806106-7u8AyzZg';
 
 export function LineProvider({ children }) {
   const [liffReady, setLiffReady] = useState(false);
