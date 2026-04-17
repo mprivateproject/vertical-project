@@ -18,7 +18,7 @@ const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
 
 export default function QuickBooking() {
   const { t, lang } = useLang();
-  const { lineProfile, isLoggedIn } = useLine();
+  const { lineProfile, customer, isLoggedIn } = useLine();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
 
@@ -59,7 +59,7 @@ export default function QuickBooking() {
       const endTotal = h * 60 + m + duration;
       const endTime = `${String(Math.floor(endTotal / 60)).padStart(2, '0')}:${String(endTotal % 60).padStart(2, '0')}`;
       return base44.entities.Booking.create({
-        customer_id: lineProfile?.lineUserId || 'guest',
+        customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
         customer_name: lineProfile?.displayName || 'Guest',
         line_user_id: lineProfile?.lineUserId || '',
         service_id: svc?.id || '',

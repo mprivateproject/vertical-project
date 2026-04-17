@@ -19,7 +19,7 @@ const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 
 export default function BookingFlow() {
   const { t, lang } = useLang();
-  const { lineProfile, isLoggedIn } = useLine();
+  const { lineProfile, customer, isLoggedIn } = useLine();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
@@ -75,7 +75,7 @@ export default function BookingFlow() {
       })();
 
       return base44.entities.Booking.create({
-        customer_id: lineProfile?.lineUserId || 'guest',
+        customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
         customer_name: lineProfile?.displayName || 'Guest',
         line_user_id: lineProfile?.lineUserId || '',
         service_id: serviceId,

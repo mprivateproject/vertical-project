@@ -13,7 +13,7 @@ import LineLoginButton from '@/components/customer/LineLoginButton';
 
 export default function Profile() {
   const { t, lang } = useLang();
-  const { lineProfile, isLoggedIn, logout } = useLine();
+  const { lineProfile, customer, isLoggedIn, logout } = useLine();
   const { isDark, toggleTheme } = useTheme();
 
   if (!isLoggedIn) {
@@ -45,14 +45,24 @@ export default function Profile() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center space-y-3"
       >
-        <img
-          src={lineProfile.pictureUrl}
-          alt={lineProfile.displayName}
-          className="w-20 h-20 rounded-full mx-auto border-4 border-primary/10 object-cover"
-        />
+        {lineProfile.pictureUrl ? (
+          <img
+            src={lineProfile.pictureUrl}
+            alt={lineProfile.displayName}
+            className="w-20 h-20 rounded-full mx-auto border-4 border-primary/10 object-cover"
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-full mx-auto border-4 border-primary/10 bg-secondary flex items-center justify-center">
+            <span className="text-2xl font-bold text-muted-foreground">
+              {lineProfile.displayName?.[0]?.toUpperCase() || '?'}
+            </span>
+          </div>
+        )}
         <div>
           <h2 className="font-semibold text-lg text-foreground">{lineProfile.displayName}</h2>
-          <p className="text-xs text-muted-foreground">{lineProfile.statusMessage}</p>
+          {lineProfile.email && (
+            <p className="text-xs text-muted-foreground">{lineProfile.email}</p>
+          )}
         </div>
       </motion.div>
 
@@ -61,11 +71,13 @@ export default function Profile() {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs text-muted-foreground">{t('membership')}</p>
-            <p className="font-semibold text-foreground mt-0.5">Silver Member</p>
+            <p className="font-semibold text-foreground mt-0.5 capitalize">
+              {customer?.membership_tier === 'none' ? 'Member' : `${customer?.membership_tier} Member`}
+            </p>
           </div>
           <div className="text-right">
             <p className="text-xs text-muted-foreground">{t('loyalty')}</p>
-            <p className="font-bold text-primary text-lg">250</p>
+            <p className="font-bold text-primary text-lg">{customer?.loyalty_points || 0}</p>
           </div>
         </div>
       </div>
