@@ -23,27 +23,31 @@ const statusStyles = {
 
 export default function BookingHistory() {
   const { t, lang } = useLang();
-  const { lineProfile } = useLine();
+  const { idToken, isLoggedIn } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [tab, setTab] = useState('upcoming');
   const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
-    queryKey: ['my-bookings', lineProfile?.lineUserId],
+    queryKey: ['my-bookings', idToken],
     queryFn: async () => {
-      if (!lineProfile?.lineUserId) return [];
+      if (!idToken) return [];
       const res = await base44.functions.invoke('liffSync', {
         action: 'getBookings',
-        lineUserId: lineProfile.lineUserId,
+        idToken,
       });
       return res.data.bookings || [];
     },
-    enabled: !!lineProfile?.lineUserId,
+    enabled: !!idToken,
   });
 
   const cancelBookingMutation = useMutation({
     mutationFn: async (bookingId) => {
-      await base44.entities.Booking.update(bookingId, { status: 'cancelled' });
+      await base44.functions.invoke('liffSync', {
+        action: 'cancelBooking',
+        idToken,
+        bookingId,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });

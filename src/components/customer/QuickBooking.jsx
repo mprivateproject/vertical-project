@@ -18,7 +18,7 @@ const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
 
 export default function QuickBooking() {
   const { t, lang } = useLang();
-  const { lineProfile, customer, isLoggedIn } = useLine();
+  const { idToken, isLoggedIn } = useLine();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
 
@@ -35,12 +35,12 @@ export default function QuickBooking() {
     queryFn: async () => {
       const res = await base44.functions.invoke('liffSync', {
         action: 'getBookingsByDate',
-        lineUserId: lineProfile?.lineUserId || '',
+        idToken,
         bookingDate: format(selectedDate, 'yyyy-MM-dd'),
       });
       return res.data.bookings || [];
     },
-    enabled: !!selectedDate
+    enabled: !!selectedDate && !!idToken
   });
 
   const bookedSlots = useMemo(() =>
@@ -67,11 +67,8 @@ export default function QuickBooking() {
       const endTime = `${String(Math.floor(endTotal / 60)).padStart(2, '0')}:${String(endTotal % 60).padStart(2, '0')}`;
       const res = await base44.functions.invoke('liffSync', {
         action: 'createBooking',
-        lineUserId: lineProfile?.lineUserId || '',
+        idToken,
         bookingData: {
-          customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
-          customer_name: lineProfile?.displayName || 'Guest',
-          line_user_id: lineProfile?.lineUserId || '',
           service_id: svc?.id || '',
           service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
           therapist_name: t('anyTherapist'),
@@ -87,7 +84,7 @@ export default function QuickBooking() {
       return res.data.booking;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
       setDone(true);
     }
   });

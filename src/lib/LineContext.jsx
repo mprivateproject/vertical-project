@@ -9,7 +9,11 @@ const LIFF_ID = '2009806106-7u8AyzZg';
 export function LineProvider({ children }) {
   const [liffReady, setLiffReady] = useState(false);
   const [lineProfile, setLineProfile] = useState(null);
+  const [customer, setCustomer] = useState(null);
+  const [user, setUser] = useState(null);
+  const [idToken, setIdToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     initLiff();
@@ -20,50 +24,49 @@ export function LineProvider({ children }) {
       await liff.init({ liffId: LIFF_ID });
       setLiffReady(true);
 
-      // If NOT logged in → call login() and STOP
+      // If NOT logged in → show login prompt and STOP
       if (!liff.isLoggedIn()) {
         setIsLoading(false);
+        setIsLoggedIn(false);
         return;
       }
 
-      // After redirect → call getProfile()
+      // User is logged in → sync with backend
       const profile = await liff.getProfile();
-      const decodedToken = liff.getDecodedIDToken();
+      const token = liff.getIDToken();
+      
       const profileData = {
         lineUserId: profile.userId,
         displayName: profile.displayName,
         pictureUrl: profile.pictureUrl,
         statusMessage: profile.statusMessage || '',
-        email: decodedToken?.email || '',
+        email: profile.email || '',
       };
+      
       setLineProfile(profileData);
+      setIdToken(token);
 
-      // Send profile to /api/liffSync
-      await syncWithBackend(profileData);
-
-      // FORCE application reload to rehydrate Base44 session
-      window.location.reload();
+      // Sync with backend to get user and customer
+      const result = await syncWithBackend(profileData, token);
+      
+      setUser(result.user);
+      setCustomer(result.customer);
+      setIsLoggedIn(true);
+      setIsLoading(false);
     } catch (err) {
       console.error('LIFF init failed:', err);
       setIsLoading(false);
+      setIsLoggedIn(false);
     }
   };
 
-  const syncWithBackend = async (profile) => {
-    try {
-      const idToken = liff.getIDToken();
-      await base44.functions.invoke('liffSync', {
-        action: 'syncCustomer',
-        lineUserId: profile.lineUserId,
-        displayName: profile.displayName,
-        pictureUrl: profile.pictureUrl,
-        email: profile.email || '',
-        idToken,
-      });
-    } catch (err) {
-      console.error('Failed to sync with backend:', err);
-      throw err;
-    }
+  const syncWithBackend = async (profile, token) => {
+    const result = await base44.functions.invoke('liffSync', {
+      action: 'syncCustomer',
+      idToken: token,
+      profile,
+    });
+    return result.data;
   };
 
   const loginWithLine = () => {
@@ -77,11 +80,33 @@ export function LineProvider({ children }) {
       liff.logout();
     }
     setLineProfile(null);
+    setCustomer(null);
+    setUser(null);
+    setIdToken(null);
+    setIsLoggedIn(false);
     window.location.reload();
   };
 
   return (
-    <LineContext.Provider value={{ lineProfile, isLoading, liffReady, loginWithLine, logout }}>
+    <LineContext.Provider 
+      value={{ 
+        lineProfile, 
+        customer,
+        user,
+        idToken,
+        isLoading, 
+        liffReady, 
+        isLoggedIn,
+        loginWithLine, 
+        logout,
+        setLineProfile,
+        setCustomer,
+        setUser,
+        setIdToken,
+        setIsLoggedIn,
+        initLiff
+      }}
+    >
       {children}
     </LineContext.Provider>
   );

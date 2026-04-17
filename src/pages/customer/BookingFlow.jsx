@@ -19,7 +19,7 @@ const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 
 export default function BookingFlow() {
   const { t, lang } = useLang();
-  const { lineProfile, customer, isLoggedIn } = useLine();
+  const { idToken, isLoggedIn } = useLine();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
@@ -55,12 +55,12 @@ export default function BookingFlow() {
       if (!selectedDate) return [];
       const res = await base44.functions.invoke('liffSync', {
         action: 'getBookingsByDate',
-        lineUserId: lineProfile?.lineUserId || '',
+        idToken,
         bookingDate: format(selectedDate, 'yyyy-MM-dd'),
       });
       return res.data.bookings || [];
     },
-    enabled: !!selectedDate,
+    enabled: !!selectedDate && !!idToken,
   });
 
   const bookedSlots = useMemo(() => {
@@ -78,11 +78,8 @@ export default function BookingFlow() {
 
       const res = await base44.functions.invoke('liffSync', {
         action: 'createBooking',
-        lineUserId: lineProfile?.lineUserId || '',
+        idToken,
         bookingData: {
-          customer_id: customer?.id || lineProfile?.lineUserId || 'guest',
-          customer_name: lineProfile?.displayName || 'Guest',
-          line_user_id: lineProfile?.lineUserId || '',
           service_id: serviceId,
           service_name: lang === 'th' ? service?.name_th : service?.name_en,
           therapist_id: selectedTherapist?.id || '',
@@ -100,7 +97,7 @@ export default function BookingFlow() {
       return res.data.booking;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
       setBookingComplete(true);
     },
   });
