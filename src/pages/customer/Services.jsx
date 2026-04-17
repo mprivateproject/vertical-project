@@ -25,19 +25,22 @@ export default function Services() {
   });
 
   return (
-    <div className="px-5 pt-14 pb-6 space-y-5">
-      <h1 className="font-display text-2xl font-semibold text-foreground">
-        {t('selectService')}
-      </h1>
+    <div className="px-6 pt-16 pb-20 space-y-8">
+      <div>
+        <h1 className="font-display text-3xl font-light text-foreground tracking-tight">
+          {t('selectService')}
+        </h1>
+        <p className="text-sm text-muted-foreground mt-2">Curated treatments for your wellness</p>
+      </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder={t('search') + '...'}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9 rounded-xl bg-secondary border-0 h-11"
+          className="pl-12 rounded-sm bg-secondary border-0 h-12 text-sm"
         />
       </div>
 
@@ -46,17 +49,17 @@ export default function Services() {
 
       {/* Services grid */}
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-6">
           {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="h-52 rounded-2xl bg-muted animate-pulse" />
+            <div key={i} className="h-56 rounded-sm bg-muted animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground text-sm">
+        <div className="text-center py-16 text-muted-foreground text-sm">
           ไม่พบบริการที่ค้นหา
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-6">
           {filtered.map((service, i) => (
             <ServiceCard key={service.id} service={service} index={i} />
           ))}

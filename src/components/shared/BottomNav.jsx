@@ -13,8 +13,8 @@ export default function BottomNav() {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/96 backdrop-blur-xl border-t border-border/60">
-      <div className="flex items-center justify-around max-w-lg mx-auto px-2 py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-sm border-t border-border">
+      <div className="flex items-center justify-around max-w-lg mx-auto px-2 py-3">
         {navItems.map(({ key, icon: Icon, path }) => {
           const isActive = location.pathname === path ||
             (path !== '/' && location.pathname.startsWith(path));
@@ -23,17 +23,17 @@ export default function BottomNav() {
             <Link
               key={key}
               to={path}
-              className="flex flex-col items-center gap-1 py-2 px-8 transition-all active:scale-90"
+              className="flex flex-col items-center gap-1 py-2 px-8 transition-all active:scale-95"
             >
               <Icon
                 strokeWidth={isActive ? 2 : 1.5}
                 className={`w-5 h-5 transition-colors duration-200 ${
-                  isActive ? 'text-foreground' : 'text-muted-foreground/50'
+                  isActive ? 'text-foreground' : 'text-muted-foreground/40'
                 }`}
               />
               <span
-                className={`text-[10px] tracking-wide transition-colors duration-200 ${
-                  isActive ? 'text-foreground font-medium' : 'text-muted-foreground/40'
+                className={`text-[11px] font-light tracking-wide transition-colors duration-200 ${
+                  isActive ? 'text-foreground' : 'text-muted-foreground/40'
                 }`}
               >
                 {t(key)}

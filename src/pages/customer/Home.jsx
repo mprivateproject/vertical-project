@@ -14,7 +14,7 @@ export default function Home() {
     <div className="bg-background min-h-screen">
       <HeroSection />
 
-      <div className="px-6 pt-8 pb-28 space-y-8">
+      <div className="px-6 pt-12 pb-28 space-y-10">
 
         {/* LINE Login prompt */}
         {!isLoggedIn && (
@@ -27,16 +27,15 @@ export default function Home() {
         )}
 
         {/* Quick Booking */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground mb-5">
-            {t('bookNow')}
-          </p>
-          <QuickBooking />
-        </motion.div>
+        {isLoggedIn && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <QuickBooking />
+          </motion.div>
+        )}
 
       </div>
     </div>

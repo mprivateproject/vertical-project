@@ -11,13 +11,13 @@ import { motion } from 'framer-motion';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const statusStyles = {
-  pending: 'bg-amber-100 text-amber-800',
-  confirmed: 'bg-blue-100 text-blue-800',
-  checked_in: 'bg-purple-100 text-purple-800',
-  in_progress: 'bg-indigo-100 text-indigo-800',
-  completed: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-700',
-  no_show: 'bg-gray-100 text-gray-600',
+  pending: 'bg-muted text-foreground',
+  confirmed: 'bg-primary text-primary-foreground',
+  checked_in: 'bg-accent text-accent-foreground',
+  in_progress: 'bg-primary/80 text-primary-foreground',
+  completed: 'bg-muted text-foreground',
+  cancelled: 'bg-destructive/10 text-destructive',
+  no_show: 'bg-muted text-muted-foreground',
 };
 
 export default function BookingHistory() {
@@ -48,85 +48,79 @@ export default function BookingHistory() {
   });
 
   return (
-    <div className="px-5 pt-14 pb-6 space-y-5">
-      <h1 className="font-display text-2xl font-semibold text-foreground">
-        {t('bookingHistory')}
-      </h1>
+    <div className="px-6 pt-16 pb-6 space-y-8">
+      <div>
+        <h1 className="font-display text-3xl font-light text-foreground tracking-tight">
+          {t('bookingHistory')}
+        </h1>
+        <p className="text-sm text-muted-foreground mt-2">Your appointment history</p>
+      </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="w-full bg-secondary rounded-xl">
-          <TabsTrigger value="upcoming" className="flex-1 rounded-lg text-xs">
+        <TabsList className="w-full bg-secondary rounded-none border-b border-border">
+          <TabsTrigger value="upcoming" className="flex-1 rounded-none text-sm font-light border-b-2 border-transparent data-[state=active]:border-foreground">
             {t('upcoming')}
           </TabsTrigger>
-          <TabsTrigger value="past" className="flex-1 rounded-lg text-xs">
+          <TabsTrigger value="past" className="flex-1 rounded-none text-sm font-light border-b-2 border-transparent data-[state=active]:border-foreground">
             {t('past')}
           </TabsTrigger>
-          <TabsTrigger value="cancelled" className="flex-1 rounded-lg text-xs">
+          <TabsTrigger value="cancelled" className="flex-1 rounded-none text-sm font-light border-b-2 border-transparent data-[state=active]:border-foreground">
             {t('cancelled')}
           </TabsTrigger>
         </TabsList>
       </Tabs>
 
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {[1,2,3].map(i => (
-            <div key={i} className="h-28 rounded-2xl bg-muted animate-pulse" />
+            <div key={i} className="h-32 rounded-sm bg-muted animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <CalendarDays className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+        <div className="text-center py-20">
+          <CalendarDays className="w-10 h-10 text-muted-foreground/20 mx-auto mb-4" />
           <p className="text-muted-foreground text-sm">{t('noBookings')}</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filtered.map((booking, i) => (
             <motion.div
               key={booking.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-2xl p-4 active:scale-[0.99] transition-transform"
+              className="bg-card border border-border rounded-sm p-5 active:opacity-80 transition-opacity"
             >
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-sm text-foreground">
-                  {booking.service_name}
-                </h3>
-                <Badge className={`text-[10px] font-medium ${statusStyles[booking.status] || 'bg-secondary text-secondary-foreground'}`}>
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="font-display text-sm font-light text-foreground">
+                    {booking.service_name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {(() => {
+                      const d = new Date(booking.booking_date + 'T00:00:00');
+                      return format(d, 'd MMM yyyy', { locale });
+                    })()} • {booking.start_time}
+                  </p>
+                </div>
+                <Badge className={`text-[10px] font-light ${statusStyles[booking.status] || 'bg-secondary text-secondary-foreground'}`}>
                   {t(booking.status)}
                 </Badge>
               </div>
 
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CalendarDays className="w-3.5 h-3.5" />
-                  <span>
-                    {(() => {
-                      const d = new Date(booking.booking_date + 'T00:00:00');
-                      return format(d, 'EEEE d MMM yyyy', { locale });
-                    })()}
+              <div className="flex items-end justify-between pt-2 border-t border-border/50">
+                <div className="text-xs text-muted-foreground space-y-1">
+                  {booking.therapist_name && <p>{booking.therapist_name}</p>}
+                  <p>{booking.duration_minutes} min</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm font-light text-foreground block">
+                    ฿{booking.price?.toLocaleString()}
                   </span>
+                  <Badge variant="outline" className="text-[10px] font-light mt-1">
+                    {t(booking.payment_status || 'unpaid')}
+                  </Badge>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{booking.start_time} - {booking.end_time}</span>
-                  <span>({booking.duration_minutes} {t('minutes')})</span>
-                </div>
-                {booking.therapist_name && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <User className="w-3.5 h-3.5" />
-                    <span>{booking.therapist_name}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                <span className="font-bold text-primary text-sm">
-                  ฿{booking.price?.toLocaleString()}
-                </span>
-                <Badge variant="outline" className="text-[10px]">
-                  {t(booking.payment_status || 'unpaid')}
-                </Badge>
               </div>
             </motion.div>
           ))}
