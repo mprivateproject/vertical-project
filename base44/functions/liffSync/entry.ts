@@ -50,12 +50,133 @@ Deno.serve(async (req) => {
       const notifyPromises = [];
 
       if (LINE_CHANNEL_ACCESS_TOKEN && lineUserId) {
-        const customerMsg = `✅ ยืนยันการจอง\n\nบริการ: ${bookingData.service_name || '-'}\nวันที่: ${bookingData.booking_date || '-'}\nเวลา: ${bookingData.start_time || '-'}\nราคา: ฿${Number(bookingData.price || 0).toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
+        const appUrl = 'https://liff.line.me/' + (Deno.env.get('LIFF_ID') || '');
+        const flexMessage = {
+          type: 'flex',
+          altText: `✅ ยืนยันการจอง: ${bookingData.service_name || '-'}`,
+          contents: {
+            type: 'bubble',
+            size: 'mega',
+            header: {
+              type: 'box',
+              layout: 'vertical',
+              backgroundColor: '#1a3a5c',
+              paddingAll: '20px',
+              contents: [
+                {
+                  type: 'text',
+                  text: '✅ ยืนยันการจองแล้ว',
+                  color: '#ffffff',
+                  size: 'xl',
+                  weight: 'bold',
+                },
+                {
+                  type: 'text',
+                  text: 'Booking Confirmed',
+                  color: '#aac4e0',
+                  size: 'sm',
+                  margin: 'xs',
+                },
+              ],
+            },
+            body: {
+              type: 'box',
+              layout: 'vertical',
+              paddingAll: '20px',
+              spacing: 'md',
+              contents: [
+                {
+                  type: 'box',
+                  layout: 'vertical',
+                  backgroundColor: '#f4f8ff',
+                  cornerRadius: '12px',
+                  paddingAll: '16px',
+                  spacing: 'sm',
+                  contents: [
+                    {
+                      type: 'box',
+                      layout: 'horizontal',
+                      contents: [
+                        { type: 'text', text: '💆 บริการ', color: '#666688', size: 'sm', flex: 2 },
+                        { type: 'text', text: bookingData.service_name || '-', color: '#1a1a2e', size: 'sm', weight: 'bold', flex: 3, wrap: true, align: 'end' },
+                      ],
+                    },
+                    { type: 'separator', color: '#e0e8f0' },
+                    {
+                      type: 'box',
+                      layout: 'horizontal',
+                      contents: [
+                        { type: 'text', text: '📅 วันที่', color: '#666688', size: 'sm', flex: 2 },
+                        { type: 'text', text: bookingData.booking_date || '-', color: '#1a1a2e', size: 'sm', weight: 'bold', flex: 3, align: 'end' },
+                      ],
+                    },
+                    { type: 'separator', color: '#e0e8f0' },
+                    {
+                      type: 'box',
+                      layout: 'horizontal',
+                      contents: [
+                        { type: 'text', text: '🕐 เวลา', color: '#666688', size: 'sm', flex: 2 },
+                        { type: 'text', text: `${bookingData.start_time || '-'} - ${bookingData.end_time || '-'}`, color: '#1a1a2e', size: 'sm', weight: 'bold', flex: 3, align: 'end' },
+                      ],
+                    },
+                    ...(bookingData.therapist_name ? [
+                      { type: 'separator', color: '#e0e8f0' },
+                      {
+                        type: 'box',
+                        layout: 'horizontal',
+                        contents: [
+                          { type: 'text', text: '👤 นักบำบัด', color: '#666688', size: 'sm', flex: 2 },
+                          { type: 'text', text: bookingData.therapist_name, color: '#1a1a2e', size: 'sm', weight: 'bold', flex: 3, align: 'end' },
+                        ],
+                      },
+                    ] : []),
+                  ],
+                },
+                {
+                  type: 'box',
+                  layout: 'horizontal',
+                  contents: [
+                    { type: 'text', text: 'ยอดชำระ', color: '#444466', size: 'md', weight: 'bold' },
+                    { type: 'text', text: `฿${Number(bookingData.price || 0).toLocaleString()}`, color: '#1a3a5c', size: 'xl', weight: 'bold', align: 'end' },
+                  ],
+                },
+              ],
+            },
+            footer: {
+              type: 'box',
+              layout: 'vertical',
+              paddingAll: '16px',
+              spacing: 'sm',
+              contents: [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  color: '#1a3a5c',
+                  height: 'sm',
+                  action: {
+                    type: 'uri',
+                    label: '📋 ดูรายละเอียดการจอง',
+                    uri: `${appUrl}/bookings`,
+                  },
+                },
+                {
+                  type: 'text',
+                  text: 'ขอบคุณที่ใช้บริการครับ 🙏',
+                  color: '#999999',
+                  size: 'xs',
+                  align: 'center',
+                  margin: 'sm',
+                },
+              ],
+            },
+          },
+        };
+
         notifyPromises.push(
           fetch('https://api.line.me/v2/bot/message/push', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
-            body: JSON.stringify({ to: lineUserId, messages: [{ type: 'text', text: customerMsg }] }),
+            body: JSON.stringify({ to: lineUserId, messages: [flexMessage] }),
           }).catch(e => console.error('Customer notify error:', e))
         );
       }
