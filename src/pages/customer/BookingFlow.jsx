@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
+import { callLiffSync } from '@/lib/liffSyncClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -53,12 +54,10 @@ export default function BookingFlow() {
     queryKey: ['bookings-for-date', selectedDate],
     queryFn: async () => {
       if (!selectedDate) return [];
-      const res = await base44.functions.invoke('liffSync', {
-        action: 'getBookingsByDate',
-        idToken,
+      const result = await callLiffSync('getBookingsByDate', {
         bookingDate: format(selectedDate, 'yyyy-MM-dd'),
       });
-      return res.data.bookings || [];
+      return result.bookings || [];
     },
     enabled: !!selectedDate && !!idToken,
   });
@@ -76,9 +75,7 @@ export default function BookingFlow() {
       const total = h * 60 + m + (service?.duration_minutes || 60);
       const endMinutes = `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 
-      const res = await base44.functions.invoke('liffSync', {
-        action: 'createBooking',
-        idToken,
+      const result = await callLiffSync('createBooking', {
         bookingData: {
           service_id: serviceId,
           service_name: lang === 'th' ? service?.name_th : service?.name_en,
@@ -94,7 +91,7 @@ export default function BookingFlow() {
           payment_method: paymentMethod,
         },
       });
-      return res.data.booking;
+      return result.booking;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });

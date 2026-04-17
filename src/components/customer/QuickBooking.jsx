@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
+import { callLiffSync } from '@/lib/liffSyncClient';
 import { format, isToday, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isBefore, startOfDay, addMonths, subMonths } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { Check, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -33,12 +33,10 @@ export default function QuickBooking() {
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-quick', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
     queryFn: async () => {
-      const res = await base44.functions.invoke('liffSync', {
-        action: 'getBookingsByDate',
-        idToken,
+      const result = await callLiffSync('getBookingsByDate', {
         bookingDate: format(selectedDate, 'yyyy-MM-dd'),
       });
-      return res.data.bookings || [];
+      return result.bookings || [];
     },
     enabled: !!selectedDate && !!idToken
   });
@@ -65,9 +63,7 @@ export default function QuickBooking() {
       const [h, m] = selectedTime.split(':').map(Number);
       const endTotal = h * 60 + m + duration;
       const endTime = `${String(Math.floor(endTotal / 60)).padStart(2, '0')}:${String(endTotal % 60).padStart(2, '0')}`;
-      const res = await base44.functions.invoke('liffSync', {
-        action: 'createBooking',
-        idToken,
+      const result = await callLiffSync('createBooking', {
         bookingData: {
           service_id: svc?.id || '',
           service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
@@ -81,7 +77,7 @@ export default function QuickBooking() {
           payment_status: 'unpaid',
         },
       });
-      return res.data.booking;
+      return result.booking;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });

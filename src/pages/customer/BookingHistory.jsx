@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
+import { callLiffSync } from '@/lib/liffSyncClient';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { CalendarDays, Clock, User, X } from 'lucide-react';
@@ -32,22 +32,15 @@ export default function BookingHistory() {
     queryKey: ['my-bookings', idToken],
     queryFn: async () => {
       if (!idToken) return [];
-      const res = await base44.functions.invoke('liffSync', {
-        action: 'getBookings',
-        idToken,
-      });
-      return res.data.bookings || [];
+      const result = await callLiffSync('getBookings');
+      return result.bookings || [];
     },
     enabled: !!idToken,
   });
 
   const cancelBookingMutation = useMutation({
     mutationFn: async (bookingId) => {
-      await base44.functions.invoke('liffSync', {
-        action: 'cancelBooking',
-        idToken,
-        bookingId,
-      });
+      await callLiffSync('cancelBooking', { bookingId });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });

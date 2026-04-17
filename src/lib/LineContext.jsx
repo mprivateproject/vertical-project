@@ -61,11 +61,14 @@ export function LineProvider({ children }) {
   };
 
   const syncWithBackend = async (profile, token) => {
+    // Manually call without helper to avoid circular dependency
+    console.log('LIFF SYNC REQUEST:', { action: 'syncCustomer', hasIdToken: !!token });
     const result = await base44.functions.invoke('liffSync', {
       action: 'syncCustomer',
       idToken: token,
       profile,
     });
+    console.log('LIFF SYNC RESPONSE:', { action: 'syncCustomer', status: 'success' });
     return result.data;
   };
 
