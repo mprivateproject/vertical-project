@@ -5,8 +5,7 @@ import { useLang } from '@/lib/LanguageContext';
 import { format, isToday, addDays } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import {
-  CalendarDays, Clock, User, CheckCircle, XCircle,
-  ChevronLeft, ChevronRight, ArrowLeft, FileText
+  CalendarDays, Clock, User, ChevronLeft, ChevronRight, ArrowLeft, UserX
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -30,13 +29,20 @@ export default function StaffDashboard() {
   const locale = lang === 'th' ? th : enUS;
   const queryClient = useQueryClient();
   const [viewDate, setViewDate] = useState(new Date());
+  const [filterTherapist, setFilterTherapist] = useState('all');
 
   const dateStr = format(viewDate, 'yyyy-MM-dd');
 
-  const { data: bookings = [], isLoading } = useQuery({
+  const { data: allBookings = [], isLoading } = useQuery({
     queryKey: ['staff-bookings', dateStr],
     queryFn: () => base44.entities.Booking.filter({ booking_date: dateStr }, 'start_time', 100),
   });
+
+  const therapistNames = [...new Set(allBookings.map(b => b.therapist_name).filter(Boolean))];
+
+  const bookings = filterTherapist === 'all'
+    ? allBookings
+    : allBookings.filter(b => b.therapist_name === filterTherapist);
 
   const updateStatus = useMutation({
     mutationFn: ({ id, status }) => base44.entities.Booking.update(id, { status }),
@@ -87,6 +93,26 @@ export default function StaffDashboard() {
       </div>
 
       <div className="px-4 py-4 space-y-4 max-w-2xl mx-auto">
+        {/* Therapist filter */}
+        {therapistNames.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => setFilterTherapist('all')}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-colors ${filterTherapist === 'all' ? 'bg-foreground text-background border-foreground' : 'bg-card border-border text-muted-foreground'}`}
+            >
+              {lang === 'th' ? 'ทั้งหมด' : 'All'}
+            </button>
+            {therapistNames.map(name => (
+              <button
+                key={name}
+                onClick={() => setFilterTherapist(name)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-colors ${filterTherapist === name ? 'bg-foreground text-background border-foreground' : 'bg-card border-border text-muted-foreground'}`}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+        )}
         {/* Stats */}
         <div className="grid grid-cols-4 gap-2">
           {[
@@ -172,6 +198,17 @@ export default function StaffDashboard() {
                       className="h-8 text-xs rounded-lg bg-green-600 hover:bg-green-700"
                     >
                       {t('checkOut')}
+                    </Button>
+                  )}
+                  {['confirmed', 'pending', 'checked_in'].includes(booking.status) && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => updateStatus.mutate({ id: booking.id, status: 'no_show' })}
+                      className="h-8 text-xs rounded-lg border-orange-300 text-orange-600 hover:bg-orange-50"
+                    >
+                      <UserX className="w-3 h-3 mr-1" />
+                      {lang === 'th' ? 'ไม่มา' : 'No-show'}
                     </Button>
                   )}
                   {['confirmed', 'pending'].includes(booking.status) && (
