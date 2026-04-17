@@ -13,7 +13,7 @@ import TherapistPicker from '@/components/customer/TherapistPicker';
 import TimeSlotPicker from '@/components/customer/TimeSlotPicker';
 import PaymentMethodPicker from '@/components/customer/PaymentMethodPicker';
 import PromptPayQR from '@/components/customer/PromptPayQR';
-import LineLoginButton from '@/components/customer/LineLoginButton';
+import LineLoginButton from '@/components/customer/LineLoginButton.jsx';
 
 const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 
