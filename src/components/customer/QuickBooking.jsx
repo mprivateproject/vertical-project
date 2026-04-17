@@ -15,20 +15,7 @@ const SERVICES = [
 ];
 
 
-function generateSlots(start = '10:00', end = '20:00', interval = 60) {
-  const slots = [];
-  const [sh, sm] = start.split(':').map(Number);
-  const [eh, em] = end.split(':').map(Number);
-  let cur = sh * 60 + sm;
-  const endMin = eh * 60 + em;
-  while (cur + interval <= endMin) {
-    slots.push(`${String(Math.floor(cur / 60)).padStart(2, '0')}:${String(cur % 60).padStart(2, '0')}`);
-    cur += interval;
-  }
-  return slots;
-}
-
-const TIME_SLOTS = generateSlots('10:00', '20:00', 60);
+const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
 
 export default function QuickBooking() {
   const { t, lang } = useLang();
