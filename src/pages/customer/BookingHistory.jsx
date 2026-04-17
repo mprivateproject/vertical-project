@@ -43,7 +43,7 @@ export default function BookingHistory() {
 
   const cancelBookingMutation = useMutation({
     mutationFn: async (bookingId) => {
-      await base44.asServiceRole.entities.Booking.update(bookingId, { status: 'cancelled' });
+      await base44.entities.Booking.update(bookingId, { status: 'cancelled' });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
@@ -99,14 +99,7 @@ export default function BookingHistory() {
               transition={{ delay: i * 0.05 }}
               className="bg-card border border-border rounded-2xl p-4 active:scale-[0.99] transition-transform"
             >
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-sm text-foreground">
-                  {booking.service_name}
-                </h3>
-                <Badge className={`text-[10px] font-medium ${statusStyles[booking.status] || 'bg-secondary text-secondary-foreground'}`}>
-                  {t(booking.status)}
-                </Badge>
-              </div>
+
 
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -123,12 +116,7 @@ export default function BookingHistory() {
                   <span>{booking.start_time} - {booking.end_time}</span>
                   <span>({booking.duration_minutes} {t('minutes')})</span>
                 </div>
-                {booking.therapist_name && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <User className="w-3.5 h-3.5" />
-                    <span>{booking.therapist_name}</span>
-                  </div>
-                )}
+
               </div>
 
               <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
