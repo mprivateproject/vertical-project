@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, User, ChevronRight } from 'lucide-react';
+import { CalendarDays, Clock, User, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -25,6 +26,7 @@ export default function BookingHistory() {
   const { lineProfile } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [tab, setTab] = useState('upcoming');
+  const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['my-bookings', lineProfile?.lineUserId],
@@ -37,6 +39,15 @@ export default function BookingHistory() {
       return res.data.bookings || [];
     },
     enabled: !!lineProfile?.lineUserId,
+  });
+
+  const cancelBookingMutation = useMutation({
+    mutationFn: async (bookingId) => {
+      await base44.asServiceRole.entities.Booking.update(bookingId, { status: 'cancelled' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+    },
   });
 
   const today = format(new Date(), 'yyyy-MM-dd');
@@ -120,10 +131,22 @@ export default function BookingHistory() {
                 )}
               </div>
 
-              <div className="mt-3 pt-3 border-t border-border">
+              <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
                 <span className="font-bold text-primary text-sm">
                   ฿{booking.price?.toLocaleString()}
                 </span>
+                {(booking.status === 'pending' || booking.status === 'confirmed') && booking.booking_date >= today && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => cancelBookingMutation.mutate(booking.id)}
+                    disabled={cancelBookingMutation.isPending}
+                    className="h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    <span className="text-xs">{t('cancel')}</span>
+                  </Button>
+                )}
               </div>
             </motion.div>
           ))}
