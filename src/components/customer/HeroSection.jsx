@@ -14,14 +14,14 @@ export default function HeroSection() {
       <div className="absolute inset-0">
         <img src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/1839da3f1_IMG_7982.png"
 
-        alt="Spa" className="w-full h-full object-cover" />
+        alt="Spa" className="opacity-100 w-full h-full object-cover" />
         
         
         
       </div>
 
       {/* Header controls */}
-      <div className="relative z-10 flex items-center justify-between px-6 pt-12 pb-4">
+      <div className="pt-12 pb-4 px-6 opacity-95 relative z-10 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           {isLoggedIn && lineProfile?.pictureUrl &&
           <img
