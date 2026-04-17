@@ -48,8 +48,9 @@ Deno.serve(async (req) => {
       const LINE_NOTIFY_TOKEN = Deno.env.get('LINE_NOTIFY_TOKEN');
 
       const notifyPromises = [];
+      const customerLineUserId = bookingData.line_user_id || lineUserId;
 
-      if (LINE_CHANNEL_ACCESS_TOKEN && lineUserId) {
+      if (LINE_CHANNEL_ACCESS_TOKEN && customerLineUserId) {
         const appUrl = 'https://liff.line.me/' + (Deno.env.get('LIFF_ID') || '');
         const flexMessage = {
           type: 'flex',
@@ -176,7 +177,7 @@ Deno.serve(async (req) => {
           fetch('https://api.line.me/v2/bot/message/push', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
-            body: JSON.stringify({ to: lineUserId, messages: [flexMessage] }),
+            body: JSON.stringify({ to: customerLineUserId, messages: [flexMessage] }),
           }).catch(e => console.error('Customer notify error:', e))
         );
       }
