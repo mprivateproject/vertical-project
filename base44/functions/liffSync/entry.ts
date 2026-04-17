@@ -11,25 +11,29 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'syncCustomer') {
-      // Find or create User with line_user_id
+      // 1. Find User where line_user_id = lineUserId
       const existingUsers = await base44.asServiceRole.entities.User.filter({ line_user_id: lineUserId });
       
+      // 2. IF NOT FOUND → CREATE User; IF FOUND → UPDATE
       let user;
       if (existingUsers.length > 0) {
         user = await base44.asServiceRole.entities.User.update(existingUsers[0].id, {
+          name: displayName,
           picture_url: pictureUrl || '',
         });
       } else {
         user = await base44.asServiceRole.entities.User.create({
           line_user_id: lineUserId,
+          name: displayName,
           picture_url: pictureUrl || '',
           role: 'customer',
         });
       }
 
-      // Find or create Customer linked to User
+      // 3. Find Customer where user_id = User.id
       const existingCustomers = await base44.asServiceRole.entities.Customer.filter({ user_id: user.id });
       
+      // 4. IF NOT FOUND → CREATE Customer
       let customer;
       if (existingCustomers.length > 0) {
         customer = await base44.asServiceRole.entities.Customer.update(existingCustomers[0].id, {
@@ -49,6 +53,7 @@ Deno.serve(async (req) => {
         });
       }
 
+      // 5. RETURN { user, customer }
       return Response.json({ user, customer });
     }
 
@@ -67,7 +72,7 @@ Deno.serve(async (req) => {
       const customerLineUserId = bookingData.line_user_id || lineUserId;
 
       if (LINE_CHANNEL_ACCESS_TOKEN && customerLineUserId) {
-        const appUrl = 'https://liff.line.me/' + (Deno.env.get('LIFF_ID') || '');
+        const appUrl = 'https://mprivateproject.com/';
         const flexMessage = {
           type: 'flex',
           altText: `✅ ยืนยันการจอง: ${bookingData.service_name || '-'}`,
@@ -173,7 +178,7 @@ Deno.serve(async (req) => {
                   action: {
                     type: 'uri',
                     label: '📋 ดูรายละเอียดการจอง',
-                    uri: `${appUrl}/bookings`,
+                    uri: `${appUrl}bookings`,
                   },
                 },
                 {
@@ -215,7 +220,11 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'getBookings') {
-      const bookings = await base44.asServiceRole.entities.Booking.filter({ line_user_id: lineUserId });
+      const user = await base44.auth.me();
+      if (!user) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      const bookings = await base44.entities.Booking.filter({ user_id: user.id });
       return Response.json({ bookings });
     }
 
@@ -227,6 +236,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ error: 'Unknown action' }, { status: 400 });
   } catch (error) {
+    console.error('liffSync error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
