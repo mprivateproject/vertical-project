@@ -1,12 +1,13 @@
 import React from 'react';
 import { useLang } from '@/lib/LanguageContext';
-import { base44 } from '@/api/base44Client';
+import { useLine } from '@/lib/LineContext';
 
 export default function LineLoginButton() {
   const { t, lang } = useLang();
+  const { loginWithLine } = useLine();
 
   const handleLogin = () => {
-    base44.auth.redirectToLogin(window.location.href);
+    loginWithLine();
   };
 
   return (

@@ -1,49 +1,63 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from '@/lib/AuthContext';
 import { base44 } from '@/api/base44Client';
 
 const LineContext = createContext();
 
-export function LineProvider({ children }) {
-  return <LineContext.Provider value={{}}>{children}</LineContext.Provider>;
-}
+const LIFF_ID = '2009806106-7u8AyzZg';
 
-// Hook ที่ใช้ทั่วแอป - ดึงข้อมูล Customer จาก DB และสร้างอัตโนมัติถ้ายังไม่มี
-export function useLine() {
-  const { user, isAuthenticated, isLoadingAuth, logout } = useAuth();
+export function LineProvider({ children }) {
+  const [liffReady, setLiffReady] = useState(false);
+  const [lineProfile, setLineProfile] = useState(null);
   const [customer, setCustomer] = useState(null);
-  const [isLoadingCustomer, setIsLoadingCustomer] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      syncCustomer(user);
-    } else {
-      setCustomer(null);
-    }
-  }, [isAuthenticated, user?.id]);
+    initLiff();
+  }, []);
 
-  const syncCustomer = async (authUser) => {
-    setIsLoadingCustomer(true);
+  const initLiff = async () => {
     try {
-      // ใช้ user.id จาก Base44 เป็น line_user_id
-      const lineUserId = authUser.id;
-      const existing = await base44.entities.Customer.filter({ line_user_id: lineUserId });
+      await liff.init({ liffId: LIFF_ID });
+      setLiffReady(true);
 
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        const email = liff.getDecodedIDToken()?.email || '';
+        const profileData = {
+          lineUserId: profile.userId,
+          displayName: profile.displayName,
+          pictureUrl: profile.pictureUrl,
+          statusMessage: profile.statusMessage || '',
+          email,
+        };
+        setLineProfile(profileData);
+        setIsLoggedIn(true);
+        await syncCustomer(profileData);
+      }
+    } catch (err) {
+      console.error('LIFF init failed:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const syncCustomer = async (profile) => {
+    try {
+      const existing = await base44.entities.Customer.filter({ line_user_id: profile.lineUserId });
       if (existing.length > 0) {
-        // อัปเดตข้อมูลล่าสุด
         const updated = await base44.entities.Customer.update(existing[0].id, {
-          display_name: authUser.full_name || existing[0].display_name,
-          email: authUser.email || existing[0].email,
-          picture_url: authUser.data?.pictureUrl || existing[0].picture_url,
+          display_name: profile.displayName,
+          picture_url: profile.pictureUrl,
+          email: profile.email || existing[0].email,
         });
         setCustomer(updated);
       } else {
-        // สร้าง Customer record ใหม่
         const created = await base44.entities.Customer.create({
-          line_user_id: lineUserId,
-          display_name: authUser.full_name || 'Guest',
-          email: authUser.email || '',
-          picture_url: authUser.data?.pictureUrl || '',
+          line_user_id: profile.lineUserId,
+          display_name: profile.displayName,
+          email: profile.email || '',
+          picture_url: profile.pictureUrl || '',
           preferred_language: 'th',
           total_visits: 0,
           total_spent: 0,
@@ -54,27 +68,34 @@ export function useLine() {
       }
     } catch (err) {
       console.error('Failed to sync customer:', err);
-    } finally {
-      setIsLoadingCustomer(false);
     }
   };
 
-  // lineProfile shape ที่ components เดิมใช้ (backward compatible)
-  const lineProfile = user ? {
-    lineUserId: user.id,
-    displayName: user.full_name,
-    pictureUrl: customer?.picture_url || user.data?.pictureUrl || null,
-    statusMessage: user.data?.statusMessage || null,
-    email: user.email || '',
-    customerId: customer?.id || null,
-  } : null;
-
-  return {
-    lineProfile,
-    customer,
-    isLoggedIn: isAuthenticated,
-    isLoading: isLoadingAuth || isLoadingCustomer,
-    loginWithLine: () => base44.auth.redirectToLogin(window.location.href),
-    logout: () => logout(true),
+  const loginWithLine = () => {
+    if (liffReady) {
+      liff.login({ redirectUri: window.location.href });
+    }
   };
+
+  const logout = () => {
+    if (liffReady && liff.isLoggedIn()) {
+      liff.logout();
+    }
+    setLineProfile(null);
+    setCustomer(null);
+    setIsLoggedIn(false);
+    window.location.reload();
+  };
+
+  return (
+    <LineContext.Provider value={{ lineProfile, customer, isLoggedIn, isLoading, loginWithLine, logout }}>
+      {children}
+    </LineContext.Provider>
+  );
+}
+
+export function useLine() {
+  const context = useContext(LineContext);
+  if (!context) throw new Error('useLine must be used within LineProvider');
+  return context;
 }
