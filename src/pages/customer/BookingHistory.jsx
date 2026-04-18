@@ -57,7 +57,7 @@ export default function BookingHistory() {
       return;
     }
     setDepositLoading(booking.id);
-    const depositAmount = Math.round((booking.price || 0) * 0.3);
+    const depositAmount = 500;
     const origin = window.location.origin;
     const res = await base44.functions.invoke('createCheckoutSession', {
       serviceName: (lang === 'th' ? `มัดจำ: ${booking.service_name}` : `Deposit: ${booking.service_name}`),
@@ -200,8 +200,8 @@ export default function BookingHistory() {
                     {depositLoading === booking.id
                       ? (lang === 'th' ? 'กำลังโหลด...' : 'Loading...')
                       : lang === 'th'
-                        ? `จ่ายมัดจำ 30% (฿${Math.round((booking.price || 0) * 0.3).toLocaleString()})`
-                        : `Pay 30% Deposit (฿${Math.round((booking.price || 0) * 0.3).toLocaleString()})`
+                        ? `จ่ายมัดจำ ฿500`
+                        : `Pay ฿500 Deposit`
                     }
                   </Button>
                 )}
