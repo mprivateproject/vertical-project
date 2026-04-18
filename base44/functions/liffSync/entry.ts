@@ -48,30 +48,10 @@ Deno.serve(async (req) => {
     async function syncCustomer(profile = {}) {
       const { displayName = '', pictureUrl = '', email = '' } = profile;
 
-      const existingUsers = await base44.asServiceRole.entities.User.filter({
-        line_user_id: lineUserId,
-      });
-
-      let user;
-
-      if (existingUsers.length > 0) {
-        user = await base44.asServiceRole.entities.User.update(existingUsers[0].id, {
-          full_name: displayName,
-          email: email || `${lineUserId}@line.local`,
-          picture_url: pictureUrl || '',
-        });
-      } else {
-        user = await base44.asServiceRole.entities.User.create({
-          full_name: displayName,
-          email: email || `${lineUserId}@line.local`,
-          line_user_id: lineUserId,
-          picture_url: pictureUrl || '',
-          role: 'customer',
-        });
-      }
+      console.log('🔍 syncCustomer: looking for line_user_id:', lineUserId);
 
       const existingCustomers = await base44.asServiceRole.entities.Customer.filter({
-        user_id: user.id,
+        line_user_id: lineUserId,
       });
 
       let customer;
@@ -81,13 +61,16 @@ Deno.serve(async (req) => {
           existingCustomers[0].id,
           {
             display_name: displayName,
+            picture_url: pictureUrl || '',
             email: email || '',
           }
         );
+        console.log('✅ syncCustomer: updated existing customer:', customer.id);
       } else {
         customer = await base44.asServiceRole.entities.Customer.create({
-          user_id: user.id,
+          line_user_id: lineUserId,
           display_name: displayName,
+          picture_url: pictureUrl || '',
           email: email || '',
           preferred_language: 'th',
           total_visits: 0,
@@ -95,9 +78,10 @@ Deno.serve(async (req) => {
           loyalty_points: 0,
           membership_tier: 'none',
         });
+        console.log('✅ syncCustomer: created new customer:', customer.id);
       }
 
-      return { user, customer };
+      return { customer };
     }
 
     // =========================
@@ -109,7 +93,7 @@ Deno.serve(async (req) => {
       console.log('🔄 LIFF SYNC: Syncing customer...');
       const { profile } = body;
       const result = await syncCustomer(profile);
-      console.log('✅ LIFF SYNC: Customer synced:', { userId: result.user.id, customerId: result.customer.id });
+      console.log('✅ LIFF SYNC: Customer synced:', { customerId: result.customer.id });
       return Response.json(result);
     }
 
@@ -120,38 +104,34 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'bookingData required' }, { status: 400 });
       }
 
-      // Resolve verified user_id and customer_id from lineUserId
-      const existingUsers = await base44.asServiceRole.entities.User.filter({ line_user_id: lineUserId });
-      if (!existingUsers.length) {
-        return Response.json({ error: 'User not found — sync customer first' }, { status: 400 });
-      }
-      const verifiedUser = existingUsers[0];
+      // Lookup customer by line_user_id (single source of truth)
+      console.log('🔍 createBooking: looking for line_user_id:', lineUserId);
+      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
+      console.log('🔍 createBooking: customer found:', customers[0] || null);
 
-      const existingCustomers = await base44.asServiceRole.entities.Customer.filter({ user_id: verifiedUser.id });
-      if (!existingCustomers.length) {
+      if (!customers.length) {
         return Response.json({ error: 'Customer not found — sync customer first' }, { status: 400 });
       }
-      const verifiedCustomer = existingCustomers[0];
+      const verifiedCustomer = customers[0];
 
-      // Inject verified identity — override any client-supplied user_id / customer_id
       const booking = await base44.asServiceRole.entities.Booking.create({
         ...bookingData,
-        user_id: verifiedUser.id,
+        user_id: verifiedCustomer.id,
         customer_id: verifiedCustomer.id,
         customer_name: verifiedCustomer.display_name || bookingData.customer_name || '',
       });
 
-      console.log('✅ LIFF SYNC: Booking created:', { bookingId: booking.id, userId: verifiedUser.id, customerId: verifiedCustomer.id });
+      console.log('✅ LIFF SYNC: Booking created:', { bookingId: booking.id, customerId: verifiedCustomer.id });
       return Response.json({ booking });
     }
 
     // 3️⃣ GET BOOKINGS (ของ user นี้เท่านั้น)
     if (action === 'getBookings') {
       console.log('🔄 LIFF SYNC: Fetching bookings for lineUserId:', lineUserId);
-      const ownUsers = await base44.asServiceRole.entities.User.filter({ line_user_id: lineUserId });
-      const ownUserId = ownUsers[0]?.id;
-      const bookings = ownUserId
-        ? await base44.asServiceRole.entities.Booking.filter({ user_id: ownUserId })
+      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
+      const customerId = customers[0]?.id;
+      const bookings = customerId
+        ? await base44.asServiceRole.entities.Booking.filter({ customer_id: customerId })
         : [];
       console.log('✅ LIFF SYNC: Bookings retrieved:', { count: bookings.length });
       return Response.json({ bookings });
