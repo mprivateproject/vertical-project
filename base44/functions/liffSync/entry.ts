@@ -3,24 +3,19 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const body = await req.json();
-    const { action, idToken, bookingData } = body;
-
-    // 🔐 DEBUG: Log incoming request
-    console.log('🔐 LIFF SYNC BACKEND REQUEST', {
-      action,
-      hasIdToken: !!idToken,
-      idTokenLength: idToken ? idToken.length : 0,
-      timestamp: new Date().toISOString(),
-    });
-
     // =========================
-    // 🔐 1. REQUIRE ID TOKEN
+    // 🔐 1. READ TOKEN FROM HEADER
     // =========================
-    if (!idToken) {
-      console.error('❌ LIFF SYNC: Missing idToken');
+    const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('❌ LIFF SYNC: Missing Authorization header');
       return Response.json({ error: 'idToken required' }, { status: 401 });
     }
+    const idToken = authHeader.replace('Bearer ', '').trim();
+    console.log('🔐 LIFF token received:', idToken.slice(0, 10));
+
+    const body = await req.json();
+    const { action, bookingData } = body;
 
     // =========================
     // 🔐 2. VERIFY TOKEN WITH LINE
