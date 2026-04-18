@@ -235,6 +235,43 @@ Deno.serve(async (req) => {
         customer_name: verifiedCustomer.display_name || bookingData.customer_name || '',
       });
       console.log('✅ Booking created:', booking.id, 'for customer:', verifiedCustomer.id);
+
+      // ── SEND LINE CONFIRMATION MESSAGE ──────────────────
+      try {
+        const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
+        if (token && lineUserId) {
+          const { service_name, booking_date, start_time, end_time, price, therapist_name } = bookingData;
+          const msg = `✅ ยืนยันการจองสำเร็จ!\n\n💆 บริการ: ${service_name}\n📅 วันที่: ${booking_date}\n🕐 เวลา: ${start_time}${end_time ? ' – ' + end_time : ''}\n👤 นักบำบัด: ${therapist_name || 'ตามความเหมาะสม'}\n💰 ราคา: ฿${Number(price).toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
+          const lineRes = await fetch('https://api.line.me/v2/bot/message/push', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ to: lineUserId, messages: [{ type: 'text', text: msg }] }),
+          });
+          if (!lineRes.ok) {
+            const err = await lineRes.text();
+            console.error('❌ LINE push message failed:', err);
+          } else {
+            console.log('✅ LINE confirmation sent to:', lineUserId);
+          }
+
+          // Also notify admin via LINE Notify
+          const notifyToken = Deno.env.get('LINE_NOTIFY_TOKEN');
+          if (notifyToken) {
+            const adminMsg = `\n📅 การจองใหม่!\nลูกค้า: ${verifiedCustomer.display_name}\nบริการ: ${service_name}\nวันที่: ${booking_date} เวลา: ${start_time}\nราคา: ฿${Number(price).toLocaleString()}`;
+            await fetch('https://notify-api.line.me/api/notify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': `Bearer ${notifyToken}` },
+              body: new URLSearchParams({ message: adminMsg }),
+            });
+          }
+        }
+      } catch (notifyErr) {
+        console.error('⚠️ LINE notify error (non-fatal):', notifyErr.message);
+      }
+
       return Response.json({ booking });
     }
 
