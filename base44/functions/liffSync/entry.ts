@@ -187,6 +187,77 @@ Deno.serve(async (req) => {
       return Response.json({ booking });
     }
 
+    // 9️⃣ ADMIN: GET BOOKINGS BY DATE (staff/admin)
+    if (action === 'adminGetBookingsByDate') {
+      const { bookingDate } = body;
+      const bookings = await base44.asServiceRole.entities.Booking.filter({ booking_date: bookingDate }, 'start_time', 200);
+      return Response.json({ bookings });
+    }
+
+    // 🔟 ADMIN: UPDATE BOOKING STATUS
+    if (action === 'adminUpdateBooking') {
+      const { bookingId, data: updateData } = body;
+      const booking = await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
+      return Response.json({ booking });
+    }
+
+    // 1️⃣1️⃣ ADMIN: GET ALL BOOKINGS
+    if (action === 'adminGetAllBookings') {
+      const { sort = '-booking_date', limit = 1000 } = body;
+      const bookings = await base44.asServiceRole.entities.Booking.list(sort, limit);
+      return Response.json({ bookings });
+    }
+
+    // 1️⃣2️⃣ ADMIN: GET CUSTOMERS
+    if (action === 'adminGetCustomers') {
+      const customers = await base44.asServiceRole.entities.Customer.list('-created_date', 200);
+      return Response.json({ customers });
+    }
+
+    // 1️⃣3️⃣ ADMIN: SERVICES CRUD
+    if (action === 'adminGetServices') {
+      const services = await base44.asServiceRole.entities.Service.list('sort_order', 100);
+      return Response.json({ services });
+    }
+    if (action === 'adminSaveService') {
+      const { serviceData } = body;
+      let service;
+      if (serviceData.id) {
+        const { id, ...rest } = serviceData;
+        service = await base44.asServiceRole.entities.Service.update(id, rest);
+      } else {
+        service = await base44.asServiceRole.entities.Service.create(serviceData);
+      }
+      return Response.json({ service });
+    }
+    if (action === 'adminDeleteService') {
+      const { serviceId } = body;
+      await base44.asServiceRole.entities.Service.delete(serviceId);
+      return Response.json({ success: true });
+    }
+
+    // 1️⃣4️⃣ ADMIN: PROMOTIONS CRUD
+    if (action === 'adminGetPromotions') {
+      const promotions = await base44.asServiceRole.entities.Promotion.list('-created_date', 50);
+      return Response.json({ promotions });
+    }
+    if (action === 'adminSavePromotion') {
+      const { promoData } = body;
+      let promotion;
+      if (promoData.id) {
+        const { id, ...rest } = promoData;
+        promotion = await base44.asServiceRole.entities.Promotion.update(id, rest);
+      } else {
+        promotion = await base44.asServiceRole.entities.Promotion.create(promoData);
+      }
+      return Response.json({ promotion });
+    }
+    if (action === 'adminDeletePromotion') {
+      const { promoId } = body;
+      await base44.asServiceRole.entities.Promotion.delete(promoId);
+      return Response.json({ success: true });
+    }
+
     console.error('❌ LIFF SYNC: Unknown action:', action);
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 

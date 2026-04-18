@@ -1,6 +1,6 @@
 import React from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { useLang } from '@/lib/LanguageContext';
 import { format } from 'date-fns';
 import {
@@ -16,17 +16,26 @@ export default function AdminDashboard() {
 
   const { data: todayBookings = [] } = useQuery({
     queryKey: ['admin-today-bookings'],
-    queryFn: () => base44.entities.Booking.filter({ booking_date: today }, 'start_time', 100),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetBookingsByDate', bookingDate: today } });
+      return result.bookings || [];
+    },
   });
 
   const { data: allBookings = [] } = useQuery({
     queryKey: ['admin-all-bookings'],
-    queryFn: () => base44.entities.Booking.list('-created_date', 500),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetAllBookings', sort: '-booking_date', limit: 500 } });
+      return result.bookings || [];
+    },
   });
 
   const { data: customers = [] } = useQuery({
     queryKey: ['admin-customers'],
-    queryFn: () => base44.entities.Customer.list('-created_date', 100),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetCustomers' } });
+      return result.customers || [];
+    },
   });
 
   const totalRevenue = allBookings

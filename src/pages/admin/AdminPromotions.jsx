@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { useLang } from '@/lib/LanguageContext';
 import { Plus, Pencil, Trash2, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,16 +20,16 @@ export default function AdminPromotions() {
 
   const { data: promotions = [] } = useQuery({
     queryKey: ['admin-promotions'],
-    queryFn: () => base44.entities.Promotion.list('-created_date', 50),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetPromotions' } });
+      return result.promotions || [];
+    },
   });
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
-      if (data.id) {
-        const { id, ...rest } = data;
-        return base44.entities.Promotion.update(id, rest);
-      }
-      return base44.entities.Promotion.create(data);
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminSavePromotion', promoData: data } });
+      return result.promotion;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-promotions'] });
@@ -38,7 +38,9 @@ export default function AdminPromotions() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Promotion.delete(id),
+    mutationFn: async (id) => {
+      await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminDeletePromotion', promoId: id } });
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-promotions'] }),
   });
 

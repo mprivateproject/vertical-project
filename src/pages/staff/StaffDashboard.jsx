@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { useLang } from '@/lib/LanguageContext';
 import { format, isToday, addDays } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -35,7 +35,10 @@ export default function StaffDashboard() {
 
   const { data: allBookings = [], isLoading } = useQuery({
     queryKey: ['staff-bookings', dateStr],
-    queryFn: () => base44.entities.Booking.filter({ booking_date: dateStr }, 'start_time', 100),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetBookingsByDate', bookingDate: dateStr } });
+      return result.bookings || [];
+    },
   });
 
   const therapistNames = [...new Set(allBookings.map(b => b.therapist_name).filter(Boolean))];
@@ -45,7 +48,10 @@ export default function StaffDashboard() {
     : allBookings.filter(b => b.therapist_name === filterTherapist);
 
   const updateStatus = useMutation({
-    mutationFn: ({ id, status }) => base44.entities.Booking.update(id, { status }),
+    mutationFn: async ({ id, status }) => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminUpdateBooking', bookingId: id, data: { status } } });
+      return result.booking;
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['staff-bookings'] }),
   });
 

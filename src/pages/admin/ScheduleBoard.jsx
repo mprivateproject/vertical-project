@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { useLang } from '@/lib/LanguageContext';
 import { format, addDays, isToday } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -71,16 +71,25 @@ export default function ScheduleBoard() {
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['schedule-board', dateStr],
-    queryFn: () => base44.entities.Booking.filter({ booking_date: dateStr }, 'start_time', 200),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetBookingsByDate', bookingDate: dateStr } });
+      return result.bookings || [];
+    },
   });
 
   const { data: therapists = [] } = useQuery({
     queryKey: ['therapists'],
-    queryFn: () => base44.entities.Therapist.filter({ is_active: true }),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getTherapists' } });
+      return result.therapists || [];
+    },
   });
 
   const updateBooking = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Booking.update(id, data),
+    mutationFn: async ({ id, data }) => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminUpdateBooking', bookingId: id, data } });
+      return result.booking;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['schedule-board'] });
       toast({ title: lang === 'th' ? 'อัปเดตสำเร็จ' : 'Updated successfully' });

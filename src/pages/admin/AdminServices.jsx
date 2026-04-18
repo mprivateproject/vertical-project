@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { useLang } from '@/lib/LanguageContext';
 import { Plus, Pencil, Trash2, Clock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -25,16 +25,16 @@ export default function AdminServices() {
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['admin-services'],
-    queryFn: () => base44.entities.Service.list('sort_order', 100),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetServices' } });
+      return result.services || [];
+    },
   });
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
-      if (data.id) {
-        const { id, ...rest } = data;
-        return base44.entities.Service.update(id, rest);
-      }
-      return base44.entities.Service.create(data);
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminSaveService', serviceData: data } });
+      return result.service;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-services'] });
@@ -44,7 +44,9 @@ export default function AdminServices() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Service.delete(id),
+    mutationFn: async (id) => {
+      await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminDeleteService', serviceId: id } });
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-services'] }),
   });
 
