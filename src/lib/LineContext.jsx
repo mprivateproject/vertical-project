@@ -1,3 +1,4 @@
+/* global liff */
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const LineContext = createContext(null)
