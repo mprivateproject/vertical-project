@@ -2,43 +2,88 @@
 // ════════════════════════════════════════════════════════
 // liffSyncClient — production-grade LIFF API layer
 //
-// • Gets a FRESH idToken on every request (no caching)
-// • Retries once on 401 with a new token
-// • Blocks requests if LIFF not logged in
+// KEY INSIGHT: liff.getIDToken() returns a JWT that expires
+// in ~10 minutes and CANNOT be refreshed — only a new login
+// produces a new token. Therefore:
+//
+//  • Public actions (services, therapists) → no auth needed
+//  • Private actions (syncCustomer, bookings) → send idToken
+//  • On 401 → force re-login (only cure for expired token)
 // ════════════════════════════════════════════════════════
 
 const API_BASE = '/api/apps/69df58a04843389be3df3f2e'
 const TIMEOUT = 15000
 
+// Actions that do NOT require LINE identity verification
+const PUBLIC_ACTIONS = new Set([
+  'getServices',
+  'getTherapists',
+  'getServiceById',
+  'getBookingsByDate',
+  'adminGetBookingsByDate',
+  'adminUpdateBooking',
+  'adminGetAllBookings',
+  'adminGetCustomers',
+  'adminGetServices',
+  'adminSaveService',
+  'adminDeleteService',
+  'adminGetPromotions',
+  'adminSavePromotion',
+  'adminDeletePromotion',
+])
+
 // ─────────────────────────────────────────────────────────
-// Token — always fetched fresh from liff, never cached
+// Get fresh idToken — null if not logged in
 // ─────────────────────────────────────────────────────────
-function getFreshToken() {
-  if (typeof liff === 'undefined') {
-    throw new Error('LIFF_NOT_LOADED')
-  }
-  if (!liff.isLoggedIn()) {
-    console.warn('🔄 liffSyncClient: not logged in → redirect')
-    liff.login()
-    return null
-  }
-  const token = liff.getIDToken()
-  if (!token) {
-    throw new Error('NO_ID_TOKEN')
-  }
-  console.log('🔑 liffSyncClient: fresh idToken length:', token.length)
-  return token
+function getIdToken() {
+  if (typeof liff === 'undefined' || !liff.isLoggedIn()) return null
+  return liff.getIDToken() || null
 }
 
 // ─────────────────────────────────────────────────────────
-// Core request with auto-retry on 401
+// Force re-login — only called when token is truly expired
 // ─────────────────────────────────────────────────────────
-async function request(config, isRetry = false) {
-  const token = getFreshToken()
-  if (!token) return // login redirect happened
+function forceRelogin(reason) {
+  console.warn('🔄 liffSyncClient: forcing re-login —', reason)
+  if (typeof liff !== 'undefined') {
+    liff.logout()
+    liff.login({ redirectUri: window.location.href })
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// Core request — no retry loop, 401 = re-login
+// ─────────────────────────────────────────────────────────
+async function request(config) {
+  const action = config.data?.action
+  const isPublic = PUBLIC_ACTIONS.has(action)
+
+  // Build headers
+  const headers = { 'Content-Type': 'application/json' }
+
+  if (!isPublic) {
+    // Private action — must have a valid idToken
+    if (typeof liff === 'undefined') {
+      throw new Error('LIFF_NOT_LOADED')
+    }
+    if (!liff.isLoggedIn()) {
+      console.warn('🔄 liffSyncClient: not logged in for private action, redirecting...')
+      liff.login({ redirectUri: window.location.href })
+      return
+    }
+    const token = getIdToken()
+    if (!token) {
+      forceRelogin('no idToken available')
+      return
+    }
+    console.log('🔑 liffSyncClient: attaching idToken, length:', token.length, 'action:', action)
+    headers['Authorization'] = `Bearer ${token}`
+  } else {
+    console.log('🌐 liffSyncClient: public action, no auth needed:', action)
+  }
 
   const url = API_BASE + config.url
-  console.log('🚀 API REQUEST', { action: config.data?.action, retry: isRetry })
+  console.log('🚀 API REQUEST', { action, ts: new Date().toISOString() })
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT)
@@ -47,10 +92,7 @@ async function request(config, isRetry = false) {
   try {
     res = await fetch(url, {
       method: config.method || 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+      headers,
       body: config.data ? JSON.stringify(config.data) : undefined,
       signal: controller.signal,
     })
@@ -58,20 +100,22 @@ async function request(config, isRetry = false) {
     clearTimeout(timer)
   }
 
-  // Auto-retry once on 401 — token may have just expired
-  if (res.status === 401 && !isRetry) {
-    console.warn('⚠️ liffSyncClient: 401 received — retrying with fresh token')
-    return request(config, true)
+  // 401 on a private action = token expired → force re-login (no retry)
+  if (res.status === 401 && !isPublic) {
+    const body = await res.text()
+    console.error('❌ liffSyncClient: 401 on private action — token expired, forcing re-login', body)
+    forceRelogin('TOKEN_EXPIRED')
+    return
   }
 
   if (!res.ok) {
     const text = await res.text()
-    console.error('❌ API ERROR', { action: config.data?.action, status: res.status, body: text })
+    console.error('❌ API ERROR', { action, status: res.status, body: text })
     throw Object.assign(new Error(text || `HTTP ${res.status}`), { status: res.status })
   }
 
   const data = await res.json()
-  console.log('✅ API RESPONSE', { action: config.data?.action, status: res.status })
+  console.log('✅ API RESPONSE', { action, status: res.status })
   return data
 }
 
@@ -92,7 +136,5 @@ export const liffSyncClient = {
   },
 }
 
-// Legacy export — no longer needed but kept for safety
-export function setLiffToken() {
-  // no-op: token is now fetched fresh on each request
-}
+// Legacy no-op — token is now fetched fresh on each request
+export function setLiffToken() {}
