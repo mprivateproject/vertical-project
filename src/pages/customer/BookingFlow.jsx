@@ -36,6 +36,12 @@ export default function BookingFlow() {
   const [paymentMethod, setPaymentMethod] = useState('promptpay');
   const [bookingComplete, setBookingComplete] = useState(false);
   const [showPaymentQR, setShowPaymentQR] = useState(false);
+  const [stripeLoading, setStripeLoading] = useState(false);
+
+  // Handle Stripe redirect result
+  const paymentResult = params.get('payment');
+  const paymentCancelled = paymentResult === 'cancelled';
+  const paymentSuccess = paymentResult === 'success';
 
   const { data: service } = useQuery({
     queryKey: ['service', serviceId],
@@ -116,7 +122,6 @@ export default function BookingFlow() {
   };
 
   const handleStripeCheckout = async () => {
-    // Block if running inside an iframe (LINE LIFF in-app browser embedded)
     if (window.self !== window.top) {
       alert(
         lang === 'th'
@@ -125,6 +130,8 @@ export default function BookingFlow() {
       );
       return;
     }
+
+    setStripeLoading(true);
 
     const [h, m] = selectedTime.split(':').map(Number);
     const total = h * 60 + m + (service?.duration_minutes || 60);
@@ -158,13 +165,14 @@ export default function BookingFlow() {
     });
 
     if (res.data?.url) {
-      // Create booking first (pending), then redirect to Stripe
       await liffSyncClient.call({
         url: '/functions/liffSync',
         method: 'POST',
         data: { action: 'createBooking', bookingData: bookingPayload },
       });
       window.location.href = res.data.url;
+    } else {
+      setStripeLoading(false);
     }
   };
 
@@ -247,6 +255,12 @@ export default function BookingFlow() {
 
   return (
     <div className="px-5 pt-14 pb-24">
+      {/* Payment cancelled banner */}
+      {paymentCancelled && (
+        <div className="mb-4 p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm text-center">
+          {lang === 'th' ? '❌ การชำระเงินถูกยกเลิก กรุณาลองใหม่อีกครั้ง' : '❌ Payment was cancelled. Please try again.'}
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
@@ -341,12 +355,14 @@ export default function BookingFlow() {
       <div className="fixed bottom-20 left-0 right-0 px-5 max-w-lg mx-auto">
         <Button
           onClick={handleNext}
-          disabled={!canProceed() || createBookingMutation.isPending}
+          disabled={!canProceed() || createBookingMutation.isPending || stripeLoading}
           className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-base shadow-lg shadow-primary/20"
         >
-          {step === STEPS.length - 1
-            ? t('confirmBooking')
-            : t('next')
+          {stripeLoading
+            ? (lang === 'th' ? 'กำลังไปยัง Stripe...' : 'Redirecting to Stripe...')
+            : step === STEPS.length - 1
+              ? t('confirmBooking')
+              : t('next')
           }
         </Button>
       </div>
