@@ -120,13 +120,6 @@ export const liffSyncClient = {
     })
   },
 
-  async getMe() {
-    return requestWithRetry({
-      url: '/entities/User/me',
-      method: 'GET',
-    })
-  },
-
   async call({ url, method = 'GET', data, params }) {
     return requestWithRetry({
       url,

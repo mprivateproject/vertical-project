@@ -79,13 +79,24 @@ export const LineProvider = ({ children }) => {
     return initLiff()
   }
 
+  const logout = () => {
+    if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
+      liff.logout()
+      window.location.reload()
+    }
+  }
+
   const value = {
     ready,
     loading,
     profile,
+    lineProfile: profile,
     idToken,
     error,
     refresh,
+    isLoggedIn: ready,
+    customer: null,
+    logout,
   }
 
   return (
