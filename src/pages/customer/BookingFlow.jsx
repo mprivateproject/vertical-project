@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
@@ -40,15 +39,18 @@ export default function BookingFlow() {
   const { data: service } = useQuery({
     queryKey: ['service', serviceId],
     queryFn: async () => {
-      const services = await base44.entities.Service.filter({ id: serviceId });
-      return services[0];
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getServiceById', serviceId } });
+      return result.service;
     },
     enabled: !!serviceId,
   });
 
   const { data: therapists = [] } = useQuery({
     queryKey: ['therapists'],
-    queryFn: () => base44.entities.Therapist.filter({ is_active: true }),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getTherapists' } });
+      return result.therapists || [];
+    },
   });
 
   const { data: existingBookings = [] } = useQuery({

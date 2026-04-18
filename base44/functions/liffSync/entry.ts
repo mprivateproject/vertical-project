@@ -161,6 +161,32 @@ Deno.serve(async (req) => {
       return Response.json({ bookings });
     }
 
+    // 5️⃣ GET SERVICES
+    if (action === 'getServices') {
+      const services = await base44.asServiceRole.entities.Service.filter({ is_active: true }, 'sort_order', 100);
+      return Response.json({ services });
+    }
+
+    // 6️⃣ GET THERAPISTS
+    if (action === 'getTherapists') {
+      const therapists = await base44.asServiceRole.entities.Therapist.filter({ is_active: true });
+      return Response.json({ therapists });
+    }
+
+    // 7️⃣ GET SERVICE BY ID
+    if (action === 'getServiceById') {
+      const { serviceId } = body;
+      const services = await base44.asServiceRole.entities.Service.filter({ id: serviceId });
+      return Response.json({ service: services[0] || null });
+    }
+
+    // 8️⃣ CANCEL BOOKING
+    if (action === 'cancelBooking') {
+      const { bookingId } = body;
+      const booking = await base44.asServiceRole.entities.Booking.update(bookingId, { status: 'cancelled' });
+      return Response.json({ booking });
+    }
+
     console.error('❌ LIFF SYNC: Unknown action:', action);
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 

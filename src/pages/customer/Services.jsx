@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import ServiceCard from '@/components/customer/ServiceCard';
@@ -14,7 +14,10 @@ export default function Services() {
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['services'],
-    queryFn: () => base44.entities.Service.filter({ is_active: true }, 'sort_order', 100),
+    queryFn: async () => {
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getServices' } });
+      return result.services || [];
+    },
   });
 
   const filtered = services.filter(s => {
