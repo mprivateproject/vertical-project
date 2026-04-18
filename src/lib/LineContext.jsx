@@ -2,38 +2,37 @@
 // ════════════════════════════════════════════════════════
 // LineContext — SINGLE SOURCE OF TRUTH for LIFF auth
 //
-// RULES (enforced here, nowhere else):
-//   • liff.init / liff.isLoggedIn / liff.getIDToken / liff.getProfile
-//     are called ONLY inside this file.
-//   • syncCustomer is called ONCE here after ready === true.
-//   • Token is injected into liffSyncClient here.
-//   • Components must only consume { ready, loading, profile, ... }
+// State machine:
+//   loading → liff.init() → login redirect (if needed)
+//           → ready (liff ready + profile fetched)
+//           → synced (syncCustomer completed)
+//
+// Components should guard on `synced` before calling API.
 // ════════════════════════════════════════════════════════
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { liffSyncClient, setLiffToken } from '@/lib/liffSyncClient'
+import { liffSyncClient } from '@/lib/liffSyncClient'
 
 const LineContext = createContext(null)
 
 const LIFF_ID = '2009806106-7u8AyzZg'
 
 export const LineProvider = ({ children }) => {
-  const [ready, setReady] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)  // liff.init in progress
+  const [ready, setReady] = useState(false)      // liff ready + logged in
+  const [synced, setSynced] = useState(false)    // syncCustomer completed
   const [profile, setProfile] = useState(null)
   const [customer, setCustomer] = useState(null)
   const [error, setError] = useState(null)
 
-  // Guards: no double-init, no double-sync
   const initDoneRef = useRef(false)
-  const initPromiseRef = useRef(null)
   const syncDoneRef = useRef(false)
 
-  // ── LIFF init ──────────────────────────────────────────
-  const initLiff = () => {
-    if (initDoneRef.current) return Promise.resolve()
-    if (initPromiseRef.current) return initPromiseRef.current
+  // ── Step 1: LIFF init + login ───────────────────────────
+  useEffect(() => {
+    if (initDoneRef.current) return
+    initDoneRef.current = true
 
-    initPromiseRef.current = (async () => {
+    ;(async () => {
       try {
         console.log('🔄 LIFF: init start')
         await liff.init({ liffId: LIFF_ID })
@@ -42,19 +41,17 @@ export const LineProvider = ({ children }) => {
         if (!liff.isLoggedIn()) {
           console.warn('🔄 LIFF: not logged in → redirect')
           liff.login()
-          return // page will reload
+          return // page will reload after login
         }
 
-        const [prof, token] = await Promise.all([
-          liff.getProfile(),
-          Promise.resolve(liff.getIDToken()),
-        ])
+        const idToken = liff.getIDToken()
+        console.log('🔑 LIFF: idToken present:', !!idToken, 'length:', idToken?.length)
 
-        if (!token) throw new Error('No ID Token after LIFF login')
+        if (!idToken) {
+          throw new Error('No ID Token after LIFF login — cannot authenticate')
+        }
 
-        // Inject token into client BEFORE setting ready
-        setLiffToken(token)
-
+        const prof = await liff.getProfile()
         setProfile(prof)
         setReady(true)
         console.log('✅ LIFF: ready', { userId: prof?.userId })
@@ -64,40 +61,34 @@ export const LineProvider = ({ children }) => {
         setError(err)
       } finally {
         setLoading(false)
-        initDoneRef.current = true
       }
     })()
-
-    return initPromiseRef.current
-  }
-
-  // Bootstrap once on mount
-  useEffect(() => {
-    initLiff()
   }, [])
 
-  // ── Auto-sync customer (once, after ready) ─────────────
+  // ── Step 2: syncCustomer — runs ONCE after ready ────────
   useEffect(() => {
     if (!ready) return
     if (syncDoneRef.current) return
     syncDoneRef.current = true
 
-    console.log('🔄 SYNC: start')
+    console.log('🔄 SYNC: syncCustomer start')
+
     liffSyncClient.syncCustomer({
       displayName: profile?.displayName,
       pictureUrl: profile?.pictureUrl,
-      userId: profile?.userId,
     }).then(result => {
-      console.log('✅ SYNC: done')
+      console.log('✅ SYNC: syncCustomer done', { customerId: result?.customer?.id })
       if (result?.customer) setCustomer(result.customer)
+      setSynced(true)
     }).catch(err => {
-      console.error('❌ SYNC: failed', err)
+      console.error('❌ SYNC: syncCustomer failed', err)
+      // Still mark synced so app doesn't hang — booking will fail gracefully
+      setSynced(true)
     })
   }, [ready])
 
-  // ── Logout ─────────────────────────────────────────────
+  // ── Logout ──────────────────────────────────────────────
   const logout = () => {
-    setLiffToken(null)
     if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
       liff.logout()
       window.location.reload()
@@ -106,8 +97,9 @@ export const LineProvider = ({ children }) => {
 
   return (
     <LineContext.Provider value={{
-      ready,
       loading,
+      ready,
+      synced,
       profile,
       lineProfile: profile,
       customer,

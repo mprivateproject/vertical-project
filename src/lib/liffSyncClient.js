@@ -1,87 +1,98 @@
+/* global liff */
 // ════════════════════════════════════════════════════════
-// liffSyncClient — LIFF-first API layer
-// • Does NOT import or call liff directly
-// • Token is injected by LineContext after LIFF is ready
-// • All requests are blocked until token is set
+// liffSyncClient — production-grade LIFF API layer
+//
+// • Gets a FRESH idToken on every request (no caching)
+// • Retries once on 401 with a new token
+// • Blocks requests if LIFF not logged in
 // ════════════════════════════════════════════════════════
 
 const API_BASE = '/api/apps/69df58a04843389be3df3f2e'
-const TIMEOUT = 10000
-
-// 🔑 Token store — set ONLY by LineContext after ready === true
-let _token = null
-
-export function setLiffToken(token) {
-  _token = token
-  console.log('🔑 liffSyncClient: token registered', !!token)
-}
-
-function getToken() {
-  return _token
-}
+const TIMEOUT = 15000
 
 // ─────────────────────────────────────────────────────────
-// Core request — no liff calls, token-gated
+// Token — always fetched fresh from liff, never cached
 // ─────────────────────────────────────────────────────────
-async function request(config) {
-  const token = getToken()
-
-  if (!token) {
-    console.warn('🚫 liffSyncClient: blocked — token not ready')
-    return Promise.reject(new Error('TOKEN_NOT_READY'))
+function getFreshToken() {
+  if (typeof liff === 'undefined') {
+    throw new Error('LIFF_NOT_LOADED')
   }
+  if (!liff.isLoggedIn()) {
+    console.warn('🔄 liffSyncClient: not logged in → redirect')
+    liff.login()
+    return null
+  }
+  const token = liff.getIDToken()
+  if (!token) {
+    throw new Error('NO_ID_TOKEN')
+  }
+  console.log('🔑 liffSyncClient: fresh idToken length:', token.length)
+  return token
+}
+
+// ─────────────────────────────────────────────────────────
+// Core request with auto-retry on 401
+// ─────────────────────────────────────────────────────────
+async function request(config, isRetry = false) {
+  const token = getFreshToken()
+  if (!token) return // login redirect happened
 
   const url = API_BASE + config.url
-
-  console.log('🚀 API REQUEST', { action: config.data?.action, url })
+  console.log('🚀 API REQUEST', { action: config.data?.action, retry: isRetry })
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT)
 
+  let res
   try {
-    const res = await fetch(url, {
+    res = await fetch(url, {
       method: config.method || 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: config.data ? JSON.stringify(config.data) : undefined,
       signal: controller.signal,
     })
-
+  } finally {
     clearTimeout(timer)
-
-    if (!res.ok) {
-      const text = await res.text()
-      throw Object.assign(new Error(text), { status: res.status })
-    }
-
-    const data = await res.json()
-    console.log('✅ API RESPONSE', { action: config.data?.action, status: res.status })
-    return data
-
-  } catch (err) {
-    clearTimeout(timer)
-    console.error('❌ API ERROR', { action: config.data?.action, message: err?.message })
-    throw err
   }
+
+  // Auto-retry once on 401 — token may have just expired
+  if (res.status === 401 && !isRetry) {
+    console.warn('⚠️ liffSyncClient: 401 received — retrying with fresh token')
+    return request(config, true)
+  }
+
+  if (!res.ok) {
+    const text = await res.text()
+    console.error('❌ API ERROR', { action: config.data?.action, status: res.status, body: text })
+    throw Object.assign(new Error(text || `HTTP ${res.status}`), { status: res.status })
+  }
+
+  const data = await res.json()
+  console.log('✅ API RESPONSE', { action: config.data?.action, status: res.status })
+  return data
 }
 
 // ─────────────────────────────────────────────────────────
 // Public API
 // ─────────────────────────────────────────────────────────
 export const liffSyncClient = {
-  /** Called once by LineContext after LIFF ready */
   syncCustomer(payload = {}) {
     return request({
       url: '/functions/liffSync',
       method: 'POST',
-      data: { action: 'syncCustomer', ...payload },
+      data: { action: 'syncCustomer', profile: payload },
     })
   },
 
-  /** General-purpose call for all other actions */
   call({ url, method = 'POST', data }) {
     return request({ url, method, data })
   },
+}
+
+// Legacy export — no longer needed but kept for safety
+export function setLiffToken() {
+  // no-op: token is now fetched fresh on each request
 }

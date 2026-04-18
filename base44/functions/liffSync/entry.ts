@@ -31,12 +31,13 @@ Deno.serve(async (req) => {
     });
 
     if (!verifyRes.ok) {
-      console.error('❌ LIFF SYNC: Token verification failed', { status: verifyRes.status });
-      return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
+      const errBody = await verifyRes.text();
+      console.error('❌ LIFF SYNC: Token verification failed', { status: verifyRes.status, body: errBody });
+      return Response.json({ error: 'Invalid or expired token', detail: errBody }, { status: 401 });
     }
 
     const payload = await verifyRes.json();
-    console.log('✅ LIFF SYNC: Token verified successfully');
+    console.log('✅ LIFF SYNC: Token verified', { sub: payload.sub, iss: payload.iss, aud: payload.aud });
 
     // ✅ LINE user identity (เชื่ออันนี้เท่านั้น)
     const lineUserId = payload.sub;
@@ -57,14 +58,11 @@ Deno.serve(async (req) => {
       let customer;
 
       if (existingCustomers.length > 0) {
-        customer = await base44.asServiceRole.entities.Customer.update(
-          existingCustomers[0].id,
-          {
-            display_name: displayName,
-            picture_url: pictureUrl || '',
-            email: email || '',
-          }
-        );
+        const updates = {};
+        if (displayName) updates.display_name = displayName;
+        if (pictureUrl) updates.picture_url = pictureUrl;
+        if (email) updates.email = email;
+        customer = await base44.asServiceRole.entities.Customer.update(existingCustomers[0].id, updates);
         console.log('✅ syncCustomer: updated existing customer:', customer.id);
       } else {
         customer = await base44.asServiceRole.entities.Customer.create({
