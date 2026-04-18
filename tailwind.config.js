@@ -8,6 +8,7 @@ module.exports = {
         thai: ['var(--font-thai)'],
         display: ['var(--font-display)'],
         body: ['var(--font-body)'],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
   		borderRadius: {
   			lg: 'var(--radius)',

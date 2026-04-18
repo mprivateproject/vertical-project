@@ -32,8 +32,8 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground mb-5">
-            {t('bookNow')}
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-5" style={{color: '#c9a84c', fontFamily: 'Montserrat, sans-serif'}}>
+            — {t('bookNow')} —
           </p>
           <QuickBooking />
         </motion.div>

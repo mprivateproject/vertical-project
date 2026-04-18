@@ -14,7 +14,7 @@ export default function HeroSection() {
       <div className="absolute inset-0">
         <img src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/1839da3f1_IMG_7982.png"
         alt="Spa" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70" />
       </div>
 
       {/* Header controls */}
@@ -38,14 +38,14 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}>
           
-          <p className="text-white/50 text-[11px] font-medium tracking-[0.2em] uppercase mb-2">
+          <p className="text-[10px] font-semibold tracking-[0.3em] uppercase mb-2" style={{color: '#c9a84c'}}>
             Wellness Spa
           </p>
-          <h1 className="font-display text-3xl font-semibold text-white tracking-tight leading-tight">
+          <h1 className="font-display text-3xl font-bold text-white tracking-tight leading-tight" style={{fontFamily: 'Montserrat, sans-serif', letterSpacing: '-0.01em'}}>
             {t('brand')}
           </h1>
           {isLoggedIn && lineProfile?.displayName &&
-          <p className="text-white/55 text-[13px] mt-2 font-light tracking-wide">
+          <p className="text-white/50 text-[12px] mt-2 font-light tracking-widest uppercase">
               {t('welcome')}, {lineProfile.displayName}
             </p>
           }
