@@ -1,11 +1,9 @@
 import { useLine } from '@/lib/LineContext'
-import { liffSyncClient } from '@/lib/liffSyncClient'
 
 const { ready, loading, profile } = useLine()
 
-useEffect(() => {
-  if (!ready) return
+if (loading) return <div>Loading...</div>
 
-  liffSyncClient.syncCustomer()
-}, [ready])
-}
+if (!ready) return null
+
+return <div>{profile?.displayName}</div>
