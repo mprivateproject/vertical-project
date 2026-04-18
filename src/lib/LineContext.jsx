@@ -32,8 +32,6 @@ export const LineProvider = ({ children }) => {
     </LineContext.Provider>
   )
 }
-
-// ✅ IMPORTANT: ต้อง export ตัวนี้
 export const useLine = () => {
   const ctx = useContext(LineContext)
   if (!ctx) {
