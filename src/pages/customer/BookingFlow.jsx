@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
-import { callLiffSync } from '@/lib/liffSyncClient';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -20,7 +20,8 @@ const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 
 export default function BookingFlow() {
   const { t, lang } = useLang();
-  const { idToken, isLoggedIn } = useLine();
+  const { idToken, ready } = useLine();
+  const isLoggedIn = ready;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
@@ -54,12 +55,10 @@ export default function BookingFlow() {
     queryKey: ['bookings-for-date', selectedDate],
     queryFn: async () => {
       if (!selectedDate) return [];
-      const result = await callLiffSync('getBookingsByDate', {
-        bookingDate: format(selectedDate, 'yyyy-MM-dd'),
-      });
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getBookingsByDate', bookingDate: format(selectedDate, 'yyyy-MM-dd') } });
       return result.bookings || [];
     },
-    enabled: !!selectedDate && !!idToken,
+    enabled: !!selectedDate && !!ready,
   });
 
   const bookedSlots = useMemo(() => {
@@ -75,20 +74,25 @@ export default function BookingFlow() {
       const total = h * 60 + m + (service?.duration_minutes || 60);
       const endMinutes = `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
 
-      const result = await callLiffSync('createBooking', {
-        bookingData: {
-          service_id: serviceId,
-          service_name: lang === 'th' ? service?.name_th : service?.name_en,
-          therapist_id: selectedTherapist?.id || '',
-          therapist_name: selectedTherapist?.nickname || t('anyTherapist'),
-          booking_date: format(selectedDate, 'yyyy-MM-dd'),
-          start_time: selectedTime,
-          end_time: endMinutes,
-          duration_minutes: service?.duration_minutes || 60,
-          price: service?.price || 0,
-          status: 'confirmed',
-          payment_status: paymentMethod === 'cash' ? 'unpaid' : 'paid',
-          payment_method: paymentMethod,
+      const result = await liffSyncClient.call({
+        url: '/functions/liffSync',
+        method: 'POST',
+        data: {
+          action: 'createBooking',
+          bookingData: {
+            service_id: serviceId,
+            service_name: lang === 'th' ? service?.name_th : service?.name_en,
+            therapist_id: selectedTherapist?.id || '',
+            therapist_name: selectedTherapist?.nickname || t('anyTherapist'),
+            booking_date: format(selectedDate, 'yyyy-MM-dd'),
+            start_time: selectedTime,
+            end_time: endMinutes,
+            duration_minutes: service?.duration_minutes || 60,
+            price: service?.price || 0,
+            status: 'confirmed',
+            payment_status: paymentMethod === 'cash' ? 'unpaid' : 'paid',
+            payment_method: paymentMethod,
+          },
         },
       });
       return result.booking;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
-import { callLiffSync } from '@/lib/liffSyncClient';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { CalendarDays, Clock, User, X } from 'lucide-react';
@@ -23,7 +23,7 @@ const statusStyles = {
 
 export default function BookingHistory() {
   const { t, lang } = useLang();
-  const { idToken, isLoggedIn } = useLine();
+  const { idToken, ready } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [tab, setTab] = useState('upcoming');
   const queryClient = useQueryClient();
@@ -31,16 +31,15 @@ export default function BookingHistory() {
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['my-bookings', idToken],
     queryFn: async () => {
-      if (!idToken) return [];
-      const result = await callLiffSync('getBookings');
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getBookings' } });
       return result.bookings || [];
     },
-    enabled: !!idToken,
+    enabled: !!ready,
   });
 
   const cancelBookingMutation = useMutation({
     mutationFn: async (bookingId) => {
-      await callLiffSync('cancelBooking', { bookingId });
+      await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'cancelBooking', bookingId } });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });

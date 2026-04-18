@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
-import { callLiffSync } from '@/lib/liffSyncClient';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { format, isToday, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isBefore, startOfDay, addMonths, subMonths } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { Check, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -18,7 +18,8 @@ const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
 
 export default function QuickBooking() {
   const { t, lang } = useLang();
-  const { idToken, isLoggedIn } = useLine();
+  const { idToken, ready } = useLine();
+  const isLoggedIn = ready;
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
 
@@ -33,12 +34,10 @@ export default function QuickBooking() {
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-quick', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
     queryFn: async () => {
-      const result = await callLiffSync('getBookingsByDate', {
-        bookingDate: format(selectedDate, 'yyyy-MM-dd'),
-      });
+      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getBookingsByDate', bookingDate: format(selectedDate, 'yyyy-MM-dd') } });
       return result.bookings || [];
     },
-    enabled: !!selectedDate && !!idToken
+    enabled: !!selectedDate && !!ready
   });
 
   const bookedSlots = useMemo(() =>
@@ -63,18 +62,23 @@ export default function QuickBooking() {
       const [h, m] = selectedTime.split(':').map(Number);
       const endTotal = h * 60 + m + duration;
       const endTime = `${String(Math.floor(endTotal / 60)).padStart(2, '0')}:${String(endTotal % 60).padStart(2, '0')}`;
-      const result = await callLiffSync('createBooking', {
-        bookingData: {
-          service_id: svc?.id || '',
-          service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
-          therapist_name: t('anyTherapist'),
-          booking_date: format(selectedDate, 'yyyy-MM-dd'),
-          start_time: selectedTime,
-          end_time: endTime,
-          duration_minutes: duration,
-          price: svc?.price || 0,
-          status: 'pending',
-          payment_status: 'unpaid',
+      const result = await liffSyncClient.call({
+        url: '/functions/liffSync',
+        method: 'POST',
+        data: {
+          action: 'createBooking',
+          bookingData: {
+            service_id: svc?.id || '',
+            service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
+            therapist_name: t('anyTherapist'),
+            booking_date: format(selectedDate, 'yyyy-MM-dd'),
+            start_time: selectedTime,
+            end_time: endTime,
+            duration_minutes: duration,
+            price: svc?.price || 0,
+            status: 'pending',
+            payment_status: 'unpaid',
+          },
         },
       });
       return result.booking;
