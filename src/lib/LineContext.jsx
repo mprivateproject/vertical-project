@@ -1,137 +1,132 @@
 /* global liff */
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 
-const LineContext = createContext();
+// ⚙️ CONFIG
+const API_BASE = '/api/apps/69df58a04843389be3df3f2e'
+const TIMEOUT = 10000
+const MAX_RETRY = 2
 
-const LIFF_ID = '2009806106-7u8AyzZg';
+let isRefreshing = false
 
-export function LineProvider({ children }) {
-  const [liffReady, setLiffReady] = useState(false);
-  const [lineProfile, setLineProfile] = useState(null);
-  const [customer, setCustomer] = useState(null);
-  const [user, setUser] = useState(null);
-  const [idToken, setIdToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const sleep = (ms) => new Promise(res => setTimeout(res, ms))
 
-  useEffect(() => {
-    initLiff();
-  }, []);
+// 🔐 token
+async function getValidIdToken() {
+  if (!liff.isLoggedIn()) {
+    throw new Error('LIFF not logged in')
+  }
 
-  const initLiff = async () => {
-    try {
-      // 1️⃣ Initialize LIFF with proper ID
-      console.log('🔄 LIFF: Initializing with ID:', LIFF_ID);
-      await liff.init({ liffId: LIFF_ID });
-      setLiffReady(true);
-      console.log('✅ LIFF: Initialization complete');
+  let token = liff.getIDToken()
 
-      // 2️⃣ Check login status
-      if (!liff.isLoggedIn()) {
-        console.warn('⚠️ LIFF: User not logged in');
-        setIsLoading(false);
-        setIsLoggedIn(false);
-        return;
-      }
+  if (!token) {
+    console.warn('⚠️ Token missing → re-init LIFF')
+    await liff.init({ liffId: '2009806106-7u8AyzZg' })
+    token = liff.getIDToken()
+  }
 
-      console.log('✅ LIFF: User is logged in');
+  if (!token) throw new Error('No ID Token')
 
-      // 3️⃣ Get token AFTER verifying login
-      const token = liff.getIDToken();
-      if (!token) {
-        throw new Error('Failed to get LIFF ID Token after login');
-      }
-      console.log('✅ LIFF: ID Token retrieved, length:', token.length);
-
-      // 4️⃣ Get profile data
-      const profile = await liff.getProfile();
-      console.log('✅ LIFF: Profile retrieved:', { userId: profile.userId, displayName: profile.displayName });
-      
-      const profileData = {
-        lineUserId: profile.userId,
-        displayName: profile.displayName,
-        pictureUrl: profile.pictureUrl,
-        statusMessage: profile.statusMessage || '',
-        email: profile.email || '',
-      };
-      
-      setLineProfile(profileData);
-      setIdToken(token);
-
-      // 5️⃣ Sync with backend to get user and customer
-      console.log('🔄 LIFF: Syncing with backend...');
-      const result = await syncWithBackend(profileData, token);
-      console.log('✅ LIFF: Backend sync complete');
-      
-      setUser(result.user);
-      setCustomer(result.customer);
-      setIsLoggedIn(true);
-      setIsLoading(false);
-    } catch (err) {
-      console.error('❌ LIFF init failed:', err);
-      setIsLoading(false);
-      setIsLoggedIn(false);
-    }
-  };
-
-  const syncWithBackend = async (profile, token) => {
-    // Manually call without helper to avoid circular dependency
-    console.log('LIFF SYNC REQUEST:', { action: 'syncCustomer', hasIdToken: !!token });
-    const result = await base44.functions.invoke('liffSync', {
-      action: 'syncCustomer',
-      idToken: token,
-      profile,
-    });
-    console.log('LIFF SYNC RESPONSE:', { action: 'syncCustomer', status: 'success' });
-    return result.data;
-  };
-
-  const loginWithLine = () => {
-    if (liffReady && !liff.isLoggedIn()) {
-      liff.login({ redirectUri: window.location.href });
-    }
-  };
-
-  const logout = () => {
-    if (liffReady && liff.isLoggedIn()) {
-      liff.logout();
-    }
-    setLineProfile(null);
-    setCustomer(null);
-    setUser(null);
-    setIdToken(null);
-    setIsLoggedIn(false);
-    window.location.reload();
-  };
-
-  return (
-    <LineContext.Provider 
-      value={{ 
-        lineProfile, 
-        customer,
-        user,
-        idToken,
-        isLoading, 
-        liffReady, 
-        isLoggedIn,
-        loginWithLine, 
-        logout,
-        setLineProfile,
-        setCustomer,
-        setUser,
-        setIdToken,
-        setIsLoggedIn,
-        initLiff
-      }}
-    >
-      {children}
-    </LineContext.Provider>
-  );
+  return token
 }
 
-export function useLine() {
-  const context = useContext(LineContext);
-  if (!context) throw new Error('useLine must be used within LineProvider');
-  return context;
+// ⏱ timeout wrapper
+function fetchWithTimeout(url, options, timeout) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Timeout')), timeout)
+    )
+  ])
+}
+
+// 📡 request
+async function requestWithRetry(config, retryCount = 0) {
+  try {
+    const token = await getValidIdToken()
+
+    const url = API_BASE + config.url
+
+    console.log('🚀 LIFF REQUEST:', {
+      url,
+      method: config.method,
+      retryCount,
+    })
+
+    const res = await fetchWithTimeout(url, {
+      method: config.method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        ...(config.headers || {})
+      },
+      body: config.data ? JSON.stringify(config.data) : undefined,
+    }, TIMEOUT)
+
+    if (!res.ok) {
+      const text = await res.text()
+      throw { status: res.status, message: text }
+    }
+
+    const data = await res.json()
+
+    console.log('✅ LIFF RESPONSE:', { url, data })
+
+    return data
+
+  } catch (err) {
+    const status = err.status
+
+    console.error('❌ LIFF ERROR:', {
+      url: config.url,
+      status,
+      retryCount,
+      message: err.message,
+    })
+
+    const shouldRetry =
+      retryCount < MAX_RETRY &&
+      (status === 401 || status === 429 || !status)
+
+    if (shouldRetry) {
+      if (status === 401 && !isRefreshing) {
+        isRefreshing = true
+
+        console.warn('🔄 Refreshing LIFF session...')
+        try {
+          await liff.logout()
+          liff.login()
+          await sleep(1500)
+        } catch (e) {
+          console.error('Refresh failed', e)
+        }
+
+        isRefreshing = false
+      }
+
+      await sleep(500 * (retryCount + 1))
+      return requestWithRetry(config, retryCount + 1)
+    }
+
+    throw err
+  }
+}
+
+// 🎯 API
+export const liffSyncClient = {
+  async syncCustomer(payload = {}) {
+    return requestWithRetry({
+      url: '/functions/liffSync',
+      method: 'POST',
+      data: {
+        action: 'syncCustomer',
+        ...payload,
+      },
+    })
+  },
+
+  async getMe() {
+    return requestWithRetry({
+      url: '/entities/User/me',
+      method: 'GET',
+    })
+  },
 }
