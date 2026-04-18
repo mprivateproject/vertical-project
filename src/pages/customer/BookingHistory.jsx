@@ -3,9 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
+import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, User, X } from 'lucide-react';
+import { CalendarDays, Clock, User, X, CreditCard } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
@@ -46,6 +47,32 @@ export default function BookingHistory() {
     },
   });
 
+  const [depositLoading, setDepositLoading] = useState(null); // bookingId
+
+  const handleDepositCheckout = async (booking) => {
+    if (window.self !== window.top) {
+      alert(lang === 'th'
+        ? 'การชำระเงินใช้ได้เฉพาะในแอปที่เปิดโดยตรง กรุณาเปิดในเบราว์เซอร์ภายนอก'
+        : 'Payment is only available from the published app. Please open in an external browser.');
+      return;
+    }
+    setDepositLoading(booking.id);
+    const depositAmount = Math.round((booking.price || 0) * 0.3);
+    const origin = window.location.origin;
+    const res = await base44.functions.invoke('createCheckoutSession', {
+      serviceName: (lang === 'th' ? `มัดจำ: ${booking.service_name}` : `Deposit: ${booking.service_name}`),
+      price: depositAmount,
+      bookingData: { ...booking, payment_method: 'credit_card' },
+      successUrl: `${origin}/bookings?payment=success`,
+      cancelUrl: `${origin}/bookings?payment=cancelled`,
+    });
+    if (res.data?.url) {
+      window.location.href = res.data.url;
+    } else {
+      setDepositLoading(null);
+    }
+  };
+
   const today = format(new Date(), 'yyyy-MM-dd');
   const filtered = bookings.filter(b => {
     if (tab === 'upcoming') return b.booking_date >= today && b.status !== 'cancelled';
@@ -59,6 +86,17 @@ export default function BookingHistory() {
       <h1 className="font-display text-2xl font-semibold text-foreground">
         {t('bookingHistory')}
       </h1>
+
+      {new URLSearchParams(window.location.search).get('payment') === 'success' && (
+        <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm text-center">
+          {lang === 'th' ? '✅ ชำระเงินสำเร็จแล้ว!' : '✅ Payment successful!'}
+        </div>
+      )}
+      {new URLSearchParams(window.location.search).get('payment') === 'cancelled' && (
+        <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm text-center">
+          {lang === 'th' ? '❌ การชำระเงินถูกยกเลิก' : '❌ Payment was cancelled.'}
+        </div>
+      )}
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="w-full bg-secondary rounded-xl">
@@ -115,20 +153,56 @@ export default function BookingHistory() {
 
               </div>
 
-              <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
-                <span className="font-bold text-primary text-sm">
-                  ฿{booking.price?.toLocaleString()}
-                </span>
-                {(booking.status === 'pending' || booking.status === 'confirmed') && booking.booking_date >= today && (
+              <div className="mt-3 pt-3 border-t border-border space-y-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-primary text-sm">฿{booking.price?.toLocaleString()}</span>
+                    {booking.payment_status === 'unpaid' && (
+                      <span className="ml-2 text-xs text-amber-600 font-medium">
+                        {lang === 'th' ? '(ยังไม่ชำระ)' : '(unpaid)'}
+                      </span>
+                    )}
+                    {booking.payment_status === 'pending' && (
+                      <span className="ml-2 text-xs text-blue-600 font-medium">
+                        {lang === 'th' ? '(รอชำระ)' : '(pending)'}
+                      </span>
+                    )}
+                    {booking.payment_status === 'paid' && (
+                      <span className="ml-2 text-xs text-green-600 font-medium">
+                        {lang === 'th' ? '(ชำระแล้ว)' : '(paid)'}
+                      </span>
+                    )}
+                  </div>
+                  {(booking.status === 'pending' || booking.status === 'confirmed') && booking.booking_date >= today && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => cancelBookingMutation.mutate(booking.id)}
+                      disabled={cancelBookingMutation.isPending}
+                      className="h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      <span className="text-xs">{t('cancel')}</span>
+                    </Button>
+                  )}
+                </div>
+                {/* Deposit button — show for active unpaid bookings */}
+                {(booking.status === 'pending' || booking.status === 'confirmed') &&
+                  booking.booking_date >= today &&
+                  (booking.payment_status === 'unpaid' || booking.payment_status === 'pending') && (
                   <Button
-                    variant="ghost"
                     size="sm"
-                    onClick={() => cancelBookingMutation.mutate(booking.id)}
-                    disabled={cancelBookingMutation.isPending}
-                    className="h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => handleDepositCheckout(booking)}
+                    disabled={depositLoading === booking.id}
+                    className="w-full h-9 rounded-xl text-xs font-semibold"
                   >
-                    <X className="w-4 h-4 mr-1" />
-                    <span className="text-xs">{t('cancel')}</span>
+                    <CreditCard className="w-3.5 h-3.5 mr-1.5" />
+                    {depositLoading === booking.id
+                      ? (lang === 'th' ? 'กำลังโหลด...' : 'Loading...')
+                      : lang === 'th'
+                        ? `จ่ายมัดจำ 30% (฿${Math.round((booking.price || 0) * 0.3).toLocaleString()})`
+                        : `Pay 30% Deposit (฿${Math.round((booking.price || 0) * 0.3).toLocaleString()})`
+                    }
                   </Button>
                 )}
               </div>
