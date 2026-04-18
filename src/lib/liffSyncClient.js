@@ -1,90 +1,138 @@
 /* global liff */
-import { base44 } from '@/api/base44Client';
 
-/**
- * Wait for LIFF to be ready and user logged in
- * Prevents race conditions where LIFF is still initializing
- */
-async function ensureLiffReady() {
-  return new Promise((resolve, reject) => {
-    const maxAttempts = 30;
-    let attempts = 0;
+// ⚙️ CONFIG
+const API_BASE = '/api/apps/69df58a04843389be3df3f2e'
+const TIMEOUT = 10000
+const MAX_RETRY = 2
 
-    const checkReady = () => {
-      attempts++;
-      
-      if (typeof liff === 'undefined') {
-        if (attempts >= maxAttempts) {
-          reject(new Error('LIFF failed to initialize'));
-        } else {
-          setTimeout(checkReady, 100);
-        }
-        return;
-      }
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
-      if (!liff.isLoggedIn()) {
-        reject(new Error('User not logged in. Please log in with LINE first.'));
-        return;
-      }
-
-      resolve();
-    };
-
-    checkReady();
-  });
+function fetchWithTimeout(url, options, timeout) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout')), timeout)
+    ),
+  ])
 }
 
-/**
- * Centralized helper to call liffSync backend function
- * Enforces: auth guard → token validation → proper request structure → logging
- */
-export async function callLiffSync(action, data = {}) {
-  try {
-    // 1️⃣ Guard: Ensure LIFF is ready and user is logged in
-    await ensureLiffReady();
+// 🔐 ดึง token แบบปลอดภัย (ไม่ init ซ้ำ)
+function getTokenOrThrow() {
+  if (typeof liff === 'undefined') {
+    throw new Error('LIFF not loaded')
+  }
 
-    // 2️⃣ Token: Retrieve and validate ID token
-    const idToken = liff.getIDToken();
-    if (!idToken) {
-      throw new Error('Failed to retrieve LIFF ID Token. Try logging in again.');
+  if (!liff.isLoggedIn()) {
+    liff.login()
+    throw new Error('Redirecting to login')
+  }
+
+  const token = liff.getIDToken()
+  if (!token) {
+    throw new Error('Missing ID Token')
+  }
+
+  return token
+}
+
+// 📡 core request
+async function requestWithRetry(config, retryCount = 0) {
+  const url = API_BASE + config.url
+
+  try {
+    const token = getTokenOrThrow()
+
+    console.log('🚀 LIFF API REQUEST', {
+      url,
+      method: config.method,
+      retryCount,
+    })
+
+    const res = await fetchWithTimeout(
+      url,
+      {
+        method: config.method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          ...(config.headers || {}),
+        },
+        body: config.data ? JSON.stringify(config.data) : undefined,
+      },
+      TIMEOUT
+    )
+
+    if (!res.ok) {
+      const text = await res.text()
+      throw { status: res.status, message: text }
     }
 
-    // 3️⃣ Log: Debug request structure
-    console.log('🔐 LIFF SYNC REQUEST', {
-      action,
-      hasIdToken: !!idToken,
-      idTokenLength: idToken.length,
-      timestamp: new Date().toISOString(),
-      data,
-    });
+    const data = await res.json()
 
-    // 4️⃣ Build: Proper request payload
-    const payload = {
-      action,
-      idToken,
-      ...data,
-    };
+    console.log('✅ LIFF API RESPONSE', {
+      url,
+      status: res.status,
+    })
 
-    // 5️⃣ Call: Send request with auth header via SDK
-    const result = await base44.functions.invoke('liffSync', payload);
+    return data
 
-    // 6️⃣ Log: Success response
-    console.log('✅ LIFF SYNC RESPONSE', {
-      action,
-      status: 'success',
-      timestamp: new Date().toISOString(),
-    });
+  } catch (err) {
+    const status = err?.status
 
-    return result.data;
+    console.error('❌ LIFF API ERROR', {
+      url,
+      status,
+      retryCount,
+      message: err?.message,
+    })
 
-  } catch (error) {
-    // 7️⃣ Log: Detailed error for debugging
-    console.error('❌ LIFF SYNC ERROR', {
-      action,
-      error: error.message,
-      stack: error.stack,
-      timestamp: new Date().toISOString(),
-    });
-    throw error;
+    const shouldRetry =
+      retryCount < MAX_RETRY &&
+      (status === 401 || status === 429 || !status)
+
+    if (shouldRetry) {
+      if (status === 401) {
+        console.warn('🔄 401 → forcing re-login')
+        try {
+          liff.logout()
+          liff.login()
+        } catch {}
+      }
+
+      await sleep(500 * (retryCount + 1))
+      return requestWithRetry(config, retryCount + 1)
+    }
+
+    throw err
   }
+}
+
+// 🎯 public API
+export const liffSyncClient = {
+  async syncCustomer(payload = {}) {
+    return requestWithRetry({
+      url: '/functions/liffSync',
+      method: 'POST',
+      data: {
+        action: 'syncCustomer',
+        ...payload,
+      },
+    })
+  },
+
+  async getMe() {
+    return requestWithRetry({
+      url: '/entities/User/me',
+      method: 'GET',
+    })
+  },
+
+  async call({ url, method = 'GET', data, params }) {
+    return requestWithRetry({
+      url,
+      method,
+      data,
+      params,
+    })
+  },
 }
