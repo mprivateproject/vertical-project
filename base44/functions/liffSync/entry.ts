@@ -120,25 +120,39 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'bookingData required' }, { status: 400 });
       }
 
-      // ensure customer exists
-      await syncCustomer(bookingData);
+      // Resolve verified user_id and customer_id from lineUserId
+      const existingUsers = await base44.asServiceRole.entities.User.filter({ line_user_id: lineUserId });
+      if (!existingUsers.length) {
+        return Response.json({ error: 'User not found — sync customer first' }, { status: 400 });
+      }
+      const verifiedUser = existingUsers[0];
 
+      const existingCustomers = await base44.asServiceRole.entities.Customer.filter({ user_id: verifiedUser.id });
+      if (!existingCustomers.length) {
+        return Response.json({ error: 'Customer not found — sync customer first' }, { status: 400 });
+      }
+      const verifiedCustomer = existingCustomers[0];
+
+      // Inject verified identity — override any client-supplied user_id / customer_id
       const booking = await base44.asServiceRole.entities.Booking.create({
         ...bookingData,
-        line_user_id: lineUserId,
+        user_id: verifiedUser.id,
+        customer_id: verifiedCustomer.id,
+        customer_name: verifiedCustomer.display_name || bookingData.customer_name || '',
       });
 
-      console.log('✅ LIFF SYNC: Booking created:', { bookingId: booking.id, status: booking.status });
+      console.log('✅ LIFF SYNC: Booking created:', { bookingId: booking.id, userId: verifiedUser.id, customerId: verifiedCustomer.id });
       return Response.json({ booking });
     }
 
     // 3️⃣ GET BOOKINGS (ของ user นี้เท่านั้น)
     if (action === 'getBookings') {
       console.log('🔄 LIFF SYNC: Fetching bookings for lineUserId:', lineUserId);
-      const bookings = await base44.asServiceRole.entities.Booking.filter({
-        line_user_id: lineUserId,
-      });
-
+      const ownUsers = await base44.asServiceRole.entities.User.filter({ line_user_id: lineUserId });
+      const ownUserId = ownUsers[0]?.id;
+      const bookings = ownUserId
+        ? await base44.asServiceRole.entities.Booking.filter({ user_id: ownUserId })
+        : [];
       console.log('✅ LIFF SYNC: Bookings retrieved:', { count: bookings.length });
       return Response.json({ bookings });
     }
