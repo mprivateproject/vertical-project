@@ -257,16 +257,7 @@ Deno.serve(async (req) => {
             console.log('✅ LINE confirmation sent to:', lineUserId);
           }
 
-          // Also notify admin via LINE Notify
-          const notifyToken = Deno.env.get('LINE_NOTIFY_TOKEN');
-          if (notifyToken) {
-            const adminMsg = `\n📅 การจองใหม่!\nลูกค้า: ${verifiedCustomer.display_name}\nบริการ: ${service_name}\nวันที่: ${booking_date} เวลา: ${start_time}\nราคา: ฿${Number(price).toLocaleString()}`;
-            await fetch('https://notify-api.line.me/api/notify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': `Bearer ${notifyToken}` },
-              body: new URLSearchParams({ message: adminMsg }),
-            });
-          }
+          // Admin notification skipped — LINE Notify not available in backend environment
         }
       } catch (notifyErr) {
         console.error('⚠️ LINE notify error (non-fatal):', notifyErr.message);
