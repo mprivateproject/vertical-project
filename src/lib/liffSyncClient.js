@@ -1,131 +1,87 @@
-/* global liff */
+// ════════════════════════════════════════════════════════
+// liffSyncClient — LIFF-first API layer
+// • Does NOT import or call liff directly
+// • Token is injected by LineContext after LIFF is ready
+// • All requests are blocked until token is set
+// ════════════════════════════════════════════════════════
 
-// ⚙️ CONFIG
 const API_BASE = '/api/apps/69df58a04843389be3df3f2e'
 const TIMEOUT = 10000
-const MAX_RETRY = 2
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+// 🔑 Token store — set ONLY by LineContext after ready === true
+let _token = null
 
-function fetchWithTimeout(url, options, timeout) {
-  return Promise.race([
-    fetch(url, options),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Request timeout')), timeout)
-    ),
-  ])
+export function setLiffToken(token) {
+  _token = token
+  console.log('🔑 liffSyncClient: token registered', !!token)
 }
 
-// 🔐 ดึง token แบบปลอดภัย (ไม่ init ซ้ำ)
-function getTokenOrThrow() {
-  if (typeof liff === 'undefined') {
-    throw new Error('LIFF not loaded')
-  }
+function getToken() {
+  return _token
+}
 
-  if (!liff.isLoggedIn()) {
-    liff.login()
-    throw new Error('Redirecting to login')
-  }
+// ─────────────────────────────────────────────────────────
+// Core request — no liff calls, token-gated
+// ─────────────────────────────────────────────────────────
+async function request(config) {
+  const token = getToken()
 
-  const token = liff.getIDToken()
   if (!token) {
-    throw new Error('Missing ID Token')
+    console.warn('🚫 liffSyncClient: blocked — token not ready')
+    return Promise.reject(new Error('TOKEN_NOT_READY'))
   }
 
-  return token
-}
-
-// 📡 core request
-async function requestWithRetry(config, retryCount = 0) {
   const url = API_BASE + config.url
 
-  try {
-    const token = getTokenOrThrow()
+  console.log('🚀 API REQUEST', { action: config.data?.action, url })
 
-    console.log('🚀 LIFF API REQUEST', {
-      url,
-      method: config.method,
-      retryCount,
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), TIMEOUT)
+
+  try {
+    const res = await fetch(url, {
+      method: config.method || 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: config.data ? JSON.stringify(config.data) : undefined,
+      signal: controller.signal,
     })
 
-    const res = await fetchWithTimeout(
-      url,
-      {
-        method: config.method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-          ...(config.headers || {}),
-        },
-        body: config.data ? JSON.stringify(config.data) : undefined,
-      },
-      TIMEOUT
-    )
+    clearTimeout(timer)
 
     if (!res.ok) {
       const text = await res.text()
-      throw { status: res.status, message: text }
+      throw Object.assign(new Error(text), { status: res.status })
     }
 
     const data = await res.json()
-
-    console.log('✅ LIFF API RESPONSE', {
-      url,
-      status: res.status,
-    })
-
+    console.log('✅ API RESPONSE', { action: config.data?.action, status: res.status })
     return data
 
   } catch (err) {
-    const status = err?.status
-
-    console.error('❌ LIFF API ERROR', {
-      url,
-      status,
-      retryCount,
-      message: err?.message,
-    })
-
-    const shouldRetry =
-      retryCount < MAX_RETRY &&
-      (status === 401 || status === 429 || !status)
-
-    if (shouldRetry) {
-      if (status === 401) {
-        console.warn('🔄 401 → forcing re-login')
-        try {
-          liff.logout()
-          liff.login()
-        } catch {}
-      }
-
-      await sleep(500 * (retryCount + 1))
-      return requestWithRetry(config, retryCount + 1)
-    }
-
+    clearTimeout(timer)
+    console.error('❌ API ERROR', { action: config.data?.action, message: err?.message })
     throw err
   }
 }
 
-// 🎯 public API
+// ─────────────────────────────────────────────────────────
+// Public API
+// ─────────────────────────────────────────────────────────
 export const liffSyncClient = {
-  async syncCustomer(payload = {}) {
-    return requestWithRetry({
+  /** Called once by LineContext after LIFF ready */
+  syncCustomer(payload = {}) {
+    return request({
       url: '/functions/liffSync',
       method: 'POST',
-      data: {
-        action: 'syncCustomer',
-        ...payload,
-      },
+      data: { action: 'syncCustomer', ...payload },
     })
   },
 
-  async call({ url, method = 'GET', data, params }) {
-    return requestWithRetry({
-      url,
-      method,
-      data,
-      params,
-    })
+  /** General-purpose call for all other actions */
+  call({ url, method = 'POST', data }) {
+    return request({ url, method, data })
   },
 }
