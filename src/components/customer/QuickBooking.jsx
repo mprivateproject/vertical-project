@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
+import { useTheme } from '@/lib/ThemeContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
 import {
   format, isToday, startOfMonth, endOfMonth, eachDayOfInterval,
@@ -36,7 +37,55 @@ const haptic = (ms = 8) => {
 export default function QuickBooking() {
   const { t, lang } = useLang();
   const { ready } = useLine();
+  const { isDark } = useTheme();
   const isLoggedIn = ready;
+
+  // Adaptive colors for light/dark mode
+  const c = {
+    labelColor: isDark ? 'rgba(161,165,173,0.45)' : 'rgba(80,75,65,0.6)',
+    monthColor: isDark ? '#FFFFFF' : '#2a2520',
+    navColor: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(80,75,65,0.55)',
+    dayHeaderColor: isDark ? 'rgba(161,165,173,0.3)' : 'rgba(80,75,65,0.4)',
+    dayNormal: isDark ? 'rgba(161,165,173,0.55)' : 'rgba(50,45,40,0.75)',
+    dayToday: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(20,16,12,0.9)',
+    dayPast: isDark ? 'rgba(161,165,173,0.2)' : 'rgba(80,75,65,0.25)',
+    daySelected: isDark ? '#FFFFFF' : '#2a2520',
+    daySelectedBg: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+    daySelectedBorder: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)',
+    todayDot: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.4)',
+    svcNameSelected: isDark ? '#FFFFFF' : '#2a2520',
+    svcNameUnselected: isDark ? 'rgba(161,165,173,0.6)' : 'rgba(80,75,65,0.65)',
+    svcPriceSelected: isDark ? 'rgba(255,255,255,0.9)' : '#2a2520',
+    svcPriceUnselected: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.5)',
+    svcBgSelected: isDark
+      ? 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%)'
+      : 'linear-gradient(150deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.03) 100%)',
+    svcBorderSelected: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.2)',
+    svcBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+    svcBorderUnselected: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)',
+    slotSelected: isDark ? '#FFFFFF' : '#2a2520',
+    slotUnselected: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(60,55,48,0.7)',
+    slotBgSelected: isDark ? 'rgba(255,255,255,0.09)' : 'rgba(0,0,0,0.07)',
+    slotBorderSelected: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.22)',
+    slotBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.03)',
+    slotBorderUnselected: isDark ? 'rgba(255,255,255,0.055)' : 'rgba(0,0,0,0.1)',
+    confirmColor: isDark ? '#FFFFFF' : '#2a2520',
+    confirmBg: isDark
+      ? 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
+      : 'linear-gradient(150deg, rgba(0,0,0,0.07) 0%, rgba(0,0,0,0.04) 100%)',
+    confirmBorder: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.18)',
+    glassCard: isDark ? {
+      background: 'rgba(255,255,255,0.025)',
+      border: '1px solid rgba(255,255,255,0.065)',
+      boxShadow: '0 16px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)',
+    } : {
+      background: 'rgba(255,255,255,0.7)',
+      border: '1px solid rgba(0,0,0,0.08)',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9)',
+    },
+    noSlotColor: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.5)',
+    loginHint: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.55)',
+  };
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
 
@@ -173,7 +222,7 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.5, ease: E }}
       >
-        <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}>
+        <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
           {t('service')}
         </p>
         <div className="flex gap-3">
@@ -184,32 +233,27 @@ export default function QuickBooking() {
               <motion.button
                 key={svc.id}
                 onClick={() => { haptic(6); setSelectedService(svc); }}
-                animate={{
-                  scale: isSelected ? 1.03 : 1,
-                  boxShadow: isSelected
-                    ? '0 0 28px rgba(255,255,255,0.06), 0 8px 24px rgba(0,0,0,0.4)'
-                    : '0 2px 8px rgba(0,0,0,0.3)',
-                }}
+                animate={{ scale: isSelected ? 1.03 : 1 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 22 }}
                 className="flex-1 px-4 py-4 rounded-2xl text-left"
                 style={isSelected ? {
-                  background: 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%)',
-                  border: '1px solid rgba(255,255,255,0.18)',
+                  background: c.svcBgSelected,
+                  border: `1px solid ${c.svcBorderSelected}`,
                 } : {
-                  background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  background: c.svcBgUnselected,
+                  border: `1px solid ${c.svcBorderUnselected}`,
                 }}
               >
                 <span
                   className="block text-[13px] font-semibold tracking-[0.05em]"
-                  style={{ color: isSelected ? '#FFFFFF' : 'rgba(161,165,173,0.6)' }}
+                  style={{ color: isSelected ? c.svcNameSelected : c.svcNameUnselected }}
                 >
                   {name}
                 </span>
                 <span
                   className="text-[13px] font-bold mt-1 block tabular-nums"
-                  style={{ color: isSelected ? 'rgba(255,255,255,0.9)' : 'rgba(161,165,173,0.4)', letterSpacing: '0.02em' }}
+                  style={{ color: isSelected ? c.svcPriceSelected : c.svcPriceUnselected, letterSpacing: '0.02em' }}
                 >
                   ฿{svc.price?.toLocaleString()}
                 </span>
@@ -225,11 +269,11 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.5, ease: E }}
       >
-        <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}>
+        <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
           {t('date')}
         </p>
 
-        <div style={glass} className="p-5 overflow-hidden relative">
+        <div style={{ ...glass, ...c.glassCard, backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderRadius: '20px' }} className="p-5 overflow-hidden relative">
           {/* Subtle light reflection sweep */}
           <div
             className="pointer-events-none absolute inset-0 rounded-[20px]"
@@ -244,7 +288,7 @@ export default function QuickBooking() {
               whileTap={{ scale: 0.88, opacity: 0.5 }}
               onClick={() => changeMonth(-1)}
               className="w-8 h-8 flex items-center justify-center rounded-xl transition-all"
-              style={{ color: 'rgba(161,165,173,0.5)' }}
+              style={{ color: c.navColor }}
             >
               <ChevronLeft className="w-4 h-4" />
             </motion.button>
@@ -257,7 +301,7 @@ export default function QuickBooking() {
                 exit={{ opacity: 0, x: -monthDir * 16 }}
                 transition={{ duration: 0.28, ease: E }}
                 className="text-[12px] font-semibold tracking-[0.2em]"
-                style={{ color: '#FFFFFF' }}
+                style={{ color: c.monthColor }}
               >
                 {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
               </motion.span>
@@ -267,7 +311,7 @@ export default function QuickBooking() {
               whileTap={{ scale: 0.88, opacity: 0.5 }}
               onClick={() => changeMonth(1)}
               className="w-8 h-8 flex items-center justify-center rounded-xl transition-all"
-              style={{ color: 'rgba(161,165,173,0.5)' }}
+              style={{ color: c.navColor }}
             >
               <ChevronRight className="w-4 h-4" />
             </motion.button>
@@ -279,7 +323,7 @@ export default function QuickBooking() {
               ? ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส']
               : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
             ).map(d => (
-              <div key={d} className="text-center text-[9px] font-medium py-1 tracking-[0.15em]" style={{ color: 'rgba(161,165,173,0.3)' }}>
+              <div key={d} className="text-center text-[9px] font-medium py-1 tracking-[0.15em]" style={{ color: c.dayHeaderColor }}>
                 {d}
               </div>
             ))}
@@ -321,18 +365,17 @@ export default function QuickBooking() {
                         }
                         className="w-8 h-8 flex items-center justify-center rounded-full text-[12px] font-semibold tabular-nums"
                         style={isSelected ? {
-                          background: 'rgba(255,255,255,0.1)',
-                          border: '1px solid rgba(255,255,255,0.25)',
-                          boxShadow: '0 0 16px rgba(255,255,255,0.08)',
-                          color: '#FFFFFF',
+                          background: c.daySelectedBg,
+                          border: `1px solid ${c.daySelectedBorder}`,
+                          color: c.daySelected,
                           letterSpacing: '0.02em',
                         } : isPast ? {
-                          color: 'rgba(161,165,173,0.2)',
+                          color: c.dayPast,
                           cursor: 'not-allowed',
                         } : isCurrentDay ? {
-                          color: 'rgba(255,255,255,0.85)',
+                          color: c.dayToday,
                         } : {
-                          color: 'rgba(161,165,173,0.55)',
+                          color: c.dayNormal,
                         }}
                       >
                         {format(day, 'd')}
@@ -341,7 +384,7 @@ export default function QuickBooking() {
                       {isCurrentDay && (
                         <div
                           className="w-[3px] h-[3px] rounded-full"
-                          style={{ background: isSelected ? 'rgba(255,255,255,0.8)' : 'rgba(161,165,173,0.4)' }}
+                          style={{ background: isSelected ? c.daySelected : c.todayDot }}
                         />
                       )}
                     </div>
@@ -363,7 +406,7 @@ export default function QuickBooking() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4, ease: E }}
           >
-            <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}>
+            <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
               {t('time')}
             </p>
             <div className="grid grid-cols-4 gap-2">
@@ -379,14 +422,13 @@ export default function QuickBooking() {
                     onClick={() => { haptic(8); setSelectedTime(slot); }}
                     className="py-3.5 rounded-2xl text-[13px] font-semibold tabular-nums tracking-[0.04em]"
                     style={isSelected ? {
-                      background: 'rgba(255,255,255,0.09)',
-                      border: '1px solid rgba(255,255,255,0.22)',
-                      boxShadow: '0 0 20px rgba(255,255,255,0.07), 0 4px 16px rgba(0,0,0,0.4)',
-                      color: '#FFFFFF',
+                      background: c.slotBgSelected,
+                      border: `1px solid ${c.slotBorderSelected}`,
+                      color: c.slotSelected,
                     } : {
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.055)',
-                      color: 'rgba(161,165,173,0.5)',
+                      background: c.slotBgUnselected,
+                      border: `1px solid ${c.slotBorderUnselected}`,
+                      color: c.slotUnselected,
                     }}
                   >
                     {slot}
@@ -394,7 +436,7 @@ export default function QuickBooking() {
                 );
               })}
               {availableSlots.length === 0 && (
-                <p className="col-span-4 text-center py-5 text-[12px] tracking-[0.1em]" style={{ color: 'rgba(161,165,173,0.4)' }}>
+                <p className="col-span-4 text-center py-5 text-[12px] tracking-[0.1em]" style={{ color: c.noSlotColor }}>
                   ไม่มีช่วงเวลาว่าง
                 </p>
               )}
@@ -413,7 +455,7 @@ export default function QuickBooking() {
             transition={{ duration: 0.4, ease: E }}
           >
             {!isLoggedIn ? (
-              <p className="text-center text-[11px] py-2 tracking-[0.1em]" style={{ color: 'rgba(161,165,173,0.4)' }}>
+              <p className="text-center text-[11px] py-2 tracking-[0.1em]" style={{ color: c.loginHint }}>
                 กรุณาเข้าสู่ระบบด้วย LINE เพื่อจอง
               </p>
             ) : (
@@ -429,11 +471,11 @@ export default function QuickBooking() {
                 transition={{ duration: 0.4 }}
                 className="w-full py-4 rounded-2xl font-semibold text-[13px] tracking-[0.25em] uppercase transition-opacity disabled:opacity-35"
                 style={{
-                  background: 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-                  border: '1px solid rgba(255,255,255,0.14)',
+                  background: c.confirmBg,
+                  border: `1px solid ${c.confirmBorder}`,
                   backdropFilter: 'blur(12px)',
                   WebkitBackdropFilter: 'blur(12px)',
-                  color: '#FFFFFF',
+                  color: c.confirmColor,
                 }}
               >
                 {createBooking.isPending ? '· · ·' : t('confirmBooking')}
