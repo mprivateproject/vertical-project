@@ -132,21 +132,7 @@ export default function Profile() {
         </button>
       </div>
 
-      {/* Admin/Staff links */}
-      <div className="pt-4 border-t border-border space-y-2">
-        <Link
-          to="/staff"
-          className="block text-center text-xs text-muted-foreground hover:text-foreground py-2"
-        >
-          {t('staffDashboard')} →
-        </Link>
-        <Link
-          to="/admin"
-          className="block text-center text-xs text-muted-foreground hover:text-foreground py-2"
-        >
-          {t('adminDashboard')} →
-        </Link>
-      </div>
+
     </div>
   );
 }
