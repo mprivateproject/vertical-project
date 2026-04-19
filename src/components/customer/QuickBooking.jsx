@@ -16,6 +16,17 @@ const SERVICES = [
 
 const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
 
+const glassCard = {
+  background: 'rgba(255,255,255,0.03)',
+  backdropFilter: 'blur(20px)',
+  WebkitBackdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255,255,255,0.06)',
+  borderRadius: '20px',
+  boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+};
+
+const easing = [0.22, 1, 0.36, 1];
+
 export default function QuickBooking() {
   const { t, lang } = useLang();
   const { idToken, ready } = useLine();
@@ -24,12 +35,12 @@ export default function QuickBooking() {
   const locale = lang === 'th' ? th : enUS;
 
   const today = new Date();
-
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedService, setSelectedService] = useState(SERVICES[0]);
   const [done, setDone] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState(new Date());
+  const [monthDir, setMonthDir] = useState(1);
 
   const { data: existingBookings = [] } = useQuery({
     queryKey: ['bookings-quick', selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null],
@@ -89,24 +100,40 @@ export default function QuickBooking() {
     }
   });
 
+  const changeMonth = (dir) => {
+    setMonthDir(dir);
+    setCalendarMonth(m => dir > 0 ? addMonths(m, 1) : subMonths(m, 1));
+  };
+
   if (done) {
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="rounded-2xl border border-border bg-card p-8 text-center space-y-4">
-        <div className="w-12 h-12 rounded-full bg-foreground mx-auto flex items-center justify-center">
-          <Check className="w-6 h-6 text-background" />
-        </div>
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: easing }}
+        style={glassCard}
+        className="p-8 text-center space-y-5"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          className="w-14 h-14 rounded-full mx-auto flex items-center justify-center"
+          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+        >
+          <Check className="w-6 h-6" style={{ color: '#C6C8CC' }} />
+        </motion.div>
         <div>
-          <p className="font-semibold text-foreground text-[15px]">{t('bookingConfirmed')}</p>
-          <p className="text-muted-foreground text-[12px] mt-1">
+          <p className="font-semibold text-white text-[15px] tracking-wide">{t('bookingConfirmed')}</p>
+          <p className="text-[12px] mt-1.5" style={{ color: '#A1A5AD' }}>
             {selectedDate && format(selectedDate, 'EEE d MMM', { locale })} · {selectedTime}
           </p>
         </div>
         <Link
           to="/bookings"
-          className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors">
+          className="inline-flex items-center gap-1.5 text-[12px] transition-all hover:opacity-80"
+          style={{ color: '#A1A5AD' }}
+        >
           {t('viewBookings')} <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </motion.div>
@@ -115,9 +142,10 @@ export default function QuickBooking() {
 
   return (
     <div className="space-y-6">
-      {/* Service selector */}
-      <div>
-        <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-4">
+
+      {/* Service selector — pill segmented */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05, ease: easing }}>
+        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-4" style={{ color: '#A1A5AD' }}>
           {t('service')}
         </p>
         <div className="flex gap-3">
@@ -125,115 +153,175 @@ export default function QuickBooking() {
             const name = lang === 'th' ? svc.name_th : svc.name_en;
             const isSelected = selectedService?.id === svc.id;
             return (
-              <button
+              <motion.button
                 key={svc.id}
                 onClick={() => setSelectedService(svc)}
-                className={`px-6 py-3 rounded-2xl text-[13px] font-medium border transition-all duration-150 whitespace-nowrap ${
-                  isSelected
-                    ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
-                    : 'bg-transparent text-muted-foreground border-border hover:border-primary/40'
-                }`}>
-                <span className="normal-case block font-semibold">{name}</span>
-                <span className={`text-[12px] mt-0.5 block ${isSelected ? 'opacity-80' : 'opacity-60'}`}>฿{svc.price?.toLocaleString()}</span>
-              </button>
+                whileTap={{ scale: 0.97 }}
+                animate={{ scale: isSelected ? 1.03 : 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="flex-1 px-4 py-3.5 rounded-2xl text-[13px] font-medium transition-all duration-300"
+                style={isSelected ? {
+                  background: 'linear-gradient(145deg, rgba(198,200,204,0.12), rgba(198,200,204,0.06))',
+                  border: '1px solid rgba(198,200,204,0.2)',
+                  boxShadow: '0 0 20px rgba(255,255,255,0.04)',
+                  color: '#FFFFFF',
+                } : {
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  color: '#A1A5AD',
+                }}
+              >
+                <span className="block font-semibold tracking-wide">{name}</span>
+                <span className="text-[11px] mt-0.5 block opacity-70">฿{svc.price?.toLocaleString()}</span>
+              </motion.button>
             );
           })}
         </div>
-      </div>
+      </motion.div>
 
-      {/* Date selector - Calendar */}
-      <div>
-        <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
+      {/* Calendar */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, ease: easing }}>
+        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-3" style={{ color: '#A1A5AD' }}>
           {t('date')}
         </p>
-        <div className="bg-card border border-border rounded-2xl p-4">
-          {/* Month navigation */}
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => setCalendarMonth(m => subMonths(m, 1))}
-              className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
+        <div style={glassCard} className="p-4 overflow-hidden">
+          {/* Month nav */}
+          <div className="flex items-center justify-between mb-5">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => changeMonth(-1)}
+              className="p-2 rounded-xl transition-all"
+              style={{ color: '#A1A5AD' }}
             >
-              <ChevronLeft className="w-4 h-4 text-foreground" />
-            </button>
-            <span className="text-[13px] font-semibold text-foreground">
-              {format(calendarMonth, 'MMMM yyyy', { locale })}
-            </span>
-            <button
-              onClick={() => setCalendarMonth(m => addMonths(m, 1))}
-              className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
+              <ChevronLeft className="w-4 h-4" />
+            </motion.button>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={format(calendarMonth, 'yyyy-MM')}
+                initial={{ opacity: 0, x: monthDir * 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -monthDir * 20 }}
+                transition={{ duration: 0.25, ease: easing }}
+                className="text-[13px] font-semibold tracking-wider"
+                style={{ color: '#FFFFFF' }}
+              >
+                {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
+              </motion.span>
+            </AnimatePresence>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => changeMonth(1)}
+              className="p-2 rounded-xl transition-all"
+              style={{ color: '#A1A5AD' }}
             >
-              <ChevronRight className="w-4 h-4 text-foreground" />
-            </button>
+              <ChevronRight className="w-4 h-4" />
+            </motion.button>
           </div>
+
           {/* Day headers */}
-          <div className="grid grid-cols-7 mb-2">
+          <div className="grid grid-cols-7 mb-3">
             {(lang === 'th'
               ? ['อา','จ','อ','พ','พฤ','ศ','ส']
               : ['Su','Mo','Tu','We','Th','Fr','Sa']
             ).map(d => (
-              <div key={d} className="text-center text-[10px] font-medium text-muted-foreground py-1">{d}</div>
+              <div key={d} className="text-center text-[10px] font-medium py-1 tracking-widest" style={{ color: 'rgba(161,165,173,0.5)' }}>{d}</div>
             ))}
           </div>
+
           {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-y-1">
-            {(() => {
-              const start = startOfMonth(calendarMonth);
-              const end = endOfMonth(calendarMonth);
-              const days = eachDayOfInterval({ start, end });
-              const startPad = getDay(start);
-              const cells = [];
-              for (let i = 0; i < startPad; i++) cells.push(<div key={`pad-${i}`} />);
-              days.forEach(day => {
-                const isPast = isBefore(day, startOfDay(today));
-                const isSelected = selectedDate && isSameDay(day, selectedDate);
-                const isCurrentDay = isToday(day);
-                cells.push(
-                  <button
-                    key={day.toISOString()}
-                    disabled={isPast}
-                    onClick={() => { setSelectedDate(day); setSelectedTime(null); }}
-                    className={`aspect-square flex items-center justify-center rounded-full text-[12px] font-medium transition-all duration-150 mx-auto w-8 h-8
-                      ${isSelected ? 'bg-foreground text-background' :
-                        isCurrentDay ? 'border border-foreground text-foreground' :
-                        isPast ? 'text-muted-foreground/40 cursor-not-allowed' :
-                        'text-foreground hover:bg-secondary'}`}
-                  >
-                    {format(day, 'd')}
-                  </button>
-                );
-              });
-              return cells;
-            })()}
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={format(calendarMonth, 'yyyy-MM')}
+              initial={{ opacity: 0, x: monthDir * 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -monthDir * 30 }}
+              transition={{ duration: 0.3, ease: easing }}
+              className="grid grid-cols-7 gap-y-1"
+            >
+              {(() => {
+                const start = startOfMonth(calendarMonth);
+                const end = endOfMonth(calendarMonth);
+                const days = eachDayOfInterval({ start, end });
+                const startPad = getDay(start);
+                const cells = [];
+                for (let i = 0; i < startPad; i++) cells.push(<div key={`pad-${i}`} />);
+                days.forEach(day => {
+                  const isPast = isBefore(day, startOfDay(today));
+                  const isSelected = selectedDate && isSameDay(day, selectedDate);
+                  const isCurrentDay = isToday(day);
+                  cells.push(
+                    <div key={day.toISOString()} className="flex flex-col items-center gap-0.5">
+                      <motion.button
+                        disabled={isPast}
+                        onClick={() => { setSelectedDate(day); setSelectedTime(null); }}
+                        whileTap={!isPast ? { scale: 0.9 } : {}}
+                        className="w-8 h-8 flex items-center justify-center rounded-full text-[12px] font-medium transition-all duration-300"
+                        style={isSelected ? {
+                          background: 'rgba(255,255,255,0.08)',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          boxShadow: '0 0 12px rgba(255,255,255,0.06)',
+                          color: '#FFFFFF',
+                        } : isPast ? {
+                          color: 'rgba(161,165,173,0.25)',
+                          cursor: 'not-allowed',
+                        } : {
+                          color: '#A1A5AD',
+                        }}
+                      >
+                        {format(day, 'd')}
+                      </motion.button>
+                      {/* Today dot */}
+                      {isCurrentDay && (
+                        <div className="w-1 h-1 rounded-full" style={{ background: isSelected ? '#FFFFFF' : '#A1A5AD' }} />
+                      )}
+                    </div>
+                  );
+                });
+                return cells;
+              })()}
+            </motion.div>
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
 
       {/* Time slots */}
       <AnimatePresence>
         {selectedDate && (
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}>
-            <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-muted-foreground mb-3">
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35, ease: easing }}
+          >
+            <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-3" style={{ color: '#A1A5AD' }}>
               {t('time')}
             </p>
             <div className="grid grid-cols-4 gap-2">
-              {availableSlots.map((slot) => (
-                <button
+              {availableSlots.map((slot, i) => (
+                <motion.button
                   key={slot}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, ease: easing }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedTime(slot)}
-                  className={`py-2.5 rounded-lg border text-[13px] font-medium transition-all duration-150 ${
-                    selectedTime === slot
-                      ? 'bg-foreground text-background border-foreground'
-                      : 'bg-card text-foreground border-border'
-                  }`}>
+                  className="py-3 rounded-2xl text-[13px] font-medium transition-all duration-300"
+                  style={selectedTime === slot ? {
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    boxShadow: '0 0 16px rgba(255,255,255,0.05)',
+                    color: '#FFFFFF',
+                  } : {
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    color: '#A1A5AD',
+                  }}
+                >
                   {slot}
-                </button>
+                </motion.button>
               ))}
               {availableSlots.length === 0 && (
-                <p className="col-span-4 text-center text-muted-foreground text-[13px] py-4">
+                <p className="col-span-4 text-center py-5 text-[13px]" style={{ color: '#A1A5AD' }}>
                   ไม่มีช่วงเวลาว่าง
                 </p>
               )}
@@ -246,21 +334,31 @@ export default function QuickBooking() {
       <AnimatePresence>
         {selectedDate && selectedTime && (
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}>
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: easing }}
+          >
             {!isLoggedIn ? (
-              <p className="text-center text-[12px] text-muted-foreground py-2">
+              <p className="text-center text-[12px] py-2" style={{ color: '#A1A5AD' }}>
                 กรุณาเข้าสู่ระบบด้วย LINE เพื่อจอง
               </p>
             ) : (
-              <button
+              <motion.button
                 onClick={() => createBooking.mutate()}
                 disabled={createBooking.isPending}
-                className="w-full py-4 rounded-xl bg-foreground text-background font-semibold text-[14px] tracking-wide disabled:opacity-50 transition-all active:scale-[0.98]"
-                style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
+                whileTap={{ scale: 0.97 }}
+                className="w-full py-4 rounded-2xl font-semibold text-[14px] tracking-widest uppercase transition-all disabled:opacity-40"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(198,200,204,0.15) 0%, rgba(198,200,204,0.08) 100%)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  color: '#FFFFFF',
+                  backdropFilter: 'blur(10px)',
+                }}
+              >
                 {createBooking.isPending ? '...' : t('confirmBooking')}
-              </button>
+              </motion.button>
             )}
           </motion.div>
         )}
