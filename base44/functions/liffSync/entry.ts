@@ -241,7 +241,7 @@ Deno.serve(async (req) => {
         const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
         if (token && lineUserId) {
           const { service_name, booking_date, start_time, end_time, price, therapist_name } = bookingData;
-          const msg = `✅ ยืนยันการจองสำเร็จ!\n\n💆 บริการ: ${service_name}\n📅 วันที่: ${booking_date}\n🕐 เวลา: ${start_time}${end_time ? ' – ' + end_time : ''}\n👤 นักบำบัด: ${therapist_name || 'ตามความเหมาะสม'}\n💰 ราคา: ฿${Number(price).toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
+          const msg = `Booking Confirmation\n\n💆 บริการ: ${service_name}\n📅 วันที่: ${booking_date}\n🕐 เวลา: ${start_time}${end_time ? ' – ' + end_time : ''}\n👤 นักบำบัด: ${therapist_name || 'ตามความเหมาะสม'}\n💰 ราคา: ฿${Number(price).toLocaleString()}\n\n Thank you, See you soon 🙏`;
           const lineRes = await fetch('https://api.line.me/v2/bot/message/push', {
             method: 'POST',
             headers: {
