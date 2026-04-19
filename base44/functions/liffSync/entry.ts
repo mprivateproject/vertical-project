@@ -6,6 +6,10 @@ const PUBLIC_ACTIONS = new Set([
   'getTherapists',
   'getServiceById',
   'getBookingsByDate',
+]);
+
+// Actions that require admin role (Base44 authenticated user)
+const ADMIN_ACTIONS = new Set([
   'adminGetBookingsByDate',
   'adminUpdateBooking',
   'adminGetAllBookings',
@@ -114,6 +118,17 @@ Deno.serve(async (req) => {
         const { bookingDate } = body;
         const bookings = await base44.asServiceRole.entities.Booking.filter({ booking_date: bookingDate });
         return Response.json({ bookings });
+      }
+
+    }
+
+    // ─────────────────────────────────────────────────────
+    // ADMIN ACTIONS — require Base44 admin role
+    // ─────────────────────────────────────────────────────
+    if (ADMIN_ACTIONS.has(action)) {
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') {
+        return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
       }
 
       if (action === 'adminGetBookingsByDate') {
