@@ -136,6 +136,13 @@ const STATUS_LABELS = {
 // =========================
 Deno.serve(async (req) => {
   try {
+    // Verify shared secret from Authorization header
+    const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
+    const expectedSecret = Deno.env.get('INTERNAL_SECRET');
+    if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const payload = await req.json();
 
     const booking = payload.data || payload.booking || payload;
