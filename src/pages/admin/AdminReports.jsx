@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
+import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,10 +14,7 @@ export default function AdminReports() {
 
   const { data: bookings = [] } = useQuery({
     queryKey: ['report-bookings'],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetAllBookings', sort: '-booking_date', limit: 1000 } });
-      return result.bookings || [];
-    },
+    queryFn: () => adminClient.getAllBookings('-booking_date', 1000),
   });
 
   // Revenue by month

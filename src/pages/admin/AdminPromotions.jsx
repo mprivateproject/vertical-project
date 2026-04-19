@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
+import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { Plus, Pencil, Trash2, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,17 +20,11 @@ export default function AdminPromotions() {
 
   const { data: promotions = [] } = useQuery({
     queryKey: ['admin-promotions'],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetPromotions' } });
-      return result.promotions || [];
-    },
+    queryFn: () => adminClient.getPromotions(),
   });
 
   const saveMutation = useMutation({
-    mutationFn: async (data) => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminSavePromotion', promoData: data } });
-      return result.promotion;
-    },
+    mutationFn: (data) => adminClient.savePromotion(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-promotions'] });
       setDialogOpen(false);
@@ -38,9 +32,7 @@ export default function AdminPromotions() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id) => {
-      await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminDeletePromotion', promoId: id } });
-    },
+    mutationFn: (id) => adminClient.deletePromotion(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-promotions'] }),
   });
 

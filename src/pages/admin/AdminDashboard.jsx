@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
+import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { format, startOfMonth, endOfMonth, subMonths, isWithinInterval, parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -35,26 +35,17 @@ export default function AdminDashboard() {
 
   const { data: todayBookings = [], isLoading: loadingToday } = useQuery({
     queryKey: ['admin-today-bookings', today],
-    queryFn: async () => {
-      const r = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetBookingsByDate', bookingDate: today } });
-      return r.bookings || [];
-    },
+    queryFn: () => adminClient.getBookingsByDate(today),
   });
 
   const { data: allBookings = [], isLoading: loadingAll } = useQuery({
     queryKey: ['admin-all-bookings'],
-    queryFn: async () => {
-      const r = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetAllBookings', sort: '-booking_date', limit: 1000 } });
-      return r.bookings || [];
-    },
+    queryFn: () => adminClient.getAllBookings('-booking_date', 1000),
   });
 
   const { data: customers = [], isLoading: loadingCustomers } = useQuery({
     queryKey: ['admin-customers'],
-    queryFn: async () => {
-      const r = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetCustomers' } });
-      return r.customers || [];
-    },
+    queryFn: () => adminClient.getCustomers(),
   });
 
   const isLoading = loadingToday || loadingAll || loadingCustomers;

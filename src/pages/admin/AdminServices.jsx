@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
+import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { Plus, Pencil, Trash2, Clock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -25,17 +25,11 @@ export default function AdminServices() {
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['admin-services'],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetServices' } });
-      return result.services || [];
-    },
+    queryFn: () => adminClient.getServices(),
   });
 
   const saveMutation = useMutation({
-    mutationFn: async (data) => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminSaveService', serviceData: data } });
-      return result.service;
-    },
+    mutationFn: (data) => adminClient.saveService(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-services'] });
       setDialogOpen(false);
@@ -44,9 +38,7 @@ export default function AdminServices() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id) => {
-      await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminDeleteService', serviceId: id } });
-    },
+    mutationFn: (id) => adminClient.deleteService(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-services'] }),
   });
 

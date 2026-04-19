@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
+import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { format } from 'date-fns';
 import { Search, Users, Star, DollarSign, Calendar } from 'lucide-react';
@@ -22,10 +22,7 @@ export default function AdminCustomers() {
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['admin-customers'],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetCustomers' } });
-      return result.customers || [];
-    },
+    queryFn: () => adminClient.getCustomers(),
   });
 
   const filtered = customers.filter(c =>

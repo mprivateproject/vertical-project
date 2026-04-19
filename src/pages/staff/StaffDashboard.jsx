@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
+import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { format, isToday, addDays } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -36,10 +36,7 @@ export default function StaffDashboard() {
 
   const { data: allBookings = [], isLoading } = useQuery({
     queryKey: ['staff-bookings', dateStr],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetBookingsByDate', bookingDate: dateStr } });
-      return result.bookings || [];
-    },
+    queryFn: () => adminClient.getBookingsByDate(dateStr),
   });
 
   const therapistNames = [...new Set(allBookings.map(b => b.therapist_name).filter(Boolean))];
@@ -49,10 +46,7 @@ export default function StaffDashboard() {
     : allBookings.filter(b => b.therapist_name === filterTherapist);
 
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status }) => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminUpdateBooking', bookingId: id, data: { status } } });
-      return result.booking;
-    },
+    mutationFn: ({ id, status }) => adminClient.updateBooking(id, { status }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['staff-bookings'] }),
   });
 

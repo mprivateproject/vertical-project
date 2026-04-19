@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
+import { adminClient } from '@/lib/adminClient';
+import { base44 } from '@/api/base44Client';
 import { useLang } from '@/lib/LanguageContext';
 import { format, addDays, startOfWeek, isToday, isSameDay } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -39,22 +40,12 @@ export default function AdminCalendar() {
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['admin-calendar', dateRange.join(',')],
-    queryFn: async () => {
-      const results = await Promise.all(
-        dateRange.map(date =>
-          liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'adminGetBookingsByDate', bookingDate: date } })
-        )
-      );
-      return results.flatMap(r => r.bookings || []);
-    },
+    queryFn: () => Promise.all(dateRange.map(date => adminClient.getBookingsByDate(date))).then(results => results.flat()),
   });
 
   const { data: therapists = [] } = useQuery({
     queryKey: ['therapists'],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getTherapists' } });
-      return result.therapists || [];
-    },
+    queryFn: () => base44.entities.Therapist.filter({ is_active: true }),
   });
 
   return (
