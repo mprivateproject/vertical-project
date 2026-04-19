@@ -8,7 +8,7 @@ export default function Home() {
     <div className="relative w-full overflow-hidden" style={{ minHeight: '100dvh', background: '#1a1410' }}>
       {/* Background spa photo */}
       <img
-        src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/1839da3f1_IMG_7982.png"
+        src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
         alt="Spa"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ opacity: 0.55 }}
