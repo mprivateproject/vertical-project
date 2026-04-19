@@ -17,6 +17,7 @@ import Home from '@/pages/customer/Home';
 import Services from '@/pages/customer/Services';
 import BookingFlow from '@/pages/customer/BookingFlow';
 import BookingHistory from '@/pages/customer/BookingHistory';
+import QuickBookingPage from '@/pages/customer/QuickBooking';
 import Profile from '@/pages/customer/Profile';
 
 // Staff pages
@@ -48,6 +49,7 @@ const AuthenticatedApp = () => {
         <Route path="/bookings" element={<BookingHistory />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/quickbooking" element={<QuickBookingPage />} />
       </Route>
 
       {/* Staff routes */}

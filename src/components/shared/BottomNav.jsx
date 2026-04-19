@@ -93,7 +93,7 @@ export default function BottomNav() {
         {/* Center elevated M button */}
         <div className="relative flex items-center justify-center mx-1">
           <Link
-            to="/"
+            to="/quickbooking"
             onClick={() => haptic(10)}
             className="relative flex items-center justify-center"
             style={{ marginBottom: '10px' }}
