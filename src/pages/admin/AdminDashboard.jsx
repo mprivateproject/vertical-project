@@ -16,6 +16,7 @@ import { motion } from 'framer-motion';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
+import AdminAuthGuard from '@/components/shared/AdminAuthGuard';
 
 const STATUS_STYLES = {
   pending:    { bg: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400', label: 'Pending' },
@@ -149,6 +150,7 @@ export default function AdminDashboard() {
   ];
 
   return (
+    <AdminAuthGuard>
     <div className="space-y-6 max-w-7xl mx-auto">
 
       {/* Header */}
@@ -404,5 +406,6 @@ export default function AdminDashboard() {
         </Card>
       </motion.div>
     </div>
+    </AdminAuthGuard>
   );
 }

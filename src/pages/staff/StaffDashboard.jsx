@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import ThemeToggle from '@/components/shared/ThemeToggle';
+import AdminAuthGuard from '@/components/shared/AdminAuthGuard';
 
 const statusStyles = {
   pending: 'bg-amber-100 text-amber-800',
@@ -63,6 +64,7 @@ export default function StaffDashboard() {
   };
 
   return (
+    <AdminAuthGuard>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="sticky top-0 z-30 bg-card/95 backdrop-blur-xl border-b border-border px-4 pt-12 pb-4">
@@ -234,5 +236,6 @@ export default function StaffDashboard() {
         )}
       </div>
     </div>
+    </AdminAuthGuard>
   );
 }
