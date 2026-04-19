@@ -1,71 +1,122 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { liffSyncClient } from '@/lib/liffSyncClient';
-import { useLine } from '@/lib/LineContext';
-import HomeHeader from '@/components/home/HomeHeader';
-import ActionCards from '@/components/home/ActionCards';
-import PromotionsSection from '@/components/home/PromotionsSection';
-import ServicesSection from '@/components/home/ServicesSection';
+import { motion } from 'framer-motion';
+
+const E = [0.22, 1, 0.36, 1];
 
 export default function Home() {
-  const { isLoggedIn, ready } = useLine();
-
-  const { data: promoData, isLoading: promoLoading } = useQuery({
-    queryKey: ['home-promotions'],
-    queryFn: async () => {
-      const r = await liffSyncClient.call({
-        url: '/functions/liffSync', method: 'POST',
-        data: { action: 'getPromotions' },
-      });
-      return r.promotions || [];
-    },
-  });
-
-  const { data: servicesData, isLoading: servicesLoading } = useQuery({
-    queryKey: ['home-services'],
-    queryFn: async () => {
-      const r = await liffSyncClient.call({
-        url: '/functions/liffSync', method: 'POST',
-        data: { action: 'getServices' },
-      });
-      return r.services || [];
-    },
-  });
-
-  const { data: myBookings = [] } = useQuery({
-    queryKey: ['my-bookings-count'],
-    queryFn: async () => {
-      const r = await liffSyncClient.call({
-        url: '/functions/liffSync', method: 'POST',
-        data: { action: 'getBookings' },
-      });
-      return r.bookings || [];
-    },
-    enabled: !!ready && !!isLoggedIn,
-  });
-
   return (
-    <div className="min-h-screen" style={{ background: '#0E0F11' }}>
-      {/* Ambient top glow */}
+    <div className="relative w-full overflow-hidden" style={{ minHeight: '100dvh', background: '#1a1410' }}>
+      {/* Background spa photo */}
+      <img
+        src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/1839da3f1_IMG_7982.png"
+        alt="Spa"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 0.55 }}
+      />
+
+      {/* Dark vignette overlay */}
       <div
-        className="fixed inset-0 pointer-events-none z-0"
+        className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at 50% -5%, rgba(201,168,76,0.06) 0%, transparent 60%)',
+          background: 'linear-gradient(180deg, rgba(10,8,6,0.35) 0%, rgba(10,8,6,0.15) 35%, rgba(10,8,6,0.55) 70%, rgba(10,8,6,0.85) 100%)',
         }}
       />
 
-      <div className="relative z-10 pb-36 space-y-5">
-        {/* 1. Header — centered Hello */}
-        <HomeHeader />
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4" style={{ minHeight: '100dvh', paddingBottom: '80px' }}>
 
-        {/* 2. Action Cards 2×2 */}
-        <ActionCards totalBookings={myBookings.length} />
+        {/* STAY TUNED label */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: E }}
+          className="mb-4 px-5 py-1"
+          style={{
+            border: '1px solid rgba(255,255,255,0.35)',
+            borderRadius: '2px',
+          }}
+        >
+          <p
+            className="text-white text-[10px] tracking-[0.35em] font-light"
+            style={{ fontFamily: 'Montserrat, sans-serif' }}
+          >
+            STAY TUNED
+          </p>
+        </motion.div>
 
-        {/* 3. Promotion banner */}
-        <PromotionsSection promotions={promoData} isLoading={promoLoading} />
+        {/* SOFT */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.55, ease: E }}
+          className="text-white font-black uppercase leading-none"
+          style={{
+            fontFamily: 'Montserrat, "Arial Black", sans-serif',
+            fontSize: 'clamp(52px, 18vw, 96px)',
+            letterSpacing: '-0.02em',
+            lineHeight: 0.95,
+          }}
+        >
+          SOFT
+        </motion.p>
 
-        {/* 4. Spa photo strip */}
-        <ServicesSection services={servicesData} isLoading={servicesLoading} />
+        {/* OPEN — giant */}
+        <motion.p
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.18, duration: 0.65, ease: E }}
+          className="text-white font-black uppercase leading-none"
+          style={{
+            fontFamily: 'Montserrat, "Arial Black", sans-serif',
+            fontSize: 'clamp(88px, 30vw, 160px)',
+            letterSpacing: '-0.03em',
+            lineHeight: 0.88,
+          }}
+        >
+          OPEN
+        </motion.p>
+
+        {/* Divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.35, duration: 0.5, ease: E }}
+          className="my-5 w-16"
+          style={{ height: '1px', background: 'rgba(255,255,255,0.4)' }}
+        />
+
+        {/* INVITATIONS ONLY */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="text-white text-[14px] tracking-[0.3em] font-semibold uppercase"
+          style={{ fontFamily: 'Montserrat, sans-serif' }}
+        >
+          INVITATIONS ONLY
+        </motion.p>
+
+        {/* Location & LINE */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="mt-2 space-y-0.5"
+        >
+          <p
+            className="text-[10px] tracking-[0.25em] uppercase"
+            style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'Montserrat, sans-serif' }}
+          >
+            NONTHABURI
+          </p>
+          <p
+            className="text-[10px] tracking-[0.2em] uppercase"
+            style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Montserrat, sans-serif' }}
+          >
+            LINE: @MPRIVATEPROJECT
+          </p>
+        </motion.div>
+
       </div>
     </div>
   );
