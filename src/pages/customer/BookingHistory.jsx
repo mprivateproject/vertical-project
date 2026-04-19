@@ -4,35 +4,49 @@ import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
 import { base44 } from '@/api/base44Client';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, User, X, CreditCard } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CalendarDays, Clock, X, CreditCard, ExternalLink, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import BookingDetailSheet from '@/components/customer/BookingDetailSheet';
 
-const statusStyles = {
-  pending: 'bg-amber-100 text-amber-800',
-  confirmed: 'bg-blue-100 text-blue-800',
-  checked_in: 'bg-purple-100 text-purple-800',
-  in_progress: 'bg-indigo-100 text-indigo-800',
-  completed: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-700',
-  no_show: 'bg-gray-100 text-gray-600',
-};
+const E = [0.22, 1, 0.36, 1];
+
+const haptic = (ms = 8) => { if (navigator?.vibrate) navigator.vibrate(ms); };
+
+const PremiumSkeleton = () => (
+  <div className="space-y-3">
+    {[1, 2, 3].map(i => (
+      <motion.div
+        key={i}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.15 }}
+        className="h-24 rounded-2xl"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
+          border: '1px solid rgba(255,255,255,0.05)',
+        }}
+      />
+    ))}
+  </div>
+);
 
 export default function BookingHistory() {
   const { t, lang } = useLang();
   const { idToken, ready } = useLine();
   const locale = lang === 'th' ? th : enUS;
-  const [tab, setTab] = useState('upcoming');
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [depositLoading, setDepositLoading] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['my-bookings', idToken],
     queryFn: async () => {
-      const result = await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'getBookings' } });
+      const result = await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'getBookings' }
+      });
       return result.bookings || [];
     },
     enabled: !!ready,
@@ -40,176 +54,210 @@ export default function BookingHistory() {
 
   const cancelBookingMutation = useMutation({
     mutationFn: async (bookingId) => {
-      await liffSyncClient.call({ url: '/functions/liffSync', method: 'POST', data: { action: 'cancelBooking', bookingId } });
+      await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'cancelBooking', bookingId }
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+      setSelectedBooking(null);
     },
   });
-
-  const [depositLoading, setDepositLoading] = useState(null); // bookingId
 
   const handleDepositCheckout = async (booking) => {
     if (window.self !== window.top) {
       alert(lang === 'th'
-        ? 'การชำระเงินใช้ได้เฉพาะในแอปที่เปิดโดยตรง กรุณาเปิดในเบราว์เซอร์ภายนอก'
-        : 'Payment is only available from the published app. Please open in an external browser.');
+        ? 'การชำระเงินใช้ได้เฉพาะในแอปที่เปิดโดยตรง'
+        : 'Payment is only available from the published app.');
       return;
     }
     setDepositLoading(booking.id);
-    const depositAmount = 500;
     const origin = window.location.origin;
     const res = await base44.functions.invoke('createCheckoutSession', {
-      serviceName: (lang === 'th' ? `มัดจำ: ${booking.service_name}` : `Deposit: ${booking.service_name}`),
-      price: depositAmount,
+      serviceName: lang === 'th' ? `มัดจำ: ${booking.service_name}` : `Deposit: ${booking.service_name}`,
+      price: 500,
       bookingData: { ...booking, payment_method: 'credit_card' },
       successUrl: `${origin}/bookings?payment=success`,
       cancelUrl: `${origin}/bookings?payment=cancelled`,
     });
-    if (res.data?.url) {
-      window.location.href = res.data.url;
-    } else {
-      setDepositLoading(null);
-    }
+    if (res.data?.url) window.location.href = res.data.url;
+    else setDepositLoading(null);
   };
 
   const today = format(new Date(), 'yyyy-MM-dd');
-  const filtered = bookings.filter(b => {
-    if (tab === 'upcoming') return b.booking_date >= today && b.status !== 'cancelled';
-    if (tab === 'past') return b.booking_date < today || b.status === 'completed';
-    if (tab === 'cancelled') return b.status === 'cancelled';
-    return true;
-  });
+  const upcoming = bookings
+    .filter(b => b.booking_date >= today && b.status !== 'cancelled')
+    .sort((a, b) => a.booking_date.localeCompare(b.booking_date) || a.start_time.localeCompare(b.start_time));
+
+  const paymentParam = new URLSearchParams(window.location.search).get('payment');
 
   return (
-    <div className="px-5 pt-14 pb-6 space-y-5">
-      <h1 className="font-display text-2xl font-semibold text-foreground">
-        {t('bookingHistory')}
-      </h1>
+    <div className="min-h-screen pb-36" style={{ background: '#0E0F11' }}>
+      {/* Ambient glow */}
+      <div className="fixed inset-0 pointer-events-none z-0" style={{
+        background: 'radial-gradient(ellipse at 50% -10%, rgba(198,200,204,0.04) 0%, transparent 60%)',
+      }} />
 
-      {new URLSearchParams(window.location.search).get('payment') === 'success' && (
-        <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm text-center">
-          {lang === 'th' ? '✅ ชำระเงินสำเร็จแล้ว!' : '✅ Payment successful!'}
-        </div>
-      )}
-      {new URLSearchParams(window.location.search).get('payment') === 'cancelled' && (
-        <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm text-center">
-          {lang === 'th' ? '❌ การชำระเงินถูกยกเลิก' : '❌ Payment was cancelled.'}
-        </div>
-      )}
+      <div className="relative z-10 px-5 pt-14 space-y-6">
 
-      <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="w-full bg-secondary rounded-xl">
-          <TabsTrigger value="upcoming" className="flex-1 rounded-lg text-xs">
-            {t('upcoming')}
-          </TabsTrigger>
-          <TabsTrigger value="past" className="flex-1 rounded-lg text-xs">
-            {t('past')}
-          </TabsTrigger>
-          <TabsTrigger value="cancelled" className="flex-1 rounded-lg text-xs">
-            {t('cancelled')}
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: E }}
+        >
+          <p className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-1"
+            style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
+            — UPCOMING · {upcoming.length} —
+          </p>
+          <h1
+            className="text-2xl font-light tracking-wide"
+            style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.03em' }}
+          >
+            {lang === 'th' ? 'นัดหมายที่กำลังจะมาถึง' : 'Your Upcoming Sessions'}
+          </h1>
+        </motion.div>
 
-      {isLoading ? (
-        <div className="space-y-3">
-          {[1,2,3].map(i => (
-            <div key={i} className="h-28 rounded-2xl bg-muted animate-pulse" />
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <CalendarDays className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-muted-foreground text-sm">{t('noBookings')}</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {filtered.map((booking, i) => (
+        {/* Payment feedback */}
+        <AnimatePresence>
+          {paymentParam === 'success' && (
             <motion.div
-              key={booking.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-card border border-border rounded-2xl p-4 active:scale-[0.99] transition-transform"
+              initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              className="px-4 py-3 rounded-2xl text-[12px] text-center tracking-wide"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                color: 'rgba(200,220,200,0.8)',
+              }}
             >
-
-
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <CalendarDays className="w-3.5 h-3.5" />
-                  <span>
-                    {(() => {
-                      const d = new Date(booking.booking_date + 'T00:00:00');
-                      return format(d, 'EEEE d MMM yyyy', { locale });
-                    })()}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{booking.start_time} - {booking.end_time}</span>
-                  <span>({booking.duration_minutes} {t('minutes')})</span>
-                </div>
-
-              </div>
-
-              <div className="mt-3 pt-3 border-t border-border space-y-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-primary text-sm">฿{booking.price?.toLocaleString()}</span>
-                    {booking.payment_status === 'unpaid' && (
-                      <span className="ml-2 text-xs text-amber-600 font-medium">
-                        {lang === 'th' ? '(ยังไม่ชำระ)' : '(unpaid)'}
-                      </span>
-                    )}
-                    {booking.payment_status === 'pending' && (
-                      <span className="ml-2 text-xs text-blue-600 font-medium">
-                        {lang === 'th' ? '(รอชำระ)' : '(pending)'}
-                      </span>
-                    )}
-                    {booking.payment_status === 'paid' && (
-                      <span className="ml-2 text-xs text-green-600 font-medium">
-                        {lang === 'th' ? '(ชำระแล้ว)' : '(paid)'}
-                      </span>
-                    )}
-                  </div>
-                  {(booking.status === 'pending' || booking.status === 'confirmed') && booking.booking_date >= today && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => cancelBookingMutation.mutate(booking.id)}
-                      disabled={cancelBookingMutation.isPending}
-                      className="h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-                    >
-                      <X className="w-4 h-4 mr-1" />
-                      <span className="text-xs">{t('cancel')}</span>
-                    </Button>
-                  )}
-                </div>
-                {/* Deposit button — show for active unpaid bookings */}
-                {(booking.status === 'pending' || booking.status === 'confirmed') &&
-                  booking.booking_date >= today &&
-                  (booking.payment_status === 'unpaid' || booking.payment_status === 'pending') && (
-                  <Button
-                    size="sm"
-                    onClick={() => handleDepositCheckout(booking)}
-                    disabled={depositLoading === booking.id}
-                    className="w-full h-9 rounded-xl text-xs font-semibold"
-                  >
-                    <CreditCard className="w-3.5 h-3.5 mr-1.5" />
-                    {depositLoading === booking.id
-                      ? (lang === 'th' ? 'กำลังโหลด...' : 'Loading...')
-                      : lang === 'th'
-                        ? `จ่ายมัดจำ ฿500`
-                        : `Pay ฿500 Deposit`
-                    }
-                  </Button>
-                )}
-              </div>
+              {lang === 'th' ? '✓  ชำระเงินสำเร็จแล้ว' : '✓  Payment successful'}
             </motion.div>
-          ))}
-        </div>
-      )}
+          )}
+          {paymentParam === 'cancelled' && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              className="px-4 py-3 rounded-2xl text-[12px] text-center tracking-wide"
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                color: 'rgba(200,160,160,0.7)',
+              }}
+            >
+              {lang === 'th' ? '✕  การชำระเงินถูกยกเลิก' : '✕  Payment was cancelled'}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Booking list */}
+        {isLoading ? (
+          <PremiumSkeleton />
+        ) : upcoming.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="text-center py-20 space-y-3"
+          >
+            <CalendarDays className="w-10 h-10 mx-auto" style={{ color: 'rgba(161,165,173,0.2)' }} />
+            <p className="text-[12px] tracking-[0.15em] uppercase" style={{ color: 'rgba(161,165,173,0.35)' }}>
+              {lang === 'th' ? 'ยังไม่มีนัดหมาย' : 'No upcoming sessions'}
+            </p>
+          </motion.div>
+        ) : (
+          <div className="space-y-3">
+            {upcoming.map((booking, i) => {
+              const dateObj = new Date(booking.booking_date + 'T00:00:00');
+              const monthStr = format(dateObj, 'MMM', { locale }).toUpperCase();
+              const dayStr = format(dateObj, 'd');
+              const weekStr = format(dateObj, 'EEE', { locale }).toUpperCase();
+
+              return (
+                <motion.button
+                  key={booking.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.07, duration: 0.5, ease: E }}
+                  whileHover={{ scale: 1.015 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => { haptic(8); setSelectedBooking(booking); }}
+                  className="w-full text-left flex items-center gap-4 px-4 py-4 rounded-2xl transition-all"
+                  style={{
+                    background: 'rgba(255,255,255,0.025)',
+                    border: '1px solid rgba(255,255,255,0.07)',
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+                  }}
+                >
+                  {/* Date block */}
+                  <div
+                    className="flex-shrink-0 w-14 flex flex-col items-center justify-center py-2 rounded-xl"
+                    style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                    }}
+                  >
+                    <span className="text-[9px] tracking-[0.2em] font-medium"
+                      style={{ color: 'rgba(161,165,173,0.5)', fontFamily: 'Montserrat, sans-serif' }}>
+                      {monthStr}
+                    </span>
+                    <span className="text-[24px] font-bold tabular-nums leading-tight"
+                      style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Montserrat, sans-serif' }}>
+                      {dayStr}
+                    </span>
+                    <span className="text-[9px] tracking-[0.15em] font-medium"
+                      style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
+                      {weekStr}
+                    </span>
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[9px] tracking-[0.25em] uppercase mb-1"
+                      style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
+                      Wellness · Massage
+                    </p>
+                    <p
+                      className="text-[15px] font-light truncate leading-snug"
+                      style={{
+                        color: 'rgba(255,255,255,0.88)',
+                        fontFamily: 'Georgia, "Times New Roman", serif',
+                        letterSpacing: '0.01em',
+                      }}
+                    >
+                      {booking.service_name}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <Clock className="w-3 h-3 flex-shrink-0" style={{ color: 'rgba(161,165,173,0.35)' }} />
+                      <span className="text-[11px] tabular-nums" style={{ color: 'rgba(161,165,173,0.5)' }}>
+                        {booking.start_time}
+                        {booking.end_time ? ` – ${booking.end_time}` : ''}
+                        {booking.duration_minutes ? ` · ${booking.duration_minutes} ${t('minutes')}` : ''}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Chevron */}
+                  <ChevronDown
+                    className="w-4 h-4 flex-shrink-0 -rotate-90"
+                    style={{ color: 'rgba(161,165,173,0.25)' }}
+                  />
+                </motion.button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Detail sheet */}
+      <BookingDetailSheet
+        booking={selectedBooking}
+        onClose={() => setSelectedBooking(null)}
+        onCancel={(id) => { haptic(12); cancelBookingMutation.mutate(id); }}
+        onDeposit={handleDepositCheckout}
+        depositLoading={depositLoading}
+        today={today}
+        lang={lang}
+        locale={locale}
+        t={t}
+      />
     </div>
   );
 }

@@ -74,6 +74,7 @@ const translations = {
     noBookings: "ยังไม่มีการจอง",
     loginWithLine: "เข้าสู่ระบบด้วย LINE",
     welcome: "ยินดีต้อนรับ",
+    upcoming: "กำลังจะมาถึง",
     promotions: "โปรโมชั่น",
     loyalty: "คะแนนสะสม",
     points: "คะแนน",
