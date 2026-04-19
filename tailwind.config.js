@@ -9,6 +9,7 @@ module.exports = {
         display: ['var(--font-display)'],
         body: ['var(--font-body)'],
         montserrat: ['Montserrat', 'sans-serif'],
+        cormorant: ['"Cormorant Garamond"', 'Georgia', 'serif'],
       },
   		borderRadius: {
   			lg: 'var(--radius)',
