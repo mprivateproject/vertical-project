@@ -1,11 +1,12 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useLang } from '@/lib/LanguageContext';
 
 const BG_IMAGE = 'https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png';
 
 export default function PageHeader() {
   const { pathname } = useLocation();
+  const { lang, toggleLang } = useLang();
 
   // Only show on non-home pages
   if (pathname === '/') return null;
@@ -13,7 +14,7 @@ export default function PageHeader() {
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ height: '140px' }}
+      style={{ height: '120px' }}
     >
       {/* Spa background image */}
       <img
@@ -22,20 +23,52 @@ export default function PageHeader() {
         className="absolute inset-0 w-full h-full object-cover object-center"
         style={{ opacity: 0.45, transform: 'scale(1.05)' }}
       />
-      {/* Dark gradient overlay — stronger at bottom to blend into page bg */}
+      {/* Dark gradient overlay */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(180deg, rgba(14,15,17,0.45) 0%, rgba(14,15,17,0.2) 40%, rgba(14,15,17,0.95) 100%)',
+          background: 'linear-gradient(180deg, rgba(14,15,17,0.5) 0%, rgba(14,15,17,0.2) 40%, rgba(14,15,17,0.95) 100%)',
         }}
       />
-      {/* Subtle warm glow from chandelier area */}
+      {/* Warm chandelier glow */}
       <div
         className="absolute inset-0"
         style={{
           background: 'radial-gradient(ellipse at 50% 30%, rgba(201,168,76,0.08) 0%, transparent 65%)',
         }}
       />
+
+      {/* Language toggle — top right */}
+      <button
+        onClick={toggleLang}
+        className="absolute top-3 right-4 z-20 flex items-center gap-1 px-3 py-1 rounded-full transition-all active:scale-95"
+        style={{
+          background: 'rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        }}
+      >
+        <span
+          className="text-[11px] font-semibold tracking-wider"
+          style={{
+            fontFamily: 'Montserrat, sans-serif',
+            color: lang === 'th' ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.4)',
+          }}
+        >
+          TH
+        </span>
+        <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px' }}>|</span>
+        <span
+          className="text-[11px] font-semibold tracking-wider"
+          style={{
+            fontFamily: 'Montserrat, sans-serif',
+            color: lang === 'en' ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.4)',
+          }}
+        >
+          EN
+        </span>
+      </button>
     </div>
   );
 }
