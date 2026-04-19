@@ -170,7 +170,9 @@ export default function BookingHistory() {
               const dayStr = format(dateObj, 'd');
               const weekStr = format(dateObj, 'EEE', { locale }).toUpperCase();
 
-              const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && booking.booking_date >= today;
+              const bookingDateTime = new Date(`${booking.booking_date}T${booking.start_time}:00`);
+              const twoHoursBefore = new Date(bookingDateTime.getTime() - 2 * 60 * 60 * 1000);
+              const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && new Date() < twoHoursBefore;
 
               return (
                 <motion.div

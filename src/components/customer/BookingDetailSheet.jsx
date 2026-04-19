@@ -42,7 +42,9 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onDepos
 
   const dateObj = new Date(booking.booking_date + 'T00:00:00');
   const fullDate = format(dateObj, 'EEEE, d MMMM yyyy', { locale });
-  const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && booking.booking_date >= today;
+  const bookingDateTime = new Date(`${booking.booking_date}T${booking.start_time}:00`);
+  const twoHoursBefore = new Date(bookingDateTime.getTime() - 2 * 60 * 60 * 1000);
+  const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && new Date() < twoHoursBefore;
   const canDeposit = canCancel && (booking.payment_status === 'unpaid' || booking.payment_status === 'pending');
   const status = statusLabel[booking.status] || { th: booking.status, en: booking.status };
   const payment = paymentLabel[booking.payment_status] || { th: booking.payment_status, en: booking.payment_status };
