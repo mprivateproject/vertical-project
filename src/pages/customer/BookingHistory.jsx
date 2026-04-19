@@ -115,7 +115,7 @@ export default function BookingHistory() {
             className="text-2xl font-light tracking-wide"
             style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.03em' }}
           >
-            {lang === 'th' ? 'นัดหมายที่กำลังจะมาถึง' : 'Your Upcoming Sessions'}
+            {lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Upcomings'}
           </h1>
         </motion.div>
 

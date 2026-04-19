@@ -32,7 +32,7 @@ export default function Profile() {
   }
 
   const menuItems = [
-    { icon: Clock, label: t('bookingHistory'), path: '/bookings' },
+    { icon: Clock, label: lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Your Bookings', path: '/bookings' },
     { icon: Star, label: t('review'), path: '/bookings' },
     { icon: Award, label: `${t('loyalty')} — 0 ${t('points')}`, path: '/bookings' },
   ];

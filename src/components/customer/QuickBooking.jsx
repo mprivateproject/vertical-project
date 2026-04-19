@@ -13,9 +13,9 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-mo
 import { Link } from 'react-router-dom';
 
 const SERVICES = [
-  { id: 'sport', name_th: '90 นาที', name_en: '90 Min', duration_minutes: 90, price: 2950 },
-  { id: 'aroma', name_th: '120 นาที', name_en: '120 Min', duration_minutes: 120, price: 3450 },
+  { id: 'house_signature_90', name_th: 'House Signature 90 นาที', name_en: 'House Signature 90 Min', duration_minutes: 90, price: 2950 },
 ];
+const DEFAULT_THERAPIST = 'M';
 const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
 const E = [0.22, 1, 0.36, 1];
 
@@ -90,7 +90,7 @@ export default function QuickBooking() {
           bookingData: {
             service_id: svc?.id || '',
             service_name: lang === 'th' ? svc?.name_th : svc?.name_en,
-            therapist_name: t('anyTherapist'),
+            therapist_name: DEFAULT_THERAPIST,
             booking_date: format(selectedDate, 'yyyy-MM-dd'),
             start_time: selectedTime,
             end_time: endTime,
@@ -229,7 +229,7 @@ export default function QuickBooking() {
           {t('date')}
         </p>
 
-        <div style={glass} className="p-4 overflow-hidden relative">
+        <div style={glass} className="p-5 overflow-hidden relative">
           {/* Subtle light reflection sweep */}
           <div
             className="pointer-events-none absolute inset-0 rounded-[20px]"
@@ -293,7 +293,7 @@ export default function QuickBooking() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -monthDir * 28 }}
               transition={{ duration: 0.32, ease: E }}
-              className="grid grid-cols-7 gap-y-1"
+              className="grid grid-cols-7 gap-y-2"
             >
               {(() => {
                 const start = startOfMonth(calendarMonth);

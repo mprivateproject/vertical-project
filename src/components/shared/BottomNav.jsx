@@ -18,7 +18,7 @@ function MIcon() {
 
 const LEFT_ITEMS = [
   { key: 'home', icon: Home, path: '/' },
-  { key: 'bookingHistory', icon: CalendarDays, path: '/bookings' },
+  { key: 'bookingsNav', icon: CalendarDays, path: '/bookings' },
 ];
 const RIGHT_ITEMS = [
   { key: 'promotions', icon: Tag, path: '/promotions' },

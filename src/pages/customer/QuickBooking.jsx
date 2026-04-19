@@ -10,7 +10,7 @@ export default function QuickBookingPage() {
       <div className="max-w-lg mx-auto">
         <div className="mb-6">
           <h1 className="font-display text-2xl font-semibold text-foreground">
-            {lang === 'th' ? 'จองด้วยตัวเอง' : 'Self Booking'}
+            {lang === 'th' ? 'จองด้วยตัวเอง' : 'Self-booking'}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             {lang === 'th' ? 'เลือกบริการและเวลาที่ต้องการ' : 'Select your service and preferred time'}
