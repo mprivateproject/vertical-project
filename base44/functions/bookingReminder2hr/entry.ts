@@ -3,6 +3,16 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+
+    // Allow scheduled automations (no auth header) or admin users only
+    const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
+    if (authHeader) {
+      const user = await base44.auth.me();
+      if (!user || user.role !== 'admin') {
+        return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+      }
+    }
+
     const LINE_TOKEN = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
     if (!LINE_TOKEN) return Response.json({ error: 'LINE_CHANNEL_ACCESS_TOKEN not set' }, { status: 500 });
 
