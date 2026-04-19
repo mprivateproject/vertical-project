@@ -28,7 +28,7 @@ export default function Services() {
   });
 
   return (
-    <div className="px-5 pt-14 pb-6 space-y-5">
+    <div className="px-5 pt-4 pb-6 space-y-5" style={{ marginTop: '-32px', position: 'relative', zIndex: 10 }}>
       <h1 className="font-display text-2xl font-semibold text-foreground">
         {t('selectService')}
       </h1>
