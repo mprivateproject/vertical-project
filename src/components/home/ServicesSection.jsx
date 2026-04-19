@@ -1,77 +1,102 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 
 const SERVICE_IMAGES = {
-  massage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&q=80',
-  facial: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&q=80',
-  body_treatment: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&q=80',
-  package: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=400&q=80',
-  wellness: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&q=80',
+  massage: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=600&q=80',
+  facial: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80',
+  body_treatment: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80',
+  package: 'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=600&q=80',
+  wellness: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&q=80',
 };
+
+const FALLBACK_IMAGES = [
+  'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=600&q=80',
+  'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=600&q=80',
+  'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80',
+];
 
 export default function ServicesSection({ services = [], isLoading }) {
   const { lang } = useLang();
 
-  return (
-    <div className="px-5">
-      <div className="flex items-center justify-between mb-4">
-        <p
-          className="text-[10px] font-semibold tracking-[0.3em] uppercase"
-          style={{ color: 'rgba(198,200,204,0.35)', fontFamily: 'Montserrat, sans-serif' }}
-        >
-          {lang === 'th' ? 'บริการ' : 'Services'}
-        </p>
-        <Link
-          to="/services"
-          className="text-[9px] tracking-[0.2em] uppercase"
-          style={{ color: 'rgba(198,200,204,0.35)', fontFamily: 'Montserrat, sans-serif' }}
-        >
-          {lang === 'th' ? 'ดูทั้งหมด' : 'See all'}
-        </Link>
-      </div>
+  const label = lang === 'th' ? 'Harland sommer.' : 'Harland sommer.';
 
-      <div className="overflow-x-auto -mx-5 px-5" style={{ scrollbarWidth: 'none' }}>
-        <div className="flex gap-3 pb-2" style={{ width: 'max-content' }}>
+  // Use DB services or fallback placeholders
+  const items = services.length > 0
+    ? services.slice(0, 6)
+    : FALLBACK_IMAGES.map((img, i) => ({ id: `fb-${i}`, image_url: img, name_th: '', name_en: '', category: null }));
+
+  return (
+    <div>
+      {/* Small label above */}
+      <p
+        className="px-4 mb-3 text-[11px]"
+        style={{ color: 'rgba(198,200,204,0.4)', fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.05em' }}
+      >
+        {label}
+      </p>
+
+      {/* Horizontal scroll strip */}
+      <div className="overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex gap-2 px-4" style={{ width: 'max-content', paddingBottom: '4px' }}>
           {isLoading
             ? [1, 2, 3].map(i => (
-                <Skeleton key={i} className="w-36 h-48 rounded-[20px] flex-shrink-0" />
+                <div
+                  key={i}
+                  className="flex-shrink-0 animate-pulse"
+                  style={{
+                    width: '160px',
+                    height: '200px',
+                    borderRadius: '16px',
+                    background: 'rgba(255,255,255,0.04)',
+                  }}
+                />
               ))
-            : services.slice(0, 8).map((svc, i) => {
+            : items.map((svc, i) => {
                 const name = lang === 'th' ? svc.name_th : svc.name_en;
-                const image = svc.image_url || SERVICE_IMAGES[svc.category] || SERVICE_IMAGES.massage;
+                const image = svc.image_url || SERVICE_IMAGES[svc.category] || FALLBACK_IMAGES[i % FALLBACK_IMAGES.length];
 
                 return (
                   <motion.div
                     key={svc.id}
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: 16 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative w-36 h-48 flex-shrink-0 overflow-hidden"
-                    style={{ borderRadius: '20px', boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}
+                    transition={{ delay: i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="flex-shrink-0 relative overflow-hidden"
+                    style={{
+                      width: '160px',
+                      height: '200px',
+                      borderRadius: '16px',
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                    }}
                   >
                     <img
                       src={image}
                       alt={name}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.8) 100%)' }}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-3">
-                      <p
-                        className="text-white text-[12px] font-semibold leading-tight"
-                        style={{ fontFamily: 'Montserrat, sans-serif' }}
-                      >
-                        {name}
-                      </p>
-                      <p className="text-[10px] mt-0.5" style={{ color: 'rgba(201,168,76,0.8)' }}>
-                        ฿{svc.price?.toLocaleString()}
-                      </p>
-                    </div>
+                    {name && (
+                      <>
+                        <div
+                          className="absolute inset-0"
+                          style={{ background: 'linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.75) 100%)' }}
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 p-3">
+                          <p
+                            className="text-white text-[12px] font-light"
+                            style={{ fontFamily: 'Montserrat, sans-serif' }}
+                          >
+                            {name}
+                          </p>
+                          {svc.price && (
+                            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(201,168,76,0.8)' }}>
+                              ฿{svc.price?.toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </motion.div>
                 );
               })}
