@@ -295,6 +295,32 @@ Deno.serve(async (req) => {
     if (action === 'cancelBooking') {
       const { bookingId } = body;
       const booking = await base44.asServiceRole.entities.Booking.update(bookingId, { status: 'cancelled' });
+
+      // ── SEND LINE CANCELLATION NOTIFICATION ────────────
+      try {
+        const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
+        if (token && lineUserId) {
+          const { service_name, booking_date, start_time } = booking;
+          const msg = `การจองของคุณถูกยกเลิกแล้ว\n\nวันที่: ${booking_date}\nเวลา: ${start_time}\nบริการ: ${service_name}\n\nหากต้องการจองใหม่ กรุณาติดต่อเราได้เลยนะคะ`;
+          const lineRes = await fetch('https://api.line.me/v2/bot/message/push', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ to: lineUserId, messages: [{ type: 'text', text: msg }] }),
+          });
+          if (!lineRes.ok) {
+            const err = await lineRes.text();
+            console.error('❌ LINE cancel notification failed:', err);
+          } else {
+            console.log('✅ LINE cancel notification sent to:', lineUserId);
+          }
+        }
+      } catch (notifyErr) {
+        console.error('⚠️ LINE cancel notify error (non-fatal):', notifyErr.message);
+      }
+
       return Response.json({ booking });
     }
 
