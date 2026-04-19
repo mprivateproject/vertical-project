@@ -5,9 +5,10 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('vp-theme') === 'dark';
+      const saved = localStorage.getItem('vp-theme');
+      return saved ? saved === 'dark' : true; // default dark
     }
-    return false;
+    return true;
   });
 
   useEffect(() => {
