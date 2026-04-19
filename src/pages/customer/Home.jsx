@@ -1,22 +1,58 @@
 import React from 'react';
-import { useLang } from '@/lib/LanguageContext';
-import { motion } from 'framer-motion';
-import HeroSection from '@/components/customer/HeroSection';
-import QuickBooking from '@/components/customer/QuickBooking';
-import LineLoginButton from '@/components/customer/LineLoginButton';
+import { useQuery } from '@tanstack/react-query';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { useLine } from '@/lib/LineContext';
+import { motion } from 'framer-motion';
+import HomeHeader from '@/components/home/HomeHeader';
+import ActionCards from '@/components/home/ActionCards';
+import PromotionsSection from '@/components/home/PromotionsSection';
+import ServicesSection from '@/components/home/ServicesSection';
+import LineLoginButton from '@/components/customer/LineLoginButton';
 
 export default function Home() {
-  const { t } = useLang();
-  const { isLoggedIn } = useLine();
+  const { isLoggedIn, ready } = useLine();
+
+  const { data: promoData, isLoading: promoLoading } = useQuery({
+    queryKey: ['home-promotions'],
+    queryFn: async () => {
+      const r = await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'getPromotions' },
+      });
+      return r.promotions || [];
+    },
+  });
+
+  const { data: servicesData, isLoading: servicesLoading } = useQuery({
+    queryKey: ['home-services'],
+    queryFn: async () => {
+      const r = await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'getServices' },
+      });
+      return r.services || [];
+    },
+  });
+
+  const { data: myBookings = [] } = useQuery({
+    queryKey: ['my-bookings-count'],
+    queryFn: async () => {
+      const r = await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'getMyBookings' },
+      });
+      return r.bookings || [];
+    },
+    enabled: !!ready && !!isLoggedIn,
+  });
 
   return (
     <div className="min-h-screen" style={{ background: '#0E0F11' }}>
-      {/* Ambient radial gradient */}
+      {/* Ambient gradient */}
       <div className="fixed inset-0 pointer-events-none z-0" style={{
         background: 'radial-gradient(ellipse at 50% 0%, rgba(198,200,204,0.05) 0%, rgba(14,15,17,0) 65%)',
       }} />
-      {/* Noise grain overlay */}
+      {/* Noise */}
       <div
         className="fixed inset-0 pointer-events-none z-0 opacity-[0.025]"
         style={{
@@ -26,34 +62,35 @@ export default function Home() {
         }}
       />
 
-      <div className="relative z-10">
-        <HeroSection />
+      <div className="relative z-10 pb-36">
+        {/* 1. Header */}
+        <HomeHeader />
 
-        <div className="px-5 pt-8 pb-36 space-y-8">
-
-          {/* LINE Login prompt */}
-          {!isLoggedIn && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <LineLoginButton />
-            </motion.div>
-          )}
-
-          {/* Section label */}
+        {/* LINE Login prompt */}
+        {!isLoggedIn && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08, duration: 0.5 }}
+            transition={{ duration: 0.5 }}
+            className="px-5 mb-6"
           >
-            <p className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-6" style={{ color: 'rgba(198,200,204,0.35)', fontFamily: 'Montserrat, sans-serif' }}>
-              — {t('bookNow')} —
-            </p>
-            <QuickBooking />
+            <LineLoginButton />
           </motion.div>
+        )}
 
+        {/* 2. Action Cards 2x2 */}
+        <div className="mb-8">
+          <ActionCards totalBookings={myBookings.length} />
+        </div>
+
+        {/* 3. Promotions */}
+        <div className="mb-8">
+          <PromotionsSection promotions={promoData} isLoading={promoLoading} />
+        </div>
+
+        {/* 4. Services */}
+        <div className="mb-4">
+          <ServicesSection services={servicesData} isLoading={servicesLoading} />
         </div>
       </div>
     </div>

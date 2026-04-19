@@ -13,7 +13,7 @@ import { ThemeProvider } from '@/lib/ThemeContext';
 import { LineProvider } from '@/lib/LineContext';
 
 // Customer pages
-import Home from '@/pages/customer/Home';
+import Home from '@/pages/customer/Home.jsx';
 import Services from '@/pages/customer/Services';
 import BookingFlow from '@/pages/customer/BookingFlow';
 import BookingHistory from '@/pages/customer/BookingHistory';
