@@ -301,7 +301,7 @@ Deno.serve(async (req) => {
         const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
         if (token && lineUserId) {
           const { service_name, booking_date, start_time } = booking;
-          const msg = `การจองของคุณถูกยกเลิกแล้ว\n\nวันที่: ${booking_date}\nเวลา: ${start_time}\nบริการ: ${service_name}\n\nหากต้องการจองใหม่ กรุณาติดต่อเราได้เลยนะคะ`;
+          const msg = `การจองของคุณถูกยกเลิกแล้ว\n\nวันที่: ${booking_date}\nเวลา: ${start_time}\nบริการ: ${service_name}\n\nหากต้องการจองใหม่ กรุณาทำรายการอีกครั้งครับ`;
           const lineRes = await fetch('https://api.line.me/v2/bot/message/push', {
             method: 'POST',
             headers: {
