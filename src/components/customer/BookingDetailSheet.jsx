@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, CalendarDays, ExternalLink, User, Trash2 } from 'lucide-react';
+import { X, Clock, CalendarDays, ExternalLink, User, Trash2, MessageSquare, Send } from 'lucide-react';
 import { format } from 'date-fns';
 
 const E = [0.22, 1, 0.36, 1];
@@ -66,7 +66,11 @@ function downloadAppleCalendar(booking) {
   URL.revokeObjectURL(url);
 }
 
-export default function BookingDetailSheet({ booking, onClose, onCancel, today, lang, locale, t }) {
+export default function BookingDetailSheet({ booking, onClose, onCancel, onNote, today, lang, locale, t }) {
+  const [showNote, setShowNote] = useState(false);
+  const [noteText, setNoteText] = useState('');
+  const [noteSent, setNoteSent] = useState(false);
+
   if (!booking) return null;
 
   const dateObj = new Date(booking.booking_date + 'T00:00:00');
@@ -113,8 +117,19 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
             <div className="w-10 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.12)' }} />
           </div>
 
-          {/* Close + Cancel icons */}
+          {/* Close + Cancel + Note icons */}
           <div className="absolute top-4 right-4 flex items-center gap-2">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => { setShowNote(v => !v); setNoteSent(false); }}
+              className="w-8 h-8 flex items-center justify-center rounded-full transition-all"
+              style={{
+                background: showNote ? 'rgba(180,160,80,0.2)' : 'rgba(255,255,255,0.06)',
+                color: showNote ? 'rgba(220,200,100,0.9)' : 'rgba(161,165,173,0.6)',
+              }}
+            >
+              <MessageSquare className="w-4 h-4" />
+            </motion.button>
             {canCancel && (
               <motion.button
                 whileTap={{ scale: 0.9 }}
@@ -148,6 +163,70 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
                 {booking.service_name}
               </h2>
             </div>
+
+            {/* Note panel */}
+            <AnimatePresence>
+              {showNote && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="overflow-hidden"
+                >
+                  <div
+                    className="rounded-2xl p-4 space-y-3"
+                    style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  >
+                    <p className="text-[9px] tracking-[0.25em] uppercase"
+                      style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}>
+                      {lang === 'th' ? 'ฝากข้อความถึงเรา' : 'Leave a note'}
+                    </p>
+                    {noteSent ? (
+                      <motion.p
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                        className="text-[13px] font-light py-1"
+                        style={{ color: 'rgba(180,220,180,0.8)' }}
+                      >
+                        {lang === 'th' ? '✓ ส่งข้อความแล้ว' : '✓ Note sent'}
+                      </motion.p>
+                    ) : (
+                      <div className="flex gap-2">
+                        <textarea
+                          value={noteText}
+                          onChange={e => setNoteText(e.target.value)}
+                          placeholder={lang === 'th' ? 'เช่น ขอน้ำมันหอมระเหย, อาการปวด...' : 'e.g. prefer aromatherapy, sore back...'}
+                          rows={3}
+                          className="flex-1 resize-none rounded-xl px-3 py-2.5 text-[13px] font-light outline-none"
+                          style={{
+                            background: 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                            color: 'rgba(255,255,255,0.75)',
+                          }}
+                        />
+                        <motion.button
+                          whileTap={{ scale: 0.9 }}
+                          disabled={!noteText.trim()}
+                          onClick={async () => {
+                            if (onNote) await onNote(booking.id, noteText.trim());
+                            setNoteSent(true);
+                            setNoteText('');
+                          }}
+                          className="self-end w-9 h-9 flex items-center justify-center rounded-xl flex-shrink-0"
+                          style={{
+                            background: noteText.trim() ? 'rgba(180,160,80,0.25)' : 'rgba(255,255,255,0.04)',
+                            color: noteText.trim() ? 'rgba(220,200,100,0.9)' : 'rgba(161,165,173,0.3)',
+                            border: '1px solid rgba(255,255,255,0.07)',
+                          }}
+                        >
+                          <Send className="w-4 h-4" />
+                        </motion.button>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Meta rows */}
             <div className="space-y-3">

@@ -340,6 +340,17 @@ Deno.serve(async (req) => {
       return Response.json({ booking });
     }
 
+    // ── UPDATE BOOKING NOTE ────────────────────────────
+    if (action === 'updateBookingNote') {
+      const { bookingId, note } = body;
+      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
+      const customerId = customers[0]?.id;
+      if (!customerId) return Response.json({ error: 'Customer not found' }, { status: 400 });
+      const booking = await base44.asServiceRole.entities.Booking.update(bookingId, { customer_notes: note });
+      console.log('✅ Booking note updated:', bookingId);
+      return Response.json({ booking });
+    }
+
     console.error('❌ Unknown action:', action);
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 

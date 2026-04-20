@@ -238,6 +238,12 @@ export default function BookingHistory() {
         booking={selectedBooking}
         onClose={() => setSelectedBooking(null)}
         onCancel={(id) => { haptic(12); cancelBookingMutation.mutate(id); }}
+        onNote={async (bookingId, note) => {
+          await liffSyncClient.call({
+            url: '/functions/liffSync', method: 'POST',
+            data: { action: 'updateBookingNote', bookingId, note },
+          });
+        }}
         today={today}
         lang={lang}
         locale={locale}
