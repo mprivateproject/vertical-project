@@ -3,9 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
-import { format } from 'date-fns';
+import { base44 } from '@/api/base44Client';
+import { format, parseISO } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, ChevronDown } from 'lucide-react';
+import { CalendarDays, Clock, X, CreditCard, ExternalLink, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingDetailSheet from '@/components/customer/BookingDetailSheet';
 
@@ -36,6 +37,7 @@ export default function BookingHistory() {
   const { idToken, ready } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [depositLoading, setDepositLoading] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
@@ -62,6 +64,26 @@ export default function BookingHistory() {
       setSelectedBooking(null);
     },
   });
+
+  const handleDepositCheckout = async (booking) => {
+    if (window.self !== window.top) {
+      alert(lang === 'th'
+        ? 'การชำระเงินใช้ได้เฉพาะในแอปที่เปิดโดยตรง'
+        : 'Payment is only available from the published app.');
+      return;
+    }
+    setDepositLoading(booking.id);
+    const origin = window.location.origin;
+    const res = await base44.functions.invoke('createCheckoutSession', {
+      serviceName: lang === 'th' ? `มัดจำ: ${booking.service_name}` : `Deposit: ${booking.service_name}`,
+      price: 500,
+      bookingData: { ...booking, payment_method: 'credit_card' },
+      successUrl: `${origin}/bookings?payment=success`,
+      cancelUrl: `${origin}/bookings?payment=cancelled`,
+    });
+    if (res.data?.url) window.location.href = res.data.url;
+    else setDepositLoading(null);
+  };
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const upcoming = bookings
@@ -225,7 +247,21 @@ export default function BookingHistory() {
                     />
                   </button>
 
-
+                  {/* Cancel button on card */}
+                  {canCancel && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); haptic(12); cancelBookingMutation.mutate(booking.id); }}
+                      className="w-full py-2.5 text-[10px] tracking-[0.2em] uppercase font-medium transition-all"
+                      style={{
+                        borderTop: '1px solid rgba(255,255,255,0.05)',
+                        color: 'rgba(180,80,80,0.7)',
+                        background: 'rgba(180,60,60,0.04)',
+                      }}
+                    >
+                      <X className="w-3 h-3 inline mr-1.5 opacity-70" />
+                      {lang === 'th' ? 'ยกเลิกนัดหมาย' : 'Cancel Booking'}
+                    </button>
+                  )}
                 </motion.div>
               );
             })}
@@ -238,19 +274,8 @@ export default function BookingHistory() {
         booking={selectedBooking}
         onClose={() => setSelectedBooking(null)}
         onCancel={(id) => { haptic(12); cancelBookingMutation.mutate(id); }}
-        onNote={async (bookingId, note) => {
-          await liffSyncClient.call({
-            url: '/functions/liffSync', method: 'POST',
-            data: { action: 'updateBookingNote', bookingId, note },
-          });
-        }}
-        onCheckIn={async (bookingId) => {
-          await liffSyncClient.call({
-            url: '/functions/liffSync', method: 'POST',
-            data: { action: 'checkIn', bookingId },
-          });
-          queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
-        }}
+        onDeposit={handleDepositCheckout}
+        depositLoading={depositLoading}
         today={today}
         lang={lang}
         locale={locale}

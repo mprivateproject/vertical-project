@@ -243,22 +243,6 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'Customer not found — sync customer first' }, { status: 400 });
       }
       const verifiedCustomer = customers[0];
-
-      // ── TIER CHECK ─────────────────────────────────────
-      if (bookingData.service_id) {
-        const TIER_RANK = { none: 0, silver: 1, gold: 2, platinum: 3 };
-        const services = await base44.asServiceRole.entities.Service.filter({ id: bookingData.service_id });
-        const svc = services[0];
-        const requiredTier = svc?.required_tier || 'none';
-        const customerTier = verifiedCustomer.membership_tier || 'none';
-        if (TIER_RANK[customerTier] < TIER_RANK[requiredTier]) {
-          return Response.json({
-            error: 'TIER_REQUIRED',
-            required_tier: requiredTier,
-            customer_tier: customerTier,
-          }, { status: 403 });
-        }
-      }
       const booking = await base44.asServiceRole.entities.Booking.create({
         ...bookingData,
         user_id: verifiedCustomer.id,
@@ -337,80 +321,6 @@ Deno.serve(async (req) => {
         console.error('⚠️ LINE cancel notify error (non-fatal):', notifyErr.message);
       }
 
-      return Response.json({ booking });
-    }
-
-    // ── CHECK IN ───────────────────────────────────────
-    if (action === 'checkIn') {
-      const { bookingId } = body;
-      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
-      const customerId = customers[0]?.id;
-      if (!customerId) return Response.json({ error: 'Customer not found' }, { status: 400 });
-
-      // Verify this booking belongs to this customer
-      const bookings = await base44.asServiceRole.entities.Booking.filter({ id: bookingId, customer_id: customerId });
-      if (!bookings.length) return Response.json({ error: 'Booking not found' }, { status: 404 });
-
-      const existing = bookings[0];
-      if (!['pending', 'confirmed'].includes(existing.status)) {
-        return Response.json({ error: 'Cannot check in at this status', status: existing.status }, { status: 400 });
-      }
-
-      const booking = await base44.asServiceRole.entities.Booking.update(bookingId, { status: 'checked_in' });
-      console.log('✅ Booking checked in:', bookingId);
-
-      // Notify staff + therapist via LINE
-      try {
-        const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
-        const notify = Deno.env.get('LINE_NOTIFY_TOKEN');
-        const { service_name, start_time, customer_name, therapist_id, therapist_name } = booking;
-        const msg = `\n🔔 ลูกค้าเช็คอินแล้ว!\nชื่อ: ${customer_name || 'ลูกค้า'}\nบริการ: ${service_name}\nเวลา: ${start_time}${therapist_name ? '\nเทอราปิส: ' + therapist_name : ''}`;
-
-        // Notify admin via LINE Notify
-        if (notify) {
-          await fetch('https://notify-api.line.me/api/notify', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${notify}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ message: msg }),
-          });
-        }
-
-        // Push message to therapist's LINE account (if therapist has line_user_id stored)
-        if (token && therapist_id) {
-          const therapists = await base44.asServiceRole.entities.Therapist.filter({ id: therapist_id });
-          const therapist = therapists[0];
-          if (therapist?.line_user_id) {
-            const therapistMsg = `🔔 ลูกค้าเช็คอินแล้ว!\nลูกค้า: ${customer_name || 'ลูกค้า'}\nบริการ: ${service_name}\nเวลา: ${start_time}\n\nกรุณาเตรียมพร้อมให้บริการครับ 🙏`;
-            const lineRes = await fetch('https://api.line.me/v2/bot/message/push', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-              body: JSON.stringify({ to: therapist.line_user_id, messages: [{ type: 'text', text: therapistMsg }] }),
-            });
-            if (!lineRes.ok) {
-              const err = await lineRes.text();
-              console.error('❌ LINE push to therapist failed:', err);
-            } else {
-              console.log('✅ LINE push sent to therapist:', therapist.line_user_id);
-            }
-          } else {
-            console.log('ℹ️ Therapist has no line_user_id, skipping push');
-          }
-        }
-      } catch (e) {
-        console.error('⚠️ LINE notify check-in error (non-fatal):', e.message);
-      }
-
-      return Response.json({ booking });
-    }
-
-    // ── UPDATE BOOKING NOTE ────────────────────────────
-    if (action === 'updateBookingNote') {
-      const { bookingId, note } = body;
-      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
-      const customerId = customers[0]?.id;
-      if (!customerId) return Response.json({ error: 'Customer not found' }, { status: 400 });
-      const booking = await base44.asServiceRole.entities.Booking.update(bookingId, { customer_notes: note });
-      console.log('✅ Booking note updated:', bookingId);
       return Response.json({ booking });
     }
 

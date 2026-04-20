@@ -4,7 +4,7 @@ import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { Link } from 'react-router-dom';
 import {
-  Clock, Award, Moon, Sun, Globe, LogOut,
+  Clock, Star, Award, Settings, Moon, Sun, Globe, LogOut,
   ChevronRight, Shield
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -33,6 +33,7 @@ export default function Profile() {
 
   const menuItems = [
     { icon: Clock, label: lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Your Bookings', path: '/bookings' },
+    { icon: Star, label: t('review'), path: '/bookings' },
     { icon: Award, label: `${t('loyalty')} — 0 ${t('points')}`, path: '/bookings' },
   ];
 
