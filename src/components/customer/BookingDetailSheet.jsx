@@ -66,10 +66,12 @@ function downloadAppleCalendar(booking) {
   URL.revokeObjectURL(url);
 }
 
-export default function BookingDetailSheet({ booking, onClose, onCancel, onNote, today, lang, locale, t }) {
+export default function BookingDetailSheet({ booking, onClose, onCancel, onNote, onCheckIn, today, lang, locale, t }) {
   const [showNote, setShowNote] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [noteSent, setNoteSent] = useState(false);
+  const [checkInDone, setCheckInDone] = useState(false);
+  const [checkInLoading, setCheckInLoading] = useState(false);
 
   if (!booking) return null;
 
@@ -78,7 +80,8 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onNote,
   const bookingDateTime = new Date(`${booking.booking_date}T${booking.start_time}:00`);
   const twoHoursBefore = new Date(bookingDateTime.getTime() - 2 * 60 * 60 * 1000);
   const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && new Date() < twoHoursBefore;
-  const status = statusLabel[booking.status] || { th: booking.status, en: booking.status };
+  const canCheckIn = !checkInDone && (booking.status === 'pending' || booking.status === 'confirmed');
+  const status = statusLabel[checkInDone ? 'checked_in' : booking.status] || { th: booking.status, en: booking.status };
   const payment = paymentLabel[booking.payment_status] || { th: booking.payment_status, en: booking.payment_status };
 
   return (
@@ -270,6 +273,53 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onNote,
 
             {/* Actions */}
             <div className="space-y-2.5">
+              {/* Check-in button */}
+              {canCheckIn && (
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  disabled={checkInLoading}
+                  onClick={async () => {
+                    setCheckInLoading(true);
+                    if (onCheckIn) await onCheckIn(booking.id);
+                    setCheckInDone(true);
+                    setCheckInLoading(false);
+                  }}
+                  className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-[13px] font-semibold tracking-[0.12em] uppercase transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(80,180,120,0.25) 0%, rgba(60,160,100,0.15) 100%)',
+                    border: '1px solid rgba(80,200,130,0.3)',
+                    color: 'rgba(120,230,160,0.95)',
+                    boxShadow: '0 4px 20px rgba(80,180,120,0.15)',
+                  }}
+                >
+                  {checkInLoading ? (
+                    <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                  )}
+                  {lang === 'th' ? 'เช็คอิน — ฉันมาถึงแล้ว' : 'Check In — I\'ve Arrived'}
+                </motion.button>
+              )}
+              {checkInDone && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-[13px] font-semibold tracking-[0.1em]"
+                  style={{
+                    background: 'rgba(80,180,120,0.1)',
+                    border: '1px solid rgba(80,200,130,0.2)',
+                    color: 'rgba(120,230,160,0.7)',
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  {lang === 'th' ? 'เช็คอินสำเร็จแล้ว' : 'Checked In Successfully'}
+                </motion.div>
+              )}
+
               {/* Add to Google Calendar */}
               <motion.a
                 href={buildGoogleCalendarUrl(booking)}

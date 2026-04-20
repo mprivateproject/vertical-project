@@ -244,6 +244,13 @@ export default function BookingHistory() {
             data: { action: 'updateBookingNote', bookingId, note },
           });
         }}
+        onCheckIn={async (bookingId) => {
+          await liffSyncClient.call({
+            url: '/functions/liffSync', method: 'POST',
+            data: { action: 'checkIn', bookingId },
+          });
+          queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+        }}
         today={today}
         lang={lang}
         locale={locale}

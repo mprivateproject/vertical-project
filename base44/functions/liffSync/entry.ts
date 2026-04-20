@@ -340,6 +340,45 @@ Deno.serve(async (req) => {
       return Response.json({ booking });
     }
 
+    // ── CHECK IN ───────────────────────────────────────
+    if (action === 'checkIn') {
+      const { bookingId } = body;
+      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
+      const customerId = customers[0]?.id;
+      if (!customerId) return Response.json({ error: 'Customer not found' }, { status: 400 });
+
+      // Verify this booking belongs to this customer
+      const bookings = await base44.asServiceRole.entities.Booking.filter({ id: bookingId, customer_id: customerId });
+      if (!bookings.length) return Response.json({ error: 'Booking not found' }, { status: 404 });
+
+      const existing = bookings[0];
+      if (!['pending', 'confirmed'].includes(existing.status)) {
+        return Response.json({ error: 'Cannot check in at this status', status: existing.status }, { status: 400 });
+      }
+
+      const booking = await base44.asServiceRole.entities.Booking.update(bookingId, { status: 'checked_in' });
+      console.log('✅ Booking checked in:', bookingId);
+
+      // Notify staff via LINE
+      try {
+        const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
+        const notify = Deno.env.get('LINE_NOTIFY_TOKEN');
+        if (notify) {
+          const { service_name, start_time, customer_name } = booking;
+          const msg = `\n🔔 ลูกค้าเช็คอินแล้ว!\nชื่อ: ${customer_name || 'ลูกค้า'}\nบริการ: ${service_name}\nเวลา: ${start_time}`;
+          await fetch('https://notify-api.line.me/api/notify', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${notify}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ message: msg }),
+          });
+        }
+      } catch (e) {
+        console.error('⚠️ LINE notify check-in error (non-fatal):', e.message);
+      }
+
+      return Response.json({ booking });
+    }
+
     // ── UPDATE BOOKING NOTE ────────────────────────────
     if (action === 'updateBookingNote') {
       const { bookingId, note } = body;
