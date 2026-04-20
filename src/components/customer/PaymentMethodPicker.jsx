@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLang } from '@/lib/LanguageContext';
-import { QrCode, Building2, Wallet, CreditCard, Banknote } from 'lucide-react';
+import { QrCode, Building2, Wallet, Banknote } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const methods = [
@@ -8,7 +8,6 @@ const methods = [
   { key: 'rabbit_line_pay', icon: Wallet, color: 'text-green-600' },
   { key: 'truemoney', icon: Wallet, color: 'text-orange-500' },
   { key: 'bank_transfer', icon: Building2, color: 'text-purple-600' },
-  { key: 'credit_card', icon: CreditCard, color: 'text-slate-600' },
   { key: 'cash', icon: Banknote, color: 'text-emerald-600' },
 ];
 
