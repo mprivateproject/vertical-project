@@ -6,7 +6,7 @@ import PageHeader from './PageHeader';
 export default function CustomerLayout() {
   return (
     <div className="min-h-screen bg-background">
-      <main className="pb-24 w-full max-w-md md:max-w-2xl lg:max-w-3xl mx-auto">
+      <main className="pb-24 w-full">
         <PageHeader />
         <Outlet />
       </main>
