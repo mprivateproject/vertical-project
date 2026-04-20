@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
-import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -36,12 +35,7 @@ export default function BookingFlow() {
   const [paymentMethod, setPaymentMethod] = useState('promptpay');
   const [bookingComplete, setBookingComplete] = useState(false);
   const [showPaymentQR, setShowPaymentQR] = useState(false);
-  const [stripeLoading, setStripeLoading] = useState(false);
-
-  // Handle Stripe redirect result
-  const paymentResult = params.get('payment');
-  const paymentCancelled = paymentResult === 'cancelled';
-  const paymentSuccess = paymentResult === 'success';
+  const paymentCancelled = params.get('payment') === 'cancelled';
 
   const { data: service } = useQuery({
     queryKey: ['service', serviceId],
@@ -121,68 +115,11 @@ export default function BookingFlow() {
     }
   };
 
-  const handleStripeCheckout = async () => {
-    if (window.self !== window.top) {
-      alert(
-        lang === 'th'
-          ? 'การชำระเงินด้วยบัตรเครดิตใช้ได้เฉพาะในแอปที่เปิดโดยตรง กรุณาเปิดลิงก์ในเบราว์เซอร์ภายนอก'
-          : 'Credit card checkout is only available from the published app. Please open this page in an external browser.'
-      );
-      return;
-    }
-
-    setStripeLoading(true);
-
-    const [h, m] = selectedTime.split(':').map(Number);
-    const total = h * 60 + m + (service?.duration_minutes || 60);
-    const endMinutes = `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
-
-    const bookingPayload = {
-      service_id: serviceId,
-      service_name: lang === 'th' ? service?.name_th : service?.name_en,
-      therapist_id: selectedTherapist?.id || '',
-      therapist_name: selectedTherapist?.nickname || t('anyTherapist'),
-      booking_date: format(selectedDate, 'yyyy-MM-dd'),
-      start_time: selectedTime,
-      end_time: endMinutes,
-      duration_minutes: service?.duration_minutes || 60,
-      price: service?.price || 0,
-      status: 'pending',
-      payment_status: 'pending',
-      payment_method: 'credit_card',
-    };
-
-    const origin = window.location.origin;
-    const successUrl = `${origin}/bookings?payment=success`;
-    const cancelUrl = `${origin}/book?serviceId=${serviceId}&payment=cancelled`;
-
-    const res = await base44.functions.invoke('createCheckoutSession', {
-      serviceName: lang === 'th' ? service?.name_th : service?.name_en,
-      price: service?.price || 0,
-      bookingData: bookingPayload,
-      successUrl,
-      cancelUrl,
-    });
-
-    if (res.data?.url) {
-      await liffSyncClient.call({
-        url: '/functions/liffSync',
-        method: 'POST',
-        data: { action: 'createBooking', bookingData: bookingPayload },
-      });
-      window.location.href = res.data.url;
-    } else {
-      setStripeLoading(false);
-    }
-  };
-
   const handleNext = () => {
     if (step < STEPS.length - 1) {
       setStep(s => s + 1);
     } else {
-      if (paymentMethod === 'credit_card') {
-        handleStripeCheckout();
-      } else if (paymentMethod === 'promptpay') {
+      if (paymentMethod === 'promptpay') {
         setShowPaymentQR(true);
       } else {
         createBookingMutation.mutate();
@@ -403,15 +340,10 @@ export default function BookingFlow() {
       <div className="fixed bottom-20 left-0 right-0 px-5 max-w-lg mx-auto">
         <Button
           onClick={handleNext}
-          disabled={!canProceed() || createBookingMutation.isPending || stripeLoading}
+          disabled={!canProceed() || createBookingMutation.isPending}
           className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold text-base shadow-lg shadow-primary/20"
         >
-          {stripeLoading
-            ? (lang === 'th' ? 'กำลังไปยัง Stripe...' : 'Redirecting to Stripe...')
-            : step === STEPS.length - 1
-              ? t('confirmBooking')
-              : t('next')
-          }
+          {step === STEPS.length - 1 ? t('confirmBooking') : t('next')}
         </Button>
       </div>
     </div>

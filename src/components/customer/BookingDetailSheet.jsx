@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, CalendarDays, CreditCard, ExternalLink, User } from 'lucide-react';
+import { X, Clock, CalendarDays, ExternalLink, User } from 'lucide-react';
 import { format } from 'date-fns';
 
 const E = [0.22, 1, 0.36, 1];
@@ -66,7 +66,7 @@ function downloadAppleCalendar(booking) {
   URL.revokeObjectURL(url);
 }
 
-export default function BookingDetailSheet({ booking, onClose, onCancel, onDeposit, depositLoading, today, lang, locale, t }) {
+export default function BookingDetailSheet({ booking, onClose, onCancel, today, lang, locale, t }) {
   if (!booking) return null;
 
   const dateObj = new Date(booking.booking_date + 'T00:00:00');
@@ -74,7 +74,6 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onDepos
   const bookingDateTime = new Date(`${booking.booking_date}T${booking.start_time}:00`);
   const twoHoursBefore = new Date(bookingDateTime.getTime() - 2 * 60 * 60 * 1000);
   const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && new Date() < twoHoursBefore;
-  const canDeposit = canCancel && (booking.payment_status === 'unpaid' || booking.payment_status === 'pending');
   const status = statusLabel[booking.status] || { th: booking.status, en: booking.status };
   const payment = paymentLabel[booking.payment_status] || { th: booking.payment_status, en: booking.payment_status };
 
@@ -218,27 +217,6 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onDepos
                 </svg>
                 {lang === 'th' ? 'เพิ่มใน Apple Calendar' : 'Add to Apple Calendar'}
               </motion.button>
-
-              {/* Deposit */}
-              {canDeposit && (
-                <motion.button
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => onDeposit(booking)}
-                  disabled={depositLoading === booking.id}
-                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[12px] font-medium tracking-[0.12em] uppercase transition-all disabled:opacity-40"
-                  style={{
-                    background: 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.05) 100%)',
-                    border: '1px solid rgba(255,255,255,0.14)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-                    color: 'rgba(255,255,255,0.9)',
-                  }}
-                >
-                  <CreditCard className="w-3.5 h-3.5" />
-                  {depositLoading === booking.id
-                    ? '· · ·'
-                    : lang === 'th' ? 'จ่ายมัดจำ ฿500' : 'Pay ฿500 Deposit'}
-                </motion.button>
-              )}
 
               {/* Cancel */}
               {canCancel && (
