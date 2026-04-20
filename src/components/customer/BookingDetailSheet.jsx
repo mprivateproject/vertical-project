@@ -37,6 +37,35 @@ function buildGoogleCalendarUrl(booking) {
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
+function downloadAppleCalendar(booking) {
+  const dateStr = booking.booking_date.replace(/-/g, '');
+  const [sh, sm] = booking.start_time.split(':').map(Number);
+  const [eh, em] = (booking.end_time || booking.start_time).split(':').map(Number);
+  const start = `${dateStr}T${String(sh).padStart(2,'0')}${String(sm).padStart(2,'0')}00`;
+  const end   = `${dateStr}T${String(eh).padStart(2,'0')}${String(em).padStart(2,'0')}00`;
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Vertical Project//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:${booking.service_name || 'Wellness Session'}`,
+    `DESCRIPTION:${booking.therapist_name ? 'Therapist: ' + booking.therapist_name : 'Vertical Project'}`,
+    `LOCATION:Vertical Project`,
+    `STATUS:CONFIRMED`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'booking.ics';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function BookingDetailSheet({ booking, onClose, onCancel, onDeposit, depositLoading, today, lang, locale, t }) {
   if (!booking) return null;
 
@@ -168,6 +197,21 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onDepos
                 {lang === 'th' ? 'เพิ่มใน Google Calendar' : 'Add to Google Calendar'}
                 <ExternalLink className="w-3 h-3 opacity-50" />
               </motion.a>
+
+              {/* Add to Apple Calendar */}
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => downloadAppleCalendar(booking)}
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[12px] font-medium tracking-[0.12em] uppercase transition-all"
+                style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.09)',
+                  color: 'rgba(255,255,255,0.65)',
+                }}
+              >
+                <CalendarDays className="w-3.5 h-3.5" />
+                {lang === 'th' ? 'เพิ่มใน Apple Calendar' : 'Add to Apple Calendar'}
+              </motion.button>
 
               {/* Deposit */}
               {canDeposit && (
