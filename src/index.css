@@ -90,8 +90,10 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Cormorant Garamond', 'Noto Sans Thai', Georgia, serif;
-    font-size: 17px;
-    letter-spacing: 0.01em;
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
