@@ -9,7 +9,7 @@ const E = [0.22, 1, 0.36, 1];
 const CATEGORY_ORDER = ['massage', 'facial', 'body_treatment', 'package', 'wellness'];
 
 const CATEGORY_LABELS = {
-  massage: { th: 'นวด', en: 'Massage' },
+  massage: { th: 'บริการ', en: 'Massage' },
   facial: { th: 'ดูแลผิวหน้า', en: 'Facial' },
   body_treatment: { th: 'ทรีตเมนต์ผิวกาย', en: 'Body Treatment' },
   package: { th: 'แพ็คเกจ', en: 'Package' },
