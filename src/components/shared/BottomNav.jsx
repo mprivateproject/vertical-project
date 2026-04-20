@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, CalendarDays, Tag, User } from 'lucide-react';
+import { Home, CalendarDays, BookOpen, User } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -21,7 +21,7 @@ const LEFT_ITEMS = [
   { key: 'bookingsNav', icon: CalendarDays, path: '/bookings' },
 ];
 const RIGHT_ITEMS = [
-  { key: 'promotions', icon: Tag, path: '/promotions' },
+  { key: 'menu', icon: BookOpen, path: '/price' },
   { key: 'profile', icon: User, path: '/profile' },
 ];
 

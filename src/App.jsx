@@ -33,6 +33,7 @@ import AdminPromotions from '@/pages/admin/AdminPromotions';
 import AdminSettings from '@/pages/admin/AdminSettings';
 import ScheduleBoard from '@/pages/admin/ScheduleBoard';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
+import Price from '@/pages/customer/Price';
 
 // Layouts
 import CustomerLayout from '@/components/shared/CustomerLayout';
@@ -49,6 +50,7 @@ const AuthenticatedApp = () => {
         <Route path="/bookings" element={<BookingHistory />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/price" element={<Price />} />
         <Route path="/quickbooking" element={<QuickBookingPage />} />
       </Route>
 
