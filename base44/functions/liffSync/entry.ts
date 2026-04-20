@@ -126,7 +126,8 @@ Deno.serve(async (req) => {
     // ADMIN ACTIONS — require Base44 admin role
     // ─────────────────────────────────────────────────────
     if (ADMIN_ACTIONS.has(action)) {
-      const user = await base44.auth.me();
+      let user = null;
+      try { user = await base44.auth.me(); } catch (_) { /* no Base44 session */ }
       if (!user || user.role !== 'admin') {
         return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
       }
