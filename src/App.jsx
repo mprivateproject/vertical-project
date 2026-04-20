@@ -34,6 +34,7 @@ import AdminSettings from '@/pages/admin/AdminSettings';
 import AdminBookings from '@/pages/admin/AdminBookings';
 import ScheduleBoard from '@/pages/admin/ScheduleBoard';
 import AdminTherapists from '@/pages/admin/AdminTherapists';
+import AdminLogin from '@/pages/AdminLogin';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
 
@@ -55,6 +56,9 @@ const AuthenticatedApp = () => {
         <Route path="/price" element={<Price />} />
         <Route path="/quickbooking" element={<QuickBookingPage />} />
       </Route>
+
+      {/* Admin login */}
+      <Route path="/admin-login" element={<AdminLogin />} />
 
       {/* Staff routes */}
       <Route path="/staff" element={<StaffDashboard />} />

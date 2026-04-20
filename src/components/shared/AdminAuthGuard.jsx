@@ -9,7 +9,7 @@ export default function AdminAuthGuard({ children }) {
   useEffect(() => {
     base44.auth.isAuthenticated().then(async (authed) => {
       if (!authed) {
-        setStatus('unauthenticated');
+        window.location.href = '/admin-login';
         return;
       }
       // Try admin-only operation to verify role
