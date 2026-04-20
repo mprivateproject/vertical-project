@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, CalendarDays, ExternalLink, User } from 'lucide-react';
+import { X, Clock, CalendarDays, ExternalLink, User, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
 const E = [0.22, 1, 0.36, 1];
@@ -113,14 +113,26 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
             <div className="w-10 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.12)' }} />
           </div>
 
-          {/* Close */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full transition-all"
-            style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(161,165,173,0.6)' }}
-          >
-            <X className="w-4 h-4" />
-          </button>
+          {/* Close + Cancel icons */}
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            {canCancel && (
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={() => onCancel(booking.id)}
+                className="w-8 h-8 flex items-center justify-center rounded-full transition-all"
+                style={{ background: 'rgba(180,60,60,0.15)', color: 'rgba(220,100,100,0.8)' }}
+              >
+                <Trash2 className="w-4 h-4" />
+              </motion.button>
+            )}
+            <button
+              onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center rounded-full transition-all"
+              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(161,165,173,0.6)' }}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
 
           <div className="px-6 pb-10 pt-4 space-y-6">
             {/* Title section */}
@@ -218,22 +230,7 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
                 {lang === 'th' ? 'เพิ่มใน Apple Calendar' : 'Add to Apple Calendar'}
               </motion.button>
 
-              {/* Cancel */}
-              {canCancel && (
-                <motion.button
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => onCancel(booking.id)}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl text-[11px] tracking-[0.12em] uppercase transition-all"
-                  style={{
-                    background: 'transparent',
-                    border: '1px solid rgba(255,255,255,0.05)',
-                    color: 'rgba(161,165,173,0.4)',
-                  }}
-                >
-                  <X className="w-3.5 h-3.5" />
-                  {lang === 'th' ? 'ยกเลิกนัดหมาย' : 'Cancel Booking'}
-                </motion.button>
-              )}
+
             </div>
           </div>
         </motion.div>
