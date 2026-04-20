@@ -31,6 +31,7 @@ import AdminCustomers from '@/pages/admin/AdminCustomers';
 import AdminReports from '@/pages/admin/AdminReports';
 import AdminPromotions from '@/pages/admin/AdminPromotions';
 import AdminSettings from '@/pages/admin/AdminSettings';
+import AdminBookings from '@/pages/admin/AdminBookings';
 import ScheduleBoard from '@/pages/admin/ScheduleBoard';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
@@ -66,6 +67,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/reports" element={<AdminReports />} />
         <Route path="/admin/promotions" element={<AdminPromotions />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/admin/bookings" element={<AdminBookings />} />
         <Route path="/admin/schedule" element={<ScheduleBoard />} />
       </Route>
 

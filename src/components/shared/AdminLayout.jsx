@@ -3,14 +3,15 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageToggle from './LanguageToggle';
 import ThemeToggle from './ThemeToggle';
-import { 
+import {
   LayoutDashboard, CalendarDays, Scissors, Users,
-  BarChart3, Tag, Settings, Menu, X, GanttChartSquare
+  BarChart3, Tag, Settings, Menu, X, GanttChartSquare, BookOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const adminNav = [
   { key: 'adminDashboard', icon: LayoutDashboard, path: '/admin' },
+  { key: 'bookings', icon: BookOpen, path: '/admin/bookings' },
   { key: 'schedule', icon: CalendarDays, path: '/admin/calendar' },
   { key: 'scheduleBoard', icon: GanttChartSquare, path: '/admin/schedule' },
   { key: 'services', icon: Scissors, path: '/admin/services' },
