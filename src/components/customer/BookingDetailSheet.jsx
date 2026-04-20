@@ -80,7 +80,9 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onNote,
   const bookingDateTime = new Date(`${booking.booking_date}T${booking.start_time}:00`);
   const twoHoursBefore = new Date(bookingDateTime.getTime() - 2 * 60 * 60 * 1000);
   const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && new Date() < twoHoursBefore;
-  const canCheckIn = !checkInDone && (booking.status === 'pending' || booking.status === 'confirmed');
+  const thirtyMinBefore = new Date(bookingDateTime.getTime() - 30 * 60 * 1000);
+  const now = new Date();
+  const canCheckIn = !checkInDone && (booking.status === 'pending' || booking.status === 'confirmed') && now >= thirtyMinBefore;
   const status = statusLabel[checkInDone ? 'checked_in' : booking.status] || { th: booking.status, en: booking.status };
   const payment = paymentLabel[booking.payment_status] || { th: booking.payment_status, en: booking.payment_status };
 
