@@ -1,7 +1,9 @@
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
+import { liffSyncClient } from '@/lib/liffSyncClient';
 import { Link } from 'react-router-dom';
 import {
   Clock, Star, Award, Settings, Moon, Sun, Globe, LogOut,
@@ -10,11 +12,25 @@ import {
 import { motion } from 'framer-motion';
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import LineLoginButton from '@/components/customer/LineLoginButton';
+import LoyaltyCard from '@/components/customer/LoyaltyCard';
 
 export default function Profile() {
   const { t, lang } = useLang();
-  const { lineProfile, customer, isLoggedIn, logout } = useLine();
+  const { lineProfile, customer, isLoggedIn, logout, ready } = useLine();
   const { isDark, toggleTheme } = useTheme();
+
+  const { data: currentTier } = useQuery({
+    queryKey: ['loyalty-tier', customer?.membership_tier],
+    queryFn: async () => {
+      const result = await liffSyncClient.call({
+        url: '/functions/liffSync',
+        method: 'POST',
+        data: { action: 'getLoyaltyTierByKey', tier_key: customer?.membership_tier }
+      });
+      return result.tier || null;
+    },
+    enabled: !!ready && !!customer?.membership_tier,
+  });
 
   if (!isLoggedIn) {
     return (
@@ -66,21 +82,8 @@ export default function Profile() {
         </div>
       </motion.div>
 
-      {/* Membership card */}
-      <div className="bg-gradient-to-br from-primary/10 via-accent/20 to-secondary rounded-2xl p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-muted-foreground">{t('membership')}</p>
-            <p className="font-semibold text-foreground mt-0.5 capitalize">
-              {customer?.membership_tier === 'none' ? 'Member' : `${customer?.membership_tier} Member`}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-muted-foreground">{t('loyalty')}</p>
-            <p className="font-bold text-primary text-lg">{customer?.loyalty_points || 0}</p>
-          </div>
-        </div>
-      </div>
+      {/* Loyalty Card */}
+      {customer && <LoyaltyCard customer={customer} tier={currentTier} />}
 
       {/* Menu items */}
       <div className="space-y-1">

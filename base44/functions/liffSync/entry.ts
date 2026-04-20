@@ -6,6 +6,7 @@ const PUBLIC_ACTIONS = new Set([
   'getTherapists',
   'getServiceById',
   'getBookingsByDate',
+  'getLoyaltyTierByKey',
 ]);
 
 // Actions that require admin role (Base44 authenticated user)
@@ -118,6 +119,12 @@ Deno.serve(async (req) => {
         const { bookingDate } = body;
         const bookings = await base44.asServiceRole.entities.Booking.filter({ booking_date: bookingDate });
         return Response.json({ bookings });
+      }
+
+      if (action === 'getLoyaltyTierByKey') {
+        const { tier_key } = body;
+        const tiers = await base44.asServiceRole.entities.LoyaltyTier.filter({ tier_key });
+        return Response.json({ tier: tiers[0] || null });
       }
 
     }

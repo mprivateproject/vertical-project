@@ -43,4 +43,18 @@ export const adminClient = {
 
   deletePromotion: (promoId) =>
     base44.entities.Promotion.delete(promoId),
+
+  getLoyaltyTiers: () =>
+    base44.entities.LoyaltyTier.list('min_points', 100),
+
+  saveLoyaltyTier: async (tierData) => {
+    if (tierData.id) {
+      const { id, ...rest } = tierData;
+      return base44.entities.LoyaltyTier.update(id, rest);
+    }
+    return base44.entities.LoyaltyTier.create(tierData);
+  },
+
+  deleteLoyaltyTier: (tierId) =>
+    base44.entities.LoyaltyTier.delete(tierId),
 };
