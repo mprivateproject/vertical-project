@@ -5,7 +5,7 @@ import { useLine } from '@/lib/LineContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, X, ChevronDown } from 'lucide-react';
+import { CalendarDays, Clock, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingDetailSheet from '@/components/customer/BookingDetailSheet';
 
@@ -225,21 +225,7 @@ export default function BookingHistory() {
                     />
                   </button>
 
-                  {/* Cancel button on card */}
-                  {canCancel && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); haptic(12); cancelBookingMutation.mutate(booking.id); }}
-                      className="w-full py-2.5 text-[10px] tracking-[0.2em] uppercase font-medium transition-all"
-                      style={{
-                        borderTop: '1px solid rgba(255,255,255,0.05)',
-                        color: 'rgba(180,80,80,0.7)',
-                        background: 'rgba(180,60,60,0.04)',
-                      }}
-                    >
-                      <X className="w-3 h-3 inline mr-1.5 opacity-70" />
-                      {lang === 'th' ? 'ยกเลิกนัดหมาย' : 'Cancel Booking'}
-                    </button>
-                  )}
+
                 </motion.div>
               );
             })}
