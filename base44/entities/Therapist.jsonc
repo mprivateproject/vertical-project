@@ -32,7 +32,7 @@
     },
     "rating": {
       "type": "number",
-      "default": 5.0
+      "default": 5
     },
     "total_reviews": {
       "type": "number",
@@ -56,11 +56,33 @@
     "work_end": {
       "type": "string",
       "description": "End time e.g. 20:00"
+    },
+    "line_user_id": {
+      "type": "string",
+      "description": "LINE userId of the therapist for push notifications"
     }
   },
   "required": [
     "name_th",
     "name_en",
     "nickname"
-  ]
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }

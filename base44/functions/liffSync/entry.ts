@@ -359,18 +359,42 @@ Deno.serve(async (req) => {
       const booking = await base44.asServiceRole.entities.Booking.update(bookingId, { status: 'checked_in' });
       console.log('✅ Booking checked in:', bookingId);
 
-      // Notify staff via LINE
+      // Notify staff + therapist via LINE
       try {
         const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
         const notify = Deno.env.get('LINE_NOTIFY_TOKEN');
+        const { service_name, start_time, customer_name, therapist_id, therapist_name } = booking;
+        const msg = `\n🔔 ลูกค้าเช็คอินแล้ว!\nชื่อ: ${customer_name || 'ลูกค้า'}\nบริการ: ${service_name}\nเวลา: ${start_time}${therapist_name ? '\nเทอราปิส: ' + therapist_name : ''}`;
+
+        // Notify admin via LINE Notify
         if (notify) {
-          const { service_name, start_time, customer_name } = booking;
-          const msg = `\n🔔 ลูกค้าเช็คอินแล้ว!\nชื่อ: ${customer_name || 'ลูกค้า'}\nบริการ: ${service_name}\nเวลา: ${start_time}`;
           await fetch('https://notify-api.line.me/api/notify', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${notify}`, 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({ message: msg }),
           });
+        }
+
+        // Push message to therapist's LINE account (if therapist has line_user_id stored)
+        if (token && therapist_id) {
+          const therapists = await base44.asServiceRole.entities.Therapist.filter({ id: therapist_id });
+          const therapist = therapists[0];
+          if (therapist?.line_user_id) {
+            const therapistMsg = `🔔 ลูกค้าเช็คอินแล้ว!\nลูกค้า: ${customer_name || 'ลูกค้า'}\nบริการ: ${service_name}\nเวลา: ${start_time}\n\nกรุณาเตรียมพร้อมให้บริการครับ 🙏`;
+            const lineRes = await fetch('https://api.line.me/v2/bot/message/push', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({ to: therapist.line_user_id, messages: [{ type: 'text', text: therapistMsg }] }),
+            });
+            if (!lineRes.ok) {
+              const err = await lineRes.text();
+              console.error('❌ LINE push to therapist failed:', err);
+            } else {
+              console.log('✅ LINE push sent to therapist:', therapist.line_user_id);
+            }
+          } else {
+            console.log('ℹ️ Therapist has no line_user_id, skipping push');
+          }
         }
       } catch (e) {
         console.error('⚠️ LINE notify check-in error (non-fatal):', e.message);

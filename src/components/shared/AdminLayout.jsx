@@ -5,7 +5,7 @@ import LanguageToggle from './LanguageToggle';
 import ThemeToggle from './ThemeToggle';
 import {
   LayoutDashboard, CalendarDays, Scissors, Users,
-  BarChart3, Tag, Settings, Menu, X, GanttChartSquare, BookOpen
+  BarChart3, Tag, Settings, Menu, X, GanttChartSquare, BookOpen, UserCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,6 +15,7 @@ const adminNav = [
   { key: 'schedule', icon: CalendarDays, path: '/admin/calendar' },
   { key: 'scheduleBoard', icon: GanttChartSquare, path: '/admin/schedule' },
   { key: 'services', icon: Scissors, path: '/admin/services' },
+  { key: 'therapists', icon: UserCheck, path: '/admin/therapists' },
   { key: 'customers', icon: Users, path: '/admin/customers' },
   { key: 'reports', icon: BarChart3, path: '/admin/reports' },
   { key: 'promotions', icon: Tag, path: '/admin/promotions' },

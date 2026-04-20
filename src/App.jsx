@@ -33,6 +33,7 @@ import AdminPromotions from '@/pages/admin/AdminPromotions';
 import AdminSettings from '@/pages/admin/AdminSettings';
 import AdminBookings from '@/pages/admin/AdminBookings';
 import ScheduleBoard from '@/pages/admin/ScheduleBoard';
+import AdminTherapists from '@/pages/admin/AdminTherapists';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
 
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/bookings" element={<AdminBookings />} />
         <Route path="/admin/schedule" element={<ScheduleBoard />} />
+        <Route path="/admin/therapists" element={<AdminTherapists />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
