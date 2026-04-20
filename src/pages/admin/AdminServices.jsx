@@ -88,11 +88,16 @@ export default function AdminServices() {
                           <EyeOff className="w-3 h-3 text-muted-foreground" />
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
                         <Badge variant="secondary" className="text-[10px]">{t(service.category)}</Badge>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {service.duration_minutes} {t('minutes')}
                         </span>
+                        {service.required_tier && service.required_tier !== 'none' && (
+                          <Badge className="text-[10px] capitalize bg-primary/10 text-primary border-0">
+                            🔒 {service.required_tier}+
+                          </Badge>
+                        )}
                       </div>
                     </div>
                     <div className="text-right">
@@ -181,6 +186,18 @@ function ServiceForm({ service, onSave, isSaving }) {
           <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
           <SelectContent>
             {CATEGORIES.map(c => <SelectItem key={c} value={c}>{t(c)}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <Label className="text-xs">🔒 ระดับสมาชิกขั้นต่ำ</Label>
+        <Select value={form.required_tier || 'none'} onValueChange={v => updateField('required_tier', v)}>
+          <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">ทุกระดับ (ไม่จำกัด)</SelectItem>
+            <SelectItem value="silver">Silver ขึ้นไป</SelectItem>
+            <SelectItem value="gold">Gold ขึ้นไป</SelectItem>
+            <SelectItem value="platinum">Platinum เท่านั้น</SelectItem>
           </SelectContent>
         </Select>
       </div>

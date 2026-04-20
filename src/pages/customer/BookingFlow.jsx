@@ -7,7 +7,7 @@ import { base44 } from '@/api/base44Client';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { ArrowLeft, Check, Clock, CalendarDays } from 'lucide-react';
+import { ArrowLeft, Check, Clock, CalendarDays, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import TherapistPicker from '@/components/customer/TherapistPicker';
@@ -20,7 +20,7 @@ const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 
 export default function BookingFlow() {
   const { t, lang } = useLang();
-  const { idToken, ready } = useLine();
+  const { idToken, ready, customer } = useLine();
   const isLoggedIn = ready;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -191,6 +191,54 @@ export default function BookingFlow() {
   };
 
   const serviceName = service ? (lang === 'th' ? service.name_th : service.name_en) : '';
+
+  // ── TIER CHECK (frontend guard) ─────────────────────
+  const TIER_RANK = { none: 0, silver: 1, gold: 2, platinum: 3 };
+  const TIER_LABEL = {
+    none: { th: 'สมาชิก', en: 'Member' },
+    silver: { th: 'Silver', en: 'Silver' },
+    gold: { th: 'Gold', en: 'Gold' },
+    platinum: { th: 'Platinum', en: 'Platinum' },
+  };
+  const requiredTier = service?.required_tier || 'none';
+  const customerTier = customer?.membership_tier || 'none';
+  const tierBlocked = service && TIER_RANK[customerTier] < TIER_RANK[requiredTier];
+
+  if (service && tierBlocked) {
+    return (
+      <div className="px-5 pt-20 pb-6 text-center space-y-6">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200 }}
+          className="w-20 h-20 rounded-full bg-secondary mx-auto flex items-center justify-center"
+        >
+          <Lock className="w-9 h-9 text-primary" />
+        </motion.div>
+        <div className="space-y-2">
+          <h2 className="font-display text-xl font-semibold text-foreground">
+            {lang === 'th' ? 'เฉพาะสมาชิกระดับพิเศษ' : 'Members Only'}
+          </h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {lang === 'th'
+              ? `คอร์สนี้สำหรับสมาชิกระดับ "${TIER_LABEL[requiredTier].th}" ขึ้นไปเท่านั้น`
+              : `This service requires "${TIER_LABEL[requiredTier].en}" membership or above.`}
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            {lang === 'th'
+              ? `ระดับของคุณ: ${TIER_LABEL[customerTier].th}`
+              : `Your tier: ${TIER_LABEL[customerTier].en}`}
+          </p>
+        </div>
+        <button
+          onClick={() => navigate(-1)}
+          className="w-full py-3 rounded-xl bg-secondary text-secondary-foreground font-medium"
+        >
+          {lang === 'th' ? 'กลับ' : 'Go Back'}
+        </button>
+      </div>
+    );
+  }
 
   if (bookingComplete) {
     return (

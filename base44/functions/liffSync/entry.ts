@@ -243,6 +243,22 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'Customer not found — sync customer first' }, { status: 400 });
       }
       const verifiedCustomer = customers[0];
+
+      // ── TIER CHECK ─────────────────────────────────────
+      if (bookingData.service_id) {
+        const TIER_RANK = { none: 0, silver: 1, gold: 2, platinum: 3 };
+        const services = await base44.asServiceRole.entities.Service.filter({ id: bookingData.service_id });
+        const svc = services[0];
+        const requiredTier = svc?.required_tier || 'none';
+        const customerTier = verifiedCustomer.membership_tier || 'none';
+        if (TIER_RANK[customerTier] < TIER_RANK[requiredTier]) {
+          return Response.json({
+            error: 'TIER_REQUIRED',
+            required_tier: requiredTier,
+            customer_tier: customerTier,
+          }, { status: 403 });
+        }
+      }
       const booking = await base44.asServiceRole.entities.Booking.create({
         ...bookingData,
         user_id: verifiedCustomer.id,
