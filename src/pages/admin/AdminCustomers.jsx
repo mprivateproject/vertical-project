@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Search, Users, Star, DollarSign, Calendar } from 'lucide-react';
+import { Search, Users, Star, DollarSign, Calendar, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,6 +19,7 @@ const tierColors = {
 
 export default function AdminCustomers() {
   const { t } = useLang();
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
   const { data: customers = [], isLoading } = useQuery({
@@ -65,39 +67,45 @@ export default function AdminCustomers() {
               animate={{ opacity: 1 }}
               transition={{ delay: i * 0.02 }}
             >
-              <Card className="border-border/50">
+              <Card className="border-border/50 hover:border-primary/50 cursor-pointer transition-colors">
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => navigate(`/admin/customers/${customer.id}`)}
+                    className="w-full text-left"
+                  >
+                    <div className="flex items-center gap-3">
                     <img
                       src={customer.picture_url || `https://ui-avatars.com/api/?name=${customer.display_name}&background=random&size=48`}
                       alt=""
                       className="w-11 h-11 rounded-full object-cover"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-sm text-foreground truncate">
-                          {customer.display_name}
-                        </p>
-                        <Badge className={`text-[10px] ${tierColors[customer.membership_tier || 'none']}`}>
-                          {customer.membership_tier || 'none'}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
-                        <span className="flex items-center gap-0.5">
-                          <Calendar className="w-3 h-3" />
-                          {customer.total_visits || 0} visits
-                        </span>
-                        <span className="flex items-center gap-0.5">
-                          <DollarSign className="w-3 h-3" />
-                          ฿{(customer.total_spent || 0).toLocaleString()}
-                        </span>
-                        <span className="flex items-center gap-0.5">
-                          <Star className="w-3 h-3" />
-                          {customer.loyalty_points || 0} pts
-                        </span>
-                      </div>
+                       <div className="flex items-center gap-2">
+                         <p className="font-medium text-sm text-foreground truncate">
+                           {customer.display_name}
+                         </p>
+                         <Badge className={`text-[10px] ${tierColors[customer.membership_tier || 'none']}`}>
+                           {customer.membership_tier || 'none'}
+                         </Badge>
+                       </div>
+                       <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
+                         <span className="flex items-center gap-0.5">
+                           <Calendar className="w-3 h-3" />
+                           {customer.total_visits || 0} visits
+                         </span>
+                         <span className="flex items-center gap-0.5">
+                           <DollarSign className="w-3 h-3" />
+                           ฿{(customer.total_spent || 0).toLocaleString()}
+                         </span>
+                         <span className="flex items-center gap-0.5">
+                           <Star className="w-3 h-3" />
+                           {customer.loyalty_points || 0} pts
+                         </span>
+                       </div>
+                     </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
                     </div>
-                  </div>
+                  </button>
                   {customer.notes && (
                     <p className="text-xs text-muted-foreground mt-2 pl-14 italic">
                       {customer.notes}
