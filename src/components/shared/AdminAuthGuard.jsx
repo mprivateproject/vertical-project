@@ -6,10 +6,9 @@ export default function AdminAuthGuard({ children }) {
   const [status, setStatus] = useState('loading'); // 'loading' | 'authorized' | 'unauthorized'
 
   useEffect(() => {
-    base44.auth.me()
-      .then(user => {
-        setStatus(user?.role === 'admin' ? 'authorized' : 'unauthorized');
-      })
+    // Try a simple admin-only operation to check if user has admin role
+    base44.entities.User.list()
+      .then(() => setStatus('authorized'))
       .catch(() => setStatus('unauthorized'));
   }, []);
 
