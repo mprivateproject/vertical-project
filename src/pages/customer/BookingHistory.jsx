@@ -221,7 +221,7 @@ export default function BookingHistory() {
                         Wellness · Massage
                       </p>
                       <p
-                        className="text-[36px] font-light truncate leading-snug"
+                        className="text-[15px] font-light truncate leading-snug"
                         style={{
                           color: 'rgba(255,255,255,0.88)',
                           fontFamily: 'Georgia, "Times New Roman", serif',
