@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useLang } from '@/lib/LanguageContext';
 import LanguageToggle from './LanguageToggle';
 import ThemeToggle from './ThemeToggle';
+import AdminAuthGuard from './AdminAuthGuard';
 import { 
   LayoutDashboard, CalendarDays, Scissors, Users, Award,
   BarChart3, Tag, Settings, Menu, X, GanttChartSquare
@@ -27,6 +28,7 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
+    <AdminAuthGuard>
     <div className="min-h-screen bg-background flex">
       {/* Mobile overlay */}
       <AnimatePresence>
@@ -114,5 +116,6 @@ export default function AdminLayout() {
         </main>
       </div>
     </div>
+    </AdminAuthGuard>
   );
 }
