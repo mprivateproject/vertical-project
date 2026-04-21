@@ -300,10 +300,12 @@ export default function BookingHistory() {
                       }}
                     >
                       <LogIn className="w-3 h-3 opacity-80" />
-                      {lang === 'th' ? 'เช็คอิน' : 'Check In'}
+                      {lang === 'th'
+                        ? (checkInActive ? 'ฉันมาถึงแล้ว' : 'ฉันมาถึงแล้ว')
+                        : (checkInActive ? 'I Have Arrived' : 'I Have Arrived')}
                       {!checkInActive && (
                         <span className="text-[9px] tracking-normal normal-case ml-1" style={{ color: 'rgba(161,165,173,0.2)' }}>
-                          ({lang === 'th' ? 'เปิดก่อน 1 ชม.' : '1hr before'})
+                          ({lang === 'th' ? 'เปิดให้เช็คอินก่อนเวลาเริ่ม 60 นาที' : 'opens 60 min before'})
                         </span>
                       )}
                     </button>
