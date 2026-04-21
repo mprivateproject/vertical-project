@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { X, Check, RotateCcw } from 'lucide-react';
 
 const E = [0.22, 1, 0.36, 1];
 
@@ -102,15 +102,133 @@ function Checkbox({ checked, onChange, label, hasNote, noteValue, onNoteChange, 
   );
 }
 
+function SignaturePad({ onHasSig, lang }) {
+  const canvasRef = useRef(null);
+  const drawing = useRef(false);
+  const lastPos = useRef(null);
+  const [hasDrawn, setHasDrawn] = useState(false);
+
+  // Set canvas internal size to match display size
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    };
+    resize();
+  }, []);
+
+  const getPos = (e, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - rect.left, y: src.clientY - rect.top };
+  };
+
+  const startDraw = (e) => {
+    e.preventDefault();
+    drawing.current = true;
+    lastPos.current = getPos(e, canvasRef.current);
+  };
+
+  const draw = (e) => {
+    e.preventDefault();
+    if (!drawing.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const pos = getPos(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    lastPos.current = pos;
+    if (!hasDrawn) {
+      setHasDrawn(true);
+      onHasSig(true);
+    }
+  };
+
+  const endDraw = (e) => {
+    e?.preventDefault();
+    drawing.current = false;
+  };
+
+  const clear = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasDrawn(false);
+    onHasSig(false);
+  };
+
+  const getDataUrl = () => canvasRef.current?.toDataURL('image/png');
+
+  // Expose getDataUrl to parent via ref
+  SignaturePad.getDataUrl = getDataUrl;
+
+  return (
+    <div className="space-y-2">
+      <div
+        className="relative rounded-2xl overflow-hidden"
+        style={{
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          height: '140px',
+        }}
+      >
+        {/* Baseline */}
+        <div className="absolute bottom-8 left-6 right-6 pointer-events-none"
+          style={{ borderBottom: '1px dashed rgba(255,255,255,0.08)' }} />
+        {/* Placeholder */}
+        {!hasDrawn && (
+          <p className="absolute inset-0 flex items-center justify-center text-[11px] pointer-events-none"
+            style={{ color: 'rgba(161,165,173,0.3)', fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.1em' }}>
+            {lang === 'th' ? 'ลงลายมือชื่อที่นี่' : 'Sign here'}
+          </p>
+        )}
+        <canvas
+          ref={canvasRef}
+          style={{ width: '100%', height: '100%', touchAction: 'none', cursor: 'crosshair', display: 'block' }}
+          onMouseDown={startDraw}
+          onMouseMove={draw}
+          onMouseUp={endDraw}
+          onMouseLeave={endDraw}
+          onTouchStart={startDraw}
+          onTouchMove={draw}
+          onTouchEnd={endDraw}
+        />
+      </div>
+      {hasDrawn && (
+        <button
+          onClick={clear}
+          className="flex items-center gap-1.5 text-[10px] tracking-[0.15em] uppercase transition-opacity hover:opacity-70"
+          style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}
+        >
+          <RotateCcw className="w-3 h-3" />
+          {lang === 'th' ? 'ล้างลายเซ็น' : 'Clear'}
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
   const [checked, setChecked] = useState({});
   const [notes, setNotes] = useState({});
-  const [signature, setSignature] = useState('');
+  const [hasSig, setHasSig] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const consentChecked =
     checked['consent_therapy'] && checked['consent_truth'];
-  const canSubmit = consentChecked && signature.trim().length > 0;
+  const canSubmit = consentChecked && hasSig;
 
   const toggle = (id) => setChecked(prev => ({ ...prev, [id]: !prev[id] }));
   const setNote = (id, val) => setNotes(prev => ({ ...prev, [id]: val }));
@@ -121,7 +239,7 @@ export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
     const formData = {
       checked_items: Object.keys(checked).filter(k => checked[k]),
       notes,
-      signature,
+      signature: SignaturePad.getDataUrl?.() || '',
     };
     await onConfirm(formData);
     setSubmitting(false);
@@ -241,20 +359,7 @@ export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
               >
                 {lang === 'th' ? 'ลายมือชื่อ' : 'Signature'}
               </p>
-              <input
-                type="text"
-                value={signature}
-                onChange={e => setSignature(e.target.value)}
-                placeholder={lang === 'th' ? 'พิมพ์ชื่อเต็มของท่าน...' : 'Type your full name...'}
-                className="w-full px-4 py-3.5 rounded-2xl text-[14px] outline-none"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'rgba(255,255,255,0.85)',
-                  fontFamily: 'Georgia, serif',
-                  letterSpacing: '0.05em',
-                }}
-              />
+              <SignaturePad onHasSig={setHasSig} lang={lang} />
               {!consentChecked && (
                 <p className="text-[10px] mt-2" style={{ color: 'rgba(200,120,120,0.6)' }}>
                   {lang === 'th' ? '* กรุณายืนยัน Consent & Agreement ก่อนลงชื่อ' : '* Please confirm Consent & Agreement first'}
