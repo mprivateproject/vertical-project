@@ -332,6 +332,25 @@ Deno.serve(async (req) => {
       return Response.json({ booking });
     }
 
+    // ── UPDATE BOOKING STATUS ──────────────────────────
+    if (action === 'updateBookingStatus') {
+      const { bookingId, status, healthForm } = body;
+      const updateData = { status };
+      if (healthForm) updateData.staff_notes = `[Health Form] ${JSON.stringify(healthForm)}`;
+      const booking = await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
+      console.log('✅ Booking status updated:', bookingId, '->', status);
+      return Response.json({ booking });
+    }
+
+    // ── UPDATE CUSTOMER PREFERENCES ────────────────────
+    if (action === 'updateCustomerPreferences') {
+      const { tags, notes } = body;
+      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
+      if (!customers.length) return Response.json({ error: 'Customer not found' }, { status: 404 });
+      const customer = await base44.asServiceRole.entities.Customer.update(customers[0].id, { tags, notes });
+      return Response.json({ customer });
+    }
+
     console.error('❌ Unknown action:', action);
     return Response.json({ error: 'Unknown action' }, { status: 400 });
 
