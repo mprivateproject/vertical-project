@@ -24,13 +24,13 @@ export default function PageHeader() {
         src={BG_IMAGE}
         alt=""
         className="absolute inset-0 w-full h-full object-cover object-center"
-        style={{ opacity: 0.45, transform: 'scale(1.05)' }}
+        style={{ opacity: 0.35, transform: 'scale(1.05)' }}
       />
       {/* Dark gradient overlay */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(180deg, rgba(14,15,17,0.5) 0%, rgba(14,15,17,0.2) 40%, rgba(14,15,17,0.95) 100%)',
+          background: 'linear-gradient(180deg, rgba(14,15,17,0.72) 0%, rgba(14,15,17,0.45) 40%, rgba(14,15,17,0.97) 100%)',
         }}
       />
       {/* Warm chandelier glow */}
