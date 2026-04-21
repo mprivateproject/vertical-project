@@ -1,9 +1,7 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
-import { liffSyncClient } from '@/lib/liffSyncClient';
 import { Link } from 'react-router-dom';
 import {
   Clock, Award, Moon, Sun, Globe, LogOut,
@@ -19,18 +17,7 @@ export default function Profile() {
   const { lineProfile, customer, isLoggedIn, logout, ready } = useLine();
   const { isDark, toggleTheme } = useTheme();
 
-  const { data: currentTier } = useQuery({
-    queryKey: ['loyalty-tier', customer?.membership_tier],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({
-        url: '/functions/liffSync',
-        method: 'POST',
-        data: { action: 'getLoyaltyTierByKey', tier_key: customer?.membership_tier }
-      });
-      return result.tier || null;
-    },
-    enabled: !!ready && !!customer?.membership_tier,
-  });
+
 
   if (!isLoggedIn) {
     return (
@@ -83,7 +70,7 @@ export default function Profile() {
       </motion.div>
 
       {/* Loyalty Card */}
-      {customer && <LoyaltyCard customer={customer} tier={currentTier} />}
+      {customer && <LoyaltyCard customer={customer} />}
 
       {/* Menu items */}
       <div className="space-y-1">
