@@ -5,7 +5,7 @@ import { useLine } from '@/lib/LineContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
 import { format, parseISO } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, X, ChevronDown } from 'lucide-react';
+import { CalendarDays, Clock, X, ChevronDown, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingDetailSheet from '@/components/customer/BookingDetailSheet';
@@ -61,6 +61,18 @@ export default function BookingHistory() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
       setSelectedBooking(null);
+    },
+  });
+
+  const checkInMutation = useMutation({
+    mutationFn: async (bookingId) => {
+      await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'updateBookingStatus', bookingId, status: 'checked_in' }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
     },
   });
 
@@ -189,7 +201,10 @@ export default function BookingHistory() {
 
               const bookingDateTime = new Date(`${booking.booking_date}T${booking.start_time}:00`);
               const twoHoursBefore = new Date(bookingDateTime.getTime() - 2 * 60 * 60 * 1000);
+              const oneHourBefore = new Date(bookingDateTime.getTime() - 60 * 60 * 1000);
               const canCancel = (booking.status === 'pending' || booking.status === 'confirmed') && new Date() < twoHoursBefore;
+              const canCheckIn = (booking.status === 'confirmed' || booking.status === 'pending') && booking.status !== 'checked_in';
+              const checkInActive = new Date() >= oneHourBefore;
 
               return (
                 <motion.div
@@ -263,6 +278,33 @@ export default function BookingHistory() {
                       style={{ color: 'rgba(161,165,173,0.25)' }}
                     />
                   </button>
+
+                  {/* Check-in button */}
+                  {canCheckIn && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!checkInActive) return;
+                        haptic(12);
+                        checkInMutation.mutate(booking.id);
+                      }}
+                      className="w-full py-2.5 text-[10px] tracking-[0.2em] uppercase font-medium transition-all flex items-center justify-center gap-1.5"
+                      style={{
+                        borderTop: '1px solid rgba(255,255,255,0.05)',
+                        color: checkInActive ? 'rgba(160,220,160,0.85)' : 'rgba(161,165,173,0.22)',
+                        background: checkInActive ? 'rgba(60,160,60,0.06)' : 'transparent',
+                        cursor: checkInActive ? 'pointer' : 'default',
+                      }}
+                    >
+                      <LogIn className="w-3 h-3 opacity-80" />
+                      {lang === 'th' ? 'เช็คอิน' : 'Check In'}
+                      {!checkInActive && (
+                        <span className="text-[9px] tracking-normal normal-case ml-1" style={{ color: 'rgba(161,165,173,0.2)' }}>
+                          ({lang === 'th' ? 'เปิดก่อน 1 ชม.' : '1hr before'})
+                        </span>
+                      )}
+                    </button>
+                  )}
 
                   {/* Cancel button on card */}
                   {canCancel && (
