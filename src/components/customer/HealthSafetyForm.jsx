@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, RotateCcw } from 'lucide-react';
+import { useSheet } from '@/lib/SheetContext';
 
 const E = [0.22, 1, 0.36, 1];
 
@@ -225,6 +226,12 @@ export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
   const [notes, setNotes] = useState({});
   const [hasSig, setHasSig] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const { setSheetOpen } = useSheet();
+
+  useEffect(() => {
+    setSheetOpen(true);
+    return () => setSheetOpen(false);
+  }, []);
 
   const consentChecked =
     checked['consent_therapy'] && checked['consent_truth'];
