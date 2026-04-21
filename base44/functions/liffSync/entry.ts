@@ -336,7 +336,11 @@ Deno.serve(async (req) => {
     if (action === 'updateBookingStatus') {
       const { bookingId, status, healthForm } = body;
       const updateData = { status };
-      if (healthForm) updateData.staff_notes = `[Health Form] ${JSON.stringify(healthForm)}`;
+      if (healthForm) {
+        const { signature, ...formSummary } = healthForm;
+        const summary = `[Health Form] items: ${(formSummary.checked_items || []).join(', ')} | notes: ${JSON.stringify(formSummary.notes || {})}`;
+        updateData.staff_notes = summary.slice(0, 500);
+      }
       const booking = await base44.asServiceRole.entities.Booking.update(bookingId, updateData);
       console.log('✅ Booking status updated:', bookingId, '->', status);
       return Response.json({ booking });
