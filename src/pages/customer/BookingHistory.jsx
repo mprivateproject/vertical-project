@@ -3,10 +3,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
-import { base44 } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
-import { CalendarDays, Clock, X, CreditCard, ExternalLink, ChevronDown } from 'lucide-react';
+import { CalendarDays, Clock, X, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingDetailSheet from '@/components/customer/BookingDetailSheet';
@@ -38,7 +37,6 @@ export default function BookingHistory() {
   const { idToken, ready } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [depositLoading, setDepositLoading] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
@@ -65,26 +63,6 @@ export default function BookingHistory() {
       setSelectedBooking(null);
     },
   });
-
-  const handleDepositCheckout = async (booking) => {
-    if (window.self !== window.top) {
-      alert(lang === 'th'
-        ? 'การชำระเงินใช้ได้เฉพาะในแอปที่เปิดโดยตรง'
-        : 'Payment is only available from the published app.');
-      return;
-    }
-    setDepositLoading(booking.id);
-    const origin = window.location.origin;
-    const res = await base44.functions.invoke('createCheckoutSession', {
-      serviceName: lang === 'th' ? `มัดจำ: ${booking.service_name}` : `Deposit: ${booking.service_name}`,
-      price: 500,
-      bookingData: { ...booking, payment_method: 'credit_card' },
-      successUrl: `${origin}/bookings?payment=success`,
-      cancelUrl: `${origin}/bookings?payment=cancelled`,
-    });
-    if (res.data?.url) window.location.href = res.data.url;
-    else setDepositLoading(null);
-  };
 
   const today = format(new Date(), 'yyyy-MM-dd');
   const upcoming = bookings
