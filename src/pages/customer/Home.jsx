@@ -49,11 +49,12 @@ export default function Home() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.55, ease: E }}
-          className="text-white font-black uppercase leading-none"
+          className="text-white uppercase leading-none"
           style={{
-            fontFamily: 'Montserrat, "Arial Black", sans-serif',
-            fontSize: 'clamp(52px, 18vw, 96px)',
-            letterSpacing: '-0.02em',
+            fontFamily: '"Cormorant Garamond", Georgia, serif',
+            fontSize: 'clamp(48px, 17vw, 92px)',
+            fontWeight: 300,
+            letterSpacing: '0.18em',
             lineHeight: 0.95,
           }}
         >
@@ -62,18 +63,20 @@ export default function Home() {
 
         {/* OPEN — giant */}
         <motion.p
-          initial={{ opacity: 0, scale: 0.92 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.18, duration: 0.65, ease: E }}
-          className="text-white font-black uppercase leading-none"
+          className="text-white uppercase leading-none"
           style={{
-            fontFamily: 'Montserrat, "Arial Black", sans-serif',
-            fontSize: 'clamp(88px, 30vw, 160px)',
-            letterSpacing: '-0.03em',
+            fontFamily: '"Cormorant Garamond", Georgia, serif',
+            fontSize: 'clamp(80px, 28vw, 152px)',
+            fontWeight: 600,
+            fontStyle: 'italic',
+            letterSpacing: '0.04em',
             lineHeight: 0.88,
           }}
         >
-          OPEN
+          Opening
         </motion.p>
 
         {/* Divider */}
