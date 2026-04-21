@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Clock, CalendarDays, CreditCard, ExternalLink, User } from 'lucide-react';
 import { format } from 'date-fns';
+import { useSheet } from '@/lib/SheetContext';
 
 const E = [0.22, 1, 0.36, 1];
 
@@ -38,6 +39,13 @@ function buildGoogleCalendarUrl(booking) {
 }
 
 export default function BookingDetailSheet({ booking, onClose, onCancel, onDeposit, depositLoading, today, lang, locale, t }) {
+  const { setSheetOpen } = useSheet();
+
+  useEffect(() => {
+    setSheetOpen(!!booking);
+    return () => setSheetOpen(false);
+  }, [booking]);
+
   if (!booking) return null;
 
   const dateObj = new Date(booking.booking_date + 'T00:00:00');

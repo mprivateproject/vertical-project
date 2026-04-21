@@ -11,6 +11,7 @@ import { AuthProvider } from '@/lib/AuthContext';
 import { LanguageProvider } from '@/lib/LanguageContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { LineProvider } from '@/lib/LineContext';
+import { SheetProvider } from '@/lib/SheetContext';
 
 // Customer pages
 import Home from '@/pages/customer/Home.jsx';
@@ -87,10 +88,12 @@ function App() {
         <LanguageProvider>
           <ThemeProvider>
             <LineProvider>
+              <SheetProvider>
               <Router>
                 <AuthenticatedApp />
               </Router>
               <Toaster />
+              </SheetProvider>
             </LineProvider>
           </ThemeProvider>
         </LanguageProvider>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, CalendarDays, User } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
+import { useSheet } from '@/lib/SheetContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const E = [0.22, 1, 0.36, 1];
@@ -26,6 +27,7 @@ const RIGHT_ITEMS = [
 
 export default function BottomNav() {
   const { t } = useLang();
+  const { isSheetOpen } = useSheet();
   const location = useLocation();
 
   const isActive = (path) =>
@@ -68,6 +70,8 @@ export default function BottomNav() {
       </Link>
     );
   };
+
+  if (isSheetOpen) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-5">
