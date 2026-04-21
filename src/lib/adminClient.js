@@ -16,6 +16,9 @@ export const adminClient = {
   getCustomers: () =>
     base44.entities.Customer.list('-created_date', 200),
 
+  updateCustomer: (id, data) =>
+    base44.entities.Customer.update(id, data),
+
   getServices: () =>
     base44.entities.Service.list('sort_order', 100),
 

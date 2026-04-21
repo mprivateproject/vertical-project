@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
-import { liffSyncClient } from '@/lib/liffSyncClient';
 import { adminClient } from '@/lib/adminClient';
 import { format } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
@@ -27,12 +26,8 @@ export default function AdminCustomerDetail() {
   const { data: customer, isLoading: customerLoading } = useQuery({
     queryKey: ['customer-detail', customerId],
     queryFn: async () => {
-      const result = await liffSyncClient.call({
-        url: '/functions/liffSync',
-        method: 'POST',
-        data: { action: 'adminGetCustomers' }
-      });
-      const found = result.customers?.find(c => c.id === customerId);
+      const customers = await adminClient.getCustomers();
+      const found = customers?.find(c => c.id === customerId);
       if (found) setStaffNotes(found.notes || '');
       return found || null;
     },
@@ -42,26 +37,17 @@ export default function AdminCustomerDetail() {
   const { data: bookings = [] } = useQuery({
     queryKey: ['customer-bookings', customerId],
     queryFn: async () => {
-      const result = await liffSyncClient.call({
-        url: '/functions/liffSync',
-        method: 'POST',
-        data: { action: 'adminGetAllBookings', limit: 1000 }
-      });
-      return result.bookings?.filter(b => b.customer_id === customerId) || [];
+      const all = await adminClient.getAllBookings('-booking_date', 1000);
+      return all?.filter(b => b.customer_id === customerId) || [];
     },
   });
 
   // Fetch loyalty tier
   const { data: loyaltyTier } = useQuery({
     queryKey: ['loyalty-tier', customer?.membership_tier],
-    queryFn: async () => {
-      const result = await liffSyncClient.call({
-        url: '/functions/liffSync',
-        method: 'POST',
-        data: { action: 'getLoyaltyTierByKey', tier_key: customer?.membership_tier }
-      });
-      return result.tier || null;
-    },
+    queryFn: () => adminClient.getLoyaltyTiers().then(tiers =>
+      tiers?.find(t => t.tier_key === customer?.membership_tier) || null
+    ),
     enabled: !!customer?.membership_tier,
   });
 
