@@ -30,7 +30,7 @@ const translations = {
     availableSlots: "เวลาว่าง",
     noSlots: "ไม่มีเวลาว่างในวันนี้",
     bookingSummary: "สรุปการจอง",
-    service: "บริการ",
+    service: "โปรแกรม",
     therapist: "ผู้เชี่ยวชาญ",
     date: "วันที่",
     time: "เวลา",
