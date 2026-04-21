@@ -8,140 +8,48 @@ import { Link } from 'react-router-dom';
 
 const E = [0.22, 1, 0.36, 1];
 
-const SECTIONS = [
+const OPTIONS = [
   {
-    id: 'pressure',
-    label_th: '💆 แรงกด',
-    label_en: '💆 Pressure',
-    single: true, // radio style (only one)
-    options: [
-      { id: 'pressure_light',  th: '🪶  เบา',         en: '🪶  Light' },
-      { id: 'pressure_medium', th: '💆  ปานกลาง',     en: '💆  Medium' },
-      { id: 'pressure_firm',   th: '💪  แรง',         en: '💪  Firm' },
-      { id: 'pressure_deep',   th: '🔥  Deep Tissue', en: '🔥  Deep Tissue' },
-    ],
+    id: 'parking',
+    th: 'ที่จอดรถ',
+    en: 'Parking',
+    desc_th: 'ต้องการใช้ที่จอดรถ',
+    desc_en: 'I need parking space',
+    icon: '🅿️',
   },
   {
-    id: 'focus',
-    label_th: '🔸 บริเวณที่ต้องการเน้น',
-    label_en: '🔸 Focus Areas',
-    single: false,
-    options: [
-      { id: 'focus_back',      th: 'หลัง',           en: 'Back' },
-      { id: 'focus_neck',      th: 'คอ / บ่า',       en: 'Neck & Shoulders' },
-      { id: 'focus_legs',      th: 'ขา / เท้า',      en: 'Legs & Feet' },
-      { id: 'focus_arms',      th: 'แขน / มือ',      en: 'Arms & Hands' },
-      { id: 'focus_head',      th: 'ศีรษะ',          en: 'Head' },
-      { id: 'focus_face',      th: 'ใบหน้า',         en: 'Face' },
-    ],
+    id: 'heated_bed',
+    th: 'เตียงอุ่น',
+    en: 'Heated Bed',
+    desc_th: 'ต้องการเปิดเตียงระบบความร้อน',
+    desc_en: 'Prefer a heated treatment bed',
+    icon: '🛏️',
   },
   {
-    id: 'bed',
-    label_th: '🛏️ ประเภทเตียง',
-    label_en: '🛏️ Bed Type',
-    single: true,
-    options: [
-      { id: 'bed_standard',   th: 'เตียงมาตรฐาน',       en: 'Standard Bed' },
-      { id: 'bed_floor',      th: 'นวดบนพื้น (ฟูก)',    en: 'Floor Mat' },
-      { id: 'bed_heated',     th: 'เตียงอุ่น (Heated)', en: 'Heated Bed' },
-    ],
+    id: 'unscented_oil',
+    th: 'น้ำมันไม่มีกลิ่น',
+    en: 'Unscented Oil',
+    desc_th: 'ขอใช้น้ำมันนวดที่ไม่มีกลิ่น',
+    desc_en: 'Please use unscented massage oil',
+    icon: '🫧',
   },
   {
-    id: 'room_temp',
-    label_th: '🌡️ อุณหภูมิห้อง',
-    label_en: '🌡️ Room Temperature',
-    single: true,
-    options: [
-      { id: 'temp_cool',   th: 'เย็น (ประมาณ 20–22°C)', en: 'Cool (20–22°C)' },
-      { id: 'temp_normal', th: 'ปกติ (ประมาณ 23–25°C)', en: 'Normal (23–25°C)' },
-      { id: 'temp_warm',   th: 'อบอุ่น (ประมาณ 26°C+)', en: 'Warm (26°C+)' },
-    ],
+    id: 'no_talk',
+    th: 'ไม่ต้องการสนทนาระหว่างนวด',
+    en: 'No Conversation',
+    desc_th: 'ต้องการความเงียบสงบระหว่างการนวด',
+    desc_en: 'Prefer silence during the session',
+    icon: '🤫',
   },
   {
-    id: 'aroma',
-    label_th: '🌸 กลิ่นอโรมา',
-    label_en: '🌸 Aroma Preference',
-    single: true,
-    options: [
-      { id: 'aroma_none',      th: 'ไม่ใช้น้ำมันกลิ่น',  en: 'No Scent' },
-      { id: 'aroma_lavender',  th: 'ลาเวนเดอร์',         en: 'Lavender' },
-      { id: 'aroma_eucalyptus',th: 'ยูคาลิปตัส',         en: 'Eucalyptus' },
-      { id: 'aroma_citrus',    th: 'ส้ม / ซิตรัส',       en: 'Citrus' },
-      { id: 'aroma_rose',      th: 'กุหลาบ',             en: 'Rose' },
-      { id: 'aroma_jasmine',   th: 'มะลิ',               en: 'Jasmine' },
-    ],
-  },
-  {
-    id: 'ambience',
-    label_th: '🎵 บรรยากาศ',
-    label_en: '🎵 Ambience',
-    single: false,
-    options: [
-      { id: 'quiet',       th: 'เงียบสงบ ไม่เปิดเพลง',    en: 'Silence, no music' },
-      { id: 'music_soft',  th: 'เปิดเพลงเบาๆ',            en: 'Soft background music' },
-      { id: 'music_nature',th: 'เสียงธรรมชาติ',           en: 'Nature sounds' },
-      { id: 'no_talk',     th: 'ไม่ต้องการสนทนาระหว่างนวด', en: 'No conversation during session' },
-    ],
-  },
-  {
-    id: 'extras',
-    label_th: '✦ บริการเสริม',
-    label_en: '✦ Extra Requests',
-    single: false,
-    options: [
-      { id: 'warm_towel',   th: 'ผ้าอุ่นก่อนนวด',      en: 'Warm towel before session' },
-      { id: 'extra_pillow', th: 'ขอหมอนเพิ่ม',          en: 'Extra pillow' },
-      { id: 'parking',      th: 'มีที่จอดรถ',           en: 'Parking needed' },
-      { id: 'wheelchair',   th: 'ต้องการทางลาด/เก้าอี้รถเข็น', en: 'Wheelchair accessible' },
-    ],
-  },
-  {
-    id: 'allergies',
-    label_th: '⚠️ ข้อควรระวัง / การแพ้',
-    label_en: '⚠️ Allergies / Cautions',
-    single: false,
-    options: [
-      { id: 'allergy_nut',   th: 'แพ้ถั่ว',         en: 'Nut allergy' },
-      { id: 'allergy_latex', th: 'แพ้ยาง (Latex)',   en: 'Latex allergy' },
-      { id: 'allergy_scent', th: 'แพ้กลิ่นน้ำหอม',  en: 'Fragrance sensitivity' },
-      { id: 'pregnant',      th: 'ตั้งครรภ์',        en: 'Pregnant' },
-      { id: 'injury',        th: 'มีบาดแผล/ผ่าตัดเมื่อเร็วๆ นี้', en: 'Recent injury/surgery' },
-    ],
+    id: 'extra_pillow',
+    th: 'ขอหมอนเพิ่ม',
+    en: 'Extra Pillow',
+    desc_th: 'ต้องการหมอนเพิ่มเพื่อความสบาย',
+    desc_en: 'Would like an extra pillow for comfort',
+    icon: '🪶',
   },
 ];
-
-function OptionChip({ label, selected, onToggle }) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.96 }}
-      onClick={onToggle}
-      className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-left transition-all"
-      style={{
-        background: selected ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.02)',
-        border: selected ? '1px solid rgba(255,255,255,0.18)' : '1px solid rgba(255,255,255,0.07)',
-      }}
-    >
-      <span
-        className="text-[13px] font-light flex-1"
-        style={{ color: selected ? 'rgba(255,255,255,0.92)' : 'rgba(161,165,173,0.6)', fontFamily: 'Georgia, serif' }}
-      >
-        {label}
-      </span>
-      <AnimatePresence>
-        {selected && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(255,255,255,0.15)' }}
-          >
-            <Check className="w-2.5 h-2.5" style={{ color: 'rgba(255,255,255,0.9)' }} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.button>
-  );
-}
 
 export default function Preferences() {
   const { lang } = useLang();
@@ -160,17 +68,9 @@ export default function Preferences() {
     }
   }, [customer]);
 
-  const toggle = (id, isSingle, sectionOptions) => {
+  const toggle = (id) => {
     setSaved(false);
-    if (isSingle) {
-      const sectionIds = sectionOptions.map(o => o.id);
-      setSelected(prev => {
-        const withoutSection = prev.filter(x => !sectionIds.includes(x));
-        return prev.includes(id) ? withoutSection : [...withoutSection, id];
-      });
-    } else {
-      setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-    }
+    setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   const handleSave = async () => {
@@ -202,93 +102,144 @@ export default function Preferences() {
             style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
             — PERSONALIZE —
           </p>
-          <h1 className="text-2xl font-light tracking-wide"
-            style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, "Times New Roman", serif' }}>
+          <h1 className="text-[26px] font-light tracking-wide"
+            style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.02em' }}>
             {lang === 'th' ? 'ความต้องการพิเศษ' : 'Preferences'}
           </h1>
-          <p className="text-[12px] mt-1.5" style={{ color: 'rgba(161,165,173,0.4)' }}>
+          <p className="text-[12px] mt-1.5" style={{ color: 'rgba(161,165,173,0.4)', letterSpacing: '0.02em' }}>
             {lang === 'th'
-              ? 'บอกเราเพื่อเตรียมประสบการณ์ที่ดีที่สุดสำหรับคุณ'
-              : 'Help us prepare the perfect experience for you'}
+              ? 'เลือกสิ่งที่ต้องการเพื่อประสบการณ์ที่ดีที่สุด'
+              : 'Select to tailor your perfect experience'}
           </p>
         </motion.div>
 
-        {/* Sections */}
-        {SECTIONS.map((section, si) => (
-          <motion.div
-            key={section.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 + si * 0.06, duration: 0.4, ease: E }}
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <p className="text-[11px] font-semibold tracking-[0.15em] uppercase"
-                style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'Montserrat, sans-serif' }}>
-                {lang === 'th' ? section.label_th : section.label_en}
-              </p>
-              {section.single && (
-                <span className="text-[9px] tracking-[0.1em] px-2 py-0.5 rounded-full"
-                  style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
-                  {lang === 'th' ? 'เลือก 1' : 'pick one'}
-                </span>
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {section.options.map(opt => (
-                <OptionChip
-                  key={opt.id}
-                  label={lang === 'th' ? opt.th : opt.en}
-                  selected={selected.includes(opt.id)}
-                  onToggle={() => toggle(opt.id, section.single, section.options)}
-                />
-              ))}
-            </div>
-          </motion.div>
-        ))}
+        {/* Options List */}
+        <div className="space-y-2">
+          {OPTIONS.map((opt, i) => {
+            const isSelected = selected.includes(opt.id);
+            return (
+              <motion.button
+                key={opt.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 + i * 0.07, duration: 0.4, ease: E }}
+                whileTap={{ scale: 0.985 }}
+                onClick={() => toggle(opt.id)}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-left transition-all"
+                style={{
+                  background: isSelected
+                    ? 'rgba(255,255,255,0.055)'
+                    : 'rgba(255,255,255,0.02)',
+                  border: isSelected
+                    ? '1px solid rgba(255,255,255,0.14)'
+                    : '1px solid rgba(255,255,255,0.06)',
+                  boxShadow: isSelected ? '0 4px 20px rgba(0,0,0,0.3)' : 'none',
+                }}
+              >
+                {/* Icon */}
+                <span className="text-[20px] w-8 text-center flex-shrink-0">{opt.icon}</span>
+
+                {/* Text */}
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="text-[15px] font-light leading-snug"
+                    style={{
+                      color: isSelected ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.55)',
+                      fontFamily: 'Georgia, "Times New Roman", serif',
+                      letterSpacing: '0.01em',
+                      transition: 'color 0.2s',
+                    }}
+                  >
+                    {lang === 'th' ? opt.th : opt.en}
+                  </p>
+                  <p
+                    className="text-[11px] mt-0.5"
+                    style={{
+                      color: isSelected ? 'rgba(161,165,173,0.55)' : 'rgba(161,165,173,0.3)',
+                      transition: 'color 0.2s',
+                    }}
+                  >
+                    {lang === 'th' ? opt.desc_th : opt.desc_en}
+                  </p>
+                </div>
+
+                {/* Checkmark */}
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+                  style={{
+                    background: isSelected ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.04)',
+                    border: isSelected ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(255,255,255,0.08)',
+                  }}
+                >
+                  <AnimatePresence>
+                    {isSelected && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <Check className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.9)' }} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)' }} />
 
         {/* Free Text */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55, duration: 0.4, ease: E }}
+          transition={{ delay: 0.5, duration: 0.4, ease: E }}
         >
-          <p className="text-[11px] font-semibold tracking-[0.15em] uppercase mb-3"
-            style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'Montserrat, sans-serif' }}>
-            {lang === 'th' ? '📝 หมายเหตุพิเศษ' : '📝 Special Notes'}
+          <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3"
+            style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
+            {lang === 'th' ? 'หมายเหตุพิเศษ' : 'Special Notes'}
           </p>
           <textarea
             value={freeText}
             onChange={e => { setFreeText(e.target.value); setSaved(false); }}
             placeholder={lang === 'th'
-              ? 'แจ้งข้อมูลเพิ่มเติม เช่น อาการปวด บาดแผล หรือความต้องการพิเศษอื่นๆ...'
-              : 'Any additional info, e.g. pain areas, injuries, or other special requests...'}
+              ? 'แจ้งข้อมูลเพิ่มเติม เช่น อาการปวด บาดแผล หรือความต้องการอื่นๆ...'
+              : 'Any additional info, e.g. pain areas, injuries, or other requests...'}
             rows={4}
             className="w-full px-4 py-3.5 rounded-2xl text-[13px] resize-none outline-none transition-all"
             style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.09)',
-              color: 'rgba(255,255,255,0.8)',
+              background: 'rgba(255,255,255,0.025)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.75)',
               fontFamily: 'Georgia, serif',
+              lineHeight: 1.7,
             }}
           />
         </motion.div>
 
         {/* Save Button */}
         <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.4 }}
           whileTap={{ scale: 0.97 }}
           onClick={handleSave}
           disabled={saving}
-          className="w-full py-4 rounded-2xl text-[12px] font-semibold tracking-[0.2em] uppercase transition-all disabled:opacity-40"
+          className="w-full py-4 rounded-2xl text-[12px] font-semibold tracking-[0.22em] uppercase transition-all disabled:opacity-40"
           style={{
             background: saved
-              ? 'rgba(60,160,60,0.08)'
-              : 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-            border: saved ? '1px solid rgba(160,220,160,0.2)' : '1px solid rgba(255,255,255,0.14)',
-            color: saved ? 'rgba(160,220,160,0.9)' : 'rgba(255,255,255,0.85)',
+              ? 'rgba(60,160,60,0.07)'
+              : 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%)',
+            border: saved ? '1px solid rgba(160,220,160,0.18)' : '1px solid rgba(255,255,255,0.12)',
+            color: saved ? 'rgba(160,220,160,0.85)' : 'rgba(255,255,255,0.8)',
+            fontFamily: 'Montserrat, sans-serif',
           }}
         >
           {saving ? '· · ·' : saved
-            ? (lang === 'th' ? '✓ บันทึกแล้ว' : '✓ Saved')
+            ? (lang === 'th' ? '✓  บันทึกแล้ว' : '✓  Saved')
             : (lang === 'th' ? 'บันทึก' : 'Save Preferences')}
         </motion.button>
 
