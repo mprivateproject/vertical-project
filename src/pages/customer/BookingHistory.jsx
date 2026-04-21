@@ -313,8 +313,6 @@ export default function BookingHistory() {
         booking={selectedBooking}
         onClose={() => setSelectedBooking(null)}
         onCancel={(id) => { haptic(12); cancelBookingMutation.mutate(id); }}
-        onDeposit={handleDepositCheckout}
-        depositLoading={depositLoading}
         today={today}
         lang={lang}
         locale={locale}
