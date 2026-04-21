@@ -7,6 +7,7 @@ import { base44 } from '@/api/base44Client';
 import { format, parseISO } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { CalendarDays, Clock, X, CreditCard, ExternalLink, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingDetailSheet from '@/components/customer/BookingDetailSheet';
 
@@ -154,13 +155,51 @@ export default function BookingHistory() {
           <PremiumSkeleton />
         ) : upcoming.length === 0 ? (
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="text-center py-20 space-y-3"
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            className="text-center py-20 space-y-6 px-4"
           >
-            <CalendarDays className="w-10 h-10 mx-auto" style={{ color: 'rgba(161,165,173,0.2)' }} />
-            <p className="text-[12px] tracking-[0.15em] uppercase" style={{ color: 'rgba(161,165,173,0.35)' }}>
-              {lang === 'th' ? 'ยังไม่มีนัดหมาย' : 'No upcoming sessions'}
-            </p>
+            {/* Icon */}
+            <div
+              className="w-16 h-16 mx-auto rounded-full flex items-center justify-center"
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
+            >
+              <CalendarDays className="w-7 h-7" style={{ color: 'rgba(161,165,173,0.3)' }} />
+            </div>
+
+            {/* Text */}
+            <div className="space-y-2">
+              <p
+                className="text-[17px] font-light tracking-wide leading-relaxed"
+                style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'Georgia, "Times New Roman", serif' }}
+              >
+                {lang === 'th' ? 'เริ่มต้นช่วงเวลา\nแห่งความสงบของคุณ...' : 'Begin your moment\nof serenity...'}
+              </p>
+              <p
+                className="text-[11px] tracking-[0.15em] uppercase"
+                style={{ color: 'rgba(161,165,173,0.35)', fontFamily: 'Montserrat, sans-serif' }}
+              >
+                {lang === 'th' ? 'ยังไม่มีนัดหมายที่กำลังจะมาถึง' : 'No upcoming sessions yet'}
+              </p>
+            </div>
+
+            {/* CTA Button */}
+            <Link
+              to="/selfbooking"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-[12px] font-semibold tracking-[0.2em] uppercase transition-all active:scale-95"
+              style={{
+                background: 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.85)',
+                fontFamily: 'Montserrat, sans-serif',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+              }}
+            >
+              {lang === 'th' ? '✦ จองเลย' : '✦ Reserve Now'}
+            </Link>
           </motion.div>
         ) : (
           <div className="space-y-3">
