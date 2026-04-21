@@ -63,7 +63,7 @@ export default function TimeSlotPicker({
                   <span className={`text-[10px] font-medium ${isSelected ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                     {isToday(date) ? t('today') : dayName}
                   </span>
-                  <span className={`text-lg font-bold mt-0.5 ${isSelected ? '' : 'text-foreground'}`}>
+                  <span className={`text-2xl font-bold mt-0.5 ${isSelected ? '' : 'text-foreground'}`}>
                     {dayNum}
                   </span>
                   <span className={`text-[10px] ${isSelected ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
