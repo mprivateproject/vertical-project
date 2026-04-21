@@ -19,6 +19,9 @@ export const adminClient = {
   updateCustomer: (id, data) =>
     base44.entities.Customer.update(id, data),
 
+  deleteCustomer: (id) =>
+    base44.entities.Customer.delete(id),
+
   getServices: () =>
     base44.entities.Service.list('sort_order', 100),
 
