@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
 import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import ServiceCard from '@/components/customer/ServiceCard';
 import CategoryFilter from '@/components/customer/CategoryFilter';
 
@@ -28,43 +27,78 @@ export default function Services() {
   });
 
   return (
-    <div className="px-5 pt-4 pb-6 space-y-5" style={{ marginTop: '-32px', position: 'relative', zIndex: 10 }}>
-      <h1 className="font-display text-2xl font-semibold text-foreground">
-        {t('selectService')}
-      </h1>
+    <div
+      className="min-h-screen pb-32"
+      style={{ background: '#0E0F11', marginTop: '-32px', position: 'relative', zIndex: 10 }}
+    >
+      <div className="px-5 pt-5 space-y-5">
+        {/* Header */}
+        <div>
+          <p
+            className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-1"
+            style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}
+          >
+            — OUR PROGRAMS —
+          </p>
+          <h1
+            className="text-2xl font-light tracking-wide"
+            style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.03em' }}
+          >
+            {lang === 'th' ? 'เลือกโปรแกรม' : 'Select Program'}
+          </h1>
+        </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder={t('search') + '...'}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9 rounded-xl bg-secondary border-0 h-11"
-        />
+        {/* Search */}
+        <div className="relative">
+          <Search
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5"
+            style={{ color: 'rgba(161,165,173,0.35)' }}
+          />
+          <input
+            placeholder={lang === 'th' ? 'ค้นหาโปรแกรม...' : 'Search programs...'}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full h-11 pl-10 pr-4 rounded-2xl text-[13px] outline-none transition-all"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              color: 'rgba(255,255,255,0.8)',
+              fontFamily: 'Georgia, "Times New Roman", serif',
+            }}
+          />
+        </div>
+
+        {/* Categories */}
+        <CategoryFilter selected={category} onSelect={setCategory} />
+
+        {/* Services grid */}
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[1,2,3,4,5,6].map(i => (
+              <div
+                key={i}
+                className="h-52 rounded-2xl animate-pulse"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}
+              />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16 space-y-2">
+            <p
+              className="text-[15px] font-light"
+              style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'Georgia, "Times New Roman", serif' }}
+            >
+              {lang === 'th' ? 'ไม่พบโปรแกรมที่ค้นหา' : 'No programs found'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {filtered.map((service, i) => (
+              <ServiceCard key={service.id} service={service} index={i} />
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Categories */}
-      <CategoryFilter selected={category} onSelect={setCategory} />
-
-      {/* Services grid */}
-      {isLoading ? (
-        <div className="grid grid-cols-2 gap-3">
-          {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="h-52 rounded-2xl bg-muted animate-pulse" />
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground text-sm">
-          ไม่พบบริการที่ค้นหา
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-3">
-          {filtered.map((service, i) => (
-            <ServiceCard key={service.id} service={service} index={i} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

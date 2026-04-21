@@ -221,9 +221,9 @@ export default function BookingHistory() {
                   transition={{ delay: i * 0.07, duration: 0.5, ease: E }}
                   className="rounded-2xl overflow-hidden"
                   style={{
-                    background: 'rgba(255,255,255,0.025)',
-                    border: '1px solid rgba(255,255,255,0.07)',
-                    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+                    background: 'linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)',
+                    border: '1px solid rgba(255,255,255,0.09)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)',
                   }}
                 >
                   {/* Main card row */}
