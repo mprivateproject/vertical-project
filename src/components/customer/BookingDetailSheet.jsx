@@ -94,7 +94,7 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, onDepos
             <X className="w-4 h-4" />
           </button>
 
-          <div className="px-6 pb-10 pt-4 space-y-6">
+          <div className="px-6 pb-28 pt-4 space-y-6">
             {/* Title section */}
             <div>
               <p className="text-[9px] tracking-[0.3em] uppercase mb-1.5"
