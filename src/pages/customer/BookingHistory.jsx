@@ -9,6 +9,7 @@ import { CalendarDays, Clock, X, ChevronDown, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingDetailSheet from '@/components/customer/BookingDetailSheet';
+import HealthSafetyForm from '@/components/customer/HealthSafetyForm';
 
 const E = [0.22, 1, 0.36, 1];
 
@@ -37,6 +38,7 @@ export default function BookingHistory() {
   const { idToken, ready } = useLine();
   const locale = lang === 'th' ? th : enUS;
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [checkInBookingId, setCheckInBookingId] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: bookings = [], isLoading } = useQuery({
@@ -65,14 +67,15 @@ export default function BookingHistory() {
   });
 
   const checkInMutation = useMutation({
-    mutationFn: async (bookingId) => {
+    mutationFn: async ({ bookingId, formData }) => {
       await liffSyncClient.call({
         url: '/functions/liffSync', method: 'POST',
-        data: { action: 'updateBookingStatus', bookingId, status: 'checked_in' }
+        data: { action: 'updateBookingStatus', bookingId, status: 'checked_in', healthForm: formData }
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+      setCheckInBookingId(null);
     },
   });
 
@@ -286,7 +289,7 @@ export default function BookingHistory() {
                         e.stopPropagation();
                         if (!checkInActive) return;
                         haptic(12);
-                        checkInMutation.mutate(booking.id);
+                        setCheckInBookingId(booking.id);
                       }}
                       className="w-full py-2.5 text-[10px] tracking-[0.2em] uppercase font-medium transition-all flex items-center justify-center gap-1.5"
                       style={{
@@ -327,6 +330,18 @@ export default function BookingHistory() {
           </div>
         )}
       </div>
+
+      {/* Health & Safety form */}
+      {checkInBookingId && (
+        <HealthSafetyForm
+          lang={lang}
+          onClose={() => setCheckInBookingId(null)}
+          onConfirm={async (formData) => {
+            haptic(12);
+            await checkInMutation.mutateAsync({ bookingId: checkInBookingId, formData });
+          }}
+        />
+      )}
 
       {/* Detail sheet */}
       <BookingDetailSheet
