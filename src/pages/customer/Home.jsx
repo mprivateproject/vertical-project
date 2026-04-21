@@ -57,27 +57,27 @@ export default function Home() {
         >
           {/* M monogram */}
           <p style={{
-            fontFamily: '"Cormorant Garamond", Georgia, serif',
-            fontSize: '38px',
-            fontWeight: 600,
+            fontFamily: '"Playfair Display", "Cormorant Garamond", Georgia, serif',
+            fontSize: '40px',
+            fontWeight: 700,
             letterSpacing: '0.06em',
             color: '#E5D3B3',
             lineHeight: 1,
-            textShadow: '0 0 28px rgba(229,211,179,0.18)',
+            textShadow: '0 0 28px rgba(229,211,179,0.22)',
           }}>
             M
           </p>
 
           {/* Brand name */}
           <p style={{
-            fontFamily: 'Montserrat, sans-serif',
-            fontSize: '7px',
-            fontWeight: 500,
-            letterSpacing: '0.42em',
-            color: 'rgba(229,211,179,0.55)',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            fontSize: '6.5px',
+            fontWeight: 400,
+            letterSpacing: '0.44em',
+            color: 'rgba(229,211,179,0.5)',
             textTransform: 'uppercase',
             marginTop: '7px',
-            paddingLeft: '0.42em',
+            paddingLeft: '0.44em',
           }}>
             M Private Project
           </p>
@@ -102,14 +102,14 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.22, duration: 0.85, ease: E }}
             style={{
-              fontFamily: '"Cormorant Garamond", Georgia, serif',
-              fontSize: 'clamp(26px, 9vw, 46px)',
-              fontWeight: 300,
-              letterSpacing: '0.52em',
-              color: 'rgba(255,255,255,0.82)',
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: 'clamp(22px, 8vw, 40px)',
+              fontWeight: 400,
+              letterSpacing: '0.55em',
+              color: 'rgba(255,255,255,0.78)',
               lineHeight: 1,
               textTransform: 'uppercase',
-              paddingLeft: '0.52em',
+              paddingLeft: '0.55em',
               textShadow: '0 2px 24px rgba(0,0,0,0.5)',
             }}
           >
@@ -122,15 +122,15 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.34, duration: 0.85, ease: E }}
             style={{
-              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontFamily: '"Playfair Display", Georgia, serif',
               fontSize: 'clamp(72px, 23vw, 130px)',
-              fontWeight: 500,
+              fontWeight: 700,
               fontStyle: 'italic',
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.025em',
               color: '#FFFFFF',
               lineHeight: 0.88,
               marginTop: '-2px',
-              textShadow: '0 4px 40px rgba(0,0,0,0.55), 0 0 60px rgba(229,211,179,0.07)',
+              textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)',
             }}
           >
             Opening
@@ -156,8 +156,8 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.9 }}
             style={{
-              fontFamily: 'Montserrat, sans-serif',
-              fontSize: '8px',
+              fontFamily: 'Inter, system-ui, sans-serif',
+              fontSize: '7.5px',
               fontWeight: 500,
               letterSpacing: '0.38em',
               color: '#CBBBA0',
@@ -178,24 +178,24 @@ export default function Home() {
             style={{ gap: '5px' }}
           >
             <p style={{
-              fontFamily: 'Montserrat, sans-serif',
+              fontFamily: 'Inter, system-ui, sans-serif',
               fontSize: '7px',
               fontWeight: 400,
-              letterSpacing: '0.32em',
+              letterSpacing: '0.3em',
               color: 'rgba(255,255,255,0.38)',
               textTransform: 'uppercase',
-              paddingLeft: '0.32em',
+              paddingLeft: '0.3em',
             }}>
               Nonthaburi
             </p>
             <p style={{
-              fontFamily: 'Montserrat, sans-serif',
+              fontFamily: 'Inter, system-ui, sans-serif',
               fontSize: '7px',
               fontWeight: 400,
-              letterSpacing: '0.26em',
+              letterSpacing: '0.24em',
               color: 'rgba(255,255,255,0.28)',
               textTransform: 'uppercase',
-              paddingLeft: '0.26em',
+              paddingLeft: '0.24em',
             }}>
               LINE : @mprivateproject
             </p>

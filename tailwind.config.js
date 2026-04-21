@@ -10,6 +10,8 @@ module.exports = {
         body: ['var(--font-body)'],
         montserrat: ['Montserrat', 'sans-serif'],
         cormorant: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        playfair: ['"Playfair Display"', 'Georgia', 'serif'],
+        inter: ['Inter', 'system-ui', 'sans-serif'],
       },
   		borderRadius: {
   			lg: 'var(--radius)',
