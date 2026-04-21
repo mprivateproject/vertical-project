@@ -6,8 +6,8 @@ import { useTheme } from '@/lib/ThemeContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
 import { Link } from 'react-router-dom';
 import {
-  Clock, Star, Award, Settings, Moon, Sun, Globe, LogOut,
-  ChevronRight, Shield
+  Clock, Award, Moon, Sun, Globe, LogOut,
+  ChevronRight, Shield, Sliders
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LanguageToggle from '@/components/shared/LanguageToggle';
@@ -49,8 +49,8 @@ export default function Profile() {
 
   const menuItems = [
     { icon: Clock, label: lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Your Bookings', path: '/bookings' },
-    { icon: Star, label: t('review'), path: '/bookings' },
-    { icon: Award, label: `${t('loyalty')} — 0 ${t('points')}`, path: '/bookings' },
+    { icon: Award, label: lang === 'th' ? 'Loyalty Rewards' : 'Loyalty Rewards', path: '/loyalty' },
+    { icon: Sliders, label: lang === 'th' ? 'Preference & Special Requests' : 'Preference & Special Requests', path: '/preferences' },
   ];
 
   return (

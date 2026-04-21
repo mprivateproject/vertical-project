@@ -38,6 +38,8 @@ import AdminSettings from '@/pages/admin/AdminSettings';
 import ScheduleBoard from '@/pages/admin/ScheduleBoard';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
+import LoyaltyRewards from '@/pages/customer/LoyaltyRewards';
+import Preferences from '@/pages/customer/Preferences';
 
 // Layouts
 import CustomerLayout from '@/components/shared/CustomerLayout';
@@ -57,6 +59,8 @@ const AuthenticatedApp = () => {
         <Route path="/price" element={<Price />} />
         <Route path="/quickbooking" element={<QuickBookingPage />} />
         <Route path="/selfbooking" element={<SelfBookingPage />} />
+        <Route path="/loyalty" element={<LoyaltyRewards />} />
+        <Route path="/preferences" element={<Preferences />} />
       </Route>
 
       {/* Staff routes */}
