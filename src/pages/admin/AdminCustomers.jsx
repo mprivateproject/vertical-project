@@ -4,7 +4,7 @@ import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Search, Users, Star, DollarSign, Calendar, ChevronRight, Trash2 } from 'lucide-react';
+import { Search, Users, Star, DollarSign, Calendar, ChevronRight, Trash2, Crown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,6 +23,17 @@ export default function AdminCustomers() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [editTierId, setEditTierId] = useState(null);
+
+  const updateTierMutation = useMutation({
+    mutationFn: ({ id, tier }) => adminClient.updateCustomer(id, { membership_tier: tier }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-customers'] });
+      setEditTierId(null);
+    },
+  });
+
+  const editTierCustomer = customers.find(c => c.id === editTierId);
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['admin-customers'],
@@ -118,6 +129,13 @@ export default function AdminCustomers() {
                       <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                     </button>
                     <button
+                      onClick={() => setEditTierId(customer.id)}
+                      className="p-2 rounded-lg text-muted-foreground hover:text-amber-600 hover:bg-amber-50 transition-colors flex-shrink-0"
+                      title="แก้ไข tier"
+                    >
+                      <Crown className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={() => setConfirmDeleteId(customer.id)}
                       className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors flex-shrink-0"
                     >
@@ -135,6 +153,50 @@ export default function AdminCustomers() {
           ))}
         </div>
       )}
+
+      {/* Edit Tier Dialog */}
+      <AnimatePresence>
+        {editTierId && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+            onClick={() => setEditTierId(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-xl"
+              onClick={e => e.stopPropagation()}
+            >
+              <h3 className="font-semibold text-lg mb-1">แก้ไข Tier</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                <span className="font-medium text-foreground">{editTierCustomer?.display_name}</span>
+              </p>
+              <div className="grid grid-cols-2 gap-2 mb-5">
+                {['none', 'silver', 'gold', 'platinum'].map(tier => (
+                  <button
+                    key={tier}
+                    onClick={() => updateTierMutation.mutate({ id: editTierId, tier })}
+                    disabled={updateTierMutation.isPending}
+                    className={`py-3 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 capitalize ${
+                      editTierCustomer?.membership_tier === tier
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border hover:border-primary/50 text-foreground'
+                    } ${tierColors[tier]}`}
+                  >
+                    {tier === 'none' ? '— none' : tier.charAt(0).toUpperCase() + tier.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => setEditTierId(null)}
+                className="w-full py-2 rounded-lg text-sm border border-border hover:bg-secondary transition-colors"
+              >
+                ยกเลิก
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Confirm Delete Dialog */}
       <AnimatePresence>
