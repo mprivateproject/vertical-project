@@ -71,7 +71,7 @@ export default function Home() {
           {/* Brand name */}
           <p style={{
             fontFamily: 'Inter, system-ui, sans-serif',
-            fontSize: '6.5px',
+            fontSize: '9px',
             fontWeight: 400,
             letterSpacing: '0.44em',
             color: 'rgba(229,211,179,0.5)',
@@ -157,7 +157,7 @@ export default function Home() {
             transition={{ delay: 0.6, duration: 0.9 }}
             style={{
               fontFamily: 'Inter, system-ui, sans-serif',
-              fontSize: '7.5px',
+              fontSize: '11px',
               fontWeight: 500,
               letterSpacing: '0.38em',
               color: '#CBBBA0',
@@ -179,7 +179,7 @@ export default function Home() {
           >
             <p style={{
               fontFamily: 'Inter, system-ui, sans-serif',
-              fontSize: '7px',
+              fontSize: '10px',
               fontWeight: 400,
               letterSpacing: '0.3em',
               color: 'rgba(255,255,255,0.38)',
@@ -190,7 +190,7 @@ export default function Home() {
             </p>
             <p style={{
               fontFamily: 'Inter, system-ui, sans-serif',
-              fontSize: '7px',
+              fontSize: '10px',
               fontWeight: 400,
               letterSpacing: '0.24em',
               color: 'rgba(255,255,255,0.28)',

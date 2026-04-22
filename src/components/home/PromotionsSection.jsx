@@ -50,7 +50,7 @@ export default function PromotionsSection({ promotions, isLoading }) {
             }}
           >
             <p
-              className="text-[22px] font-normal leading-tight"
+              className="text-[26px] font-normal leading-tight"
               style={{
                 fontFamily: 'Georgia, "Times New Roman", serif',
                 color: '#C9A84C',
@@ -61,7 +61,7 @@ export default function PromotionsSection({ promotions, isLoading }) {
             </p>
             {subtitle && (
               <p
-                className="mt-2 text-[16px] font-light"
+                className="mt-2 text-[19px] font-light"
                 style={{
                   fontFamily: 'Georgia, "Times New Roman", serif',
                   color: 'rgba(201,168,76,0.75)',
@@ -72,7 +72,7 @@ export default function PromotionsSection({ promotions, isLoading }) {
             )}
             {body && (
               <p
-                className="mt-2 text-[11px] tracking-wide"
+                className="mt-2 text-[14px] tracking-wide"
                 style={{ color: 'rgba(198,200,204,0.4)', fontFamily: 'Montserrat, sans-serif' }}
               >
                 {body}
@@ -80,7 +80,7 @@ export default function PromotionsSection({ promotions, isLoading }) {
             )}
             {promo.code && (
               <span
-                className="inline-block mt-3 px-3 py-1 text-[10px] tracking-[0.2em] uppercase rounded-full"
+                className="inline-block mt-3 px-3 py-1 text-[13px] tracking-[0.2em] uppercase rounded-full"
                 style={{
                   border: '1px solid rgba(201,168,76,0.35)',
                   color: 'rgba(201,168,76,0.75)',

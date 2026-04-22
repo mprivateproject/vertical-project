@@ -98,19 +98,19 @@ export default function Preferences() {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: E }}>
           <Link to="/profile" className="inline-flex items-center gap-1.5 mb-5"
-            style={{ color: isDark ? 'rgba(161,165,173,0.45)' : 'rgba(100,90,70,0.55)', fontFamily: 'Montserrat, sans-serif', fontSize: '10px', letterSpacing: '0.2em' }}>
+            style={{ color: isDark ? 'rgba(161,165,173,0.45)' : 'rgba(100,90,70,0.55)', fontFamily: 'Montserrat, sans-serif', fontSize: '13px', letterSpacing: '0.2em' }}>
             <ChevronLeft className="w-3.5 h-3.5" />
             {lang === 'th' ? 'กลับ' : 'BACK'}
           </Link>
-          <p className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-1"
+          <p className="text-[12px] font-semibold tracking-[0.35em] uppercase mb-1"
             style={{ color: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(140,120,90,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
             — PERSONALIZE —
           </p>
-          <h1 className="text-[26px] font-light tracking-wide"
+          <h1 className="text-[32px] font-light tracking-wide"
             style={{ color: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(30,25,15,0.88)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.02em' }}>
             {lang === 'th' ? 'ความต้องการพิเศษ' : 'Preferences'}
           </h1>
-          <p className="text-[12px] mt-1.5" style={{ color: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(100,90,70,0.5)', letterSpacing: '0.02em' }}>
+          <p className="text-[15px] mt-1.5" style={{ color: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(100,90,70,0.5)', letterSpacing: '0.02em' }}>
             {lang === 'th'
               ? 'เลือกสิ่งที่ต้องการเพื่อประสบการณ์ที่ดีที่สุด'
               : 'Select to tailor your perfect experience'}
@@ -141,12 +141,12 @@ export default function Preferences() {
                 }}
               >
                 {/* Icon */}
-                <span className="text-[20px] w-8 text-center flex-shrink-0">{opt.icon}</span>
+                <span className="text-[24px] w-10 text-center flex-shrink-0">{opt.icon}</span>
 
                 {/* Text */}
                 <div className="flex-1 min-w-0">
                   <p
-                    className="text-[15px] font-light leading-snug"
+                    className="text-[18px] font-light leading-snug"
                     style={{
                       color: isSelected
                         ? (isDark ? 'rgba(255,255,255,0.92)' : 'rgba(30,25,15,0.88)')
@@ -159,7 +159,7 @@ export default function Preferences() {
                     {lang === 'th' ? opt.th : opt.en}
                   </p>
                   <p
-                    className="text-[11px] mt-0.5"
+                    className="text-[14px] mt-0.5"
                     style={{
                       color: isSelected
                         ? (isDark ? 'rgba(161,165,173,0.55)' : 'rgba(120,105,80,0.6)')
@@ -210,7 +210,7 @@ export default function Preferences() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.4, ease: E }}
         >
-          <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3"
+          <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-3"
             style={{ color: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(140,120,90,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th' ? 'หมายเหตุพิเศษ' : 'Special Notes'}
           </p>
@@ -221,7 +221,7 @@ export default function Preferences() {
               ? 'แจ้งข้อมูลเพิ่มเติม เช่น อาการปวด บาดแผล หรือความต้องการอื่นๆ...'
               : 'Any additional info, e.g. pain areas, injuries, or other requests...'}
             rows={4}
-            className="w-full px-4 py-3.5 rounded-2xl text-[13px] resize-none outline-none transition-all"
+            className="w-full px-4 py-3.5 rounded-2xl text-[16px] resize-none outline-none transition-all"
             style={{
               background: isDark ? 'rgba(255,255,255,0.025)' : 'rgba(255,255,255,0.7)',
               border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(200,185,160,0.4)',
@@ -240,7 +240,7 @@ export default function Preferences() {
           whileTap={{ scale: 0.97 }}
           onClick={handleSave}
           disabled={saving}
-          className="w-full py-4 rounded-2xl text-[12px] font-semibold tracking-[0.22em] uppercase transition-all disabled:opacity-40"
+          className="w-full py-4 rounded-2xl text-[15px] font-semibold tracking-[0.22em] uppercase transition-all disabled:opacity-40"
           style={{
             background: saved
               ? (isDark ? 'rgba(60,160,60,0.07)' : 'rgba(60,160,60,0.08)')

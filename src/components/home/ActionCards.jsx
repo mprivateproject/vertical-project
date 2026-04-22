@@ -81,7 +81,7 @@ export default function ActionCards({ totalBookings = 0 }) {
       {/* Label top-left */}
       <div className="absolute top-0 left-0 p-3.5">
         <p
-          className="text-[13px] font-light leading-tight"
+          className="text-[16px] font-light leading-tight"
           style={{
             color: card.image ? 'rgba(201,168,76,0.95)' : 'rgba(201,168,76,0.75)',
             fontFamily: 'Georgia, "Times New Roman", serif',

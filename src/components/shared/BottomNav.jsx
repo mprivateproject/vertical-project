@@ -60,7 +60,7 @@ export default function BottomNav() {
             <motion.span
               initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 3 }}
               transition={{ duration: 0.22 }}
-              className="text-[8px] tracking-[0.15em] uppercase"
+              className="text-[11px] tracking-[0.15em] uppercase"
               style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'Montserrat, sans-serif' }}
             >
               {t(keyName)}

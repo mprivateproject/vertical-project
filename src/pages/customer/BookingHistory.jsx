@@ -124,12 +124,12 @@ export default function BookingHistory() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: E }}
         >
-          <p className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-1"
+          <p className="text-[12px] font-semibold tracking-[0.35em] uppercase mb-1"
             style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
             — UPCOMING · {upcoming.length} —
           </p>
           <h1
-            className="text-2xl font-light tracking-wide"
+            className="text-3xl font-light tracking-wide"
             style={{ color: titleColor, fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.03em' }}
           >
             {lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Upcomings'}
@@ -187,13 +187,13 @@ export default function BookingHistory() {
 
             <div className="space-y-2">
               <p
-                className="text-[17px] font-light tracking-wide leading-relaxed"
+                className="text-[20px] font-light tracking-wide leading-relaxed"
                 style={{ color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(40,35,30,0.65)', fontFamily: 'Georgia, "Times New Roman", serif' }}
               >
                 {lang === 'th' ? 'เริ่มต้นช่วงเวลา\nแห่งความสงบของคุณ...' : 'Begin your moment\nof serenity...'}
               </p>
               <p
-                className="text-[11px] tracking-[0.15em] uppercase"
+                className="text-[14px] tracking-[0.15em] uppercase"
                 style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}
               >
                 {lang === 'th' ? 'ยังไม่มีนัดหมายที่กำลังจะมาถึง' : 'No upcoming sessions yet'}
@@ -202,7 +202,7 @@ export default function BookingHistory() {
 
             <Link
               to="/selfbooking"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-[12px] font-semibold tracking-[0.2em] uppercase transition-all active:scale-95"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-[15px] font-semibold tracking-[0.2em] uppercase transition-all active:scale-95"
               style={{
                 background: isDark
                   ? 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
@@ -254,15 +254,15 @@ export default function BookingHistory() {
                       className="flex-shrink-0 w-14 flex flex-col items-center justify-center py-2 rounded-xl"
                       style={{ background: dateBlockBg, border: dateBlockBorder }}
                     >
-                      <span className="text-[9px] tracking-[0.2em] font-medium"
+                      <span className="text-[12px] tracking-[0.2em] font-medium"
                         style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
                         {monthStr}
                       </span>
-                      <span className="text-[24px] font-bold tabular-nums leading-tight"
+                      <span className="text-[28px] font-bold tabular-nums leading-tight"
                         style={{ color: titleColor, fontFamily: 'Montserrat, sans-serif' }}>
                         {dayStr}
                       </span>
-                      <span className="text-[9px] tracking-[0.15em] font-medium"
+                      <span className="text-[12px] tracking-[0.15em] font-medium"
                         style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
                         {weekStr}
                       </span>
@@ -270,12 +270,12 @@ export default function BookingHistory() {
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[9px] tracking-[0.25em] uppercase mb-1"
+                      <p className="text-[12px] tracking-[0.25em] uppercase mb-1"
                         style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
                         Wellness · Massage
                       </p>
                       <p
-                        className="text-[15px] font-light truncate leading-snug"
+                        className="text-[18px] font-light truncate leading-snug"
                         style={{
                           color: serviceColor,
                           fontFamily: 'Georgia, "Times New Roman", serif',
@@ -286,7 +286,7 @@ export default function BookingHistory() {
                       </p>
                       <div className="flex items-center gap-2 mt-1.5">
                         <Clock className="w-3 h-3 flex-shrink-0" style={{ color: timeColor }} />
-                        <span className="text-[11px] tabular-nums" style={{ color: timeColor }}>
+                        <span className="text-[14px] tabular-nums" style={{ color: timeColor }}>
                           {booking.start_time}
                           {booking.end_time ? ` – ${booking.end_time}` : ''}
                           {booking.duration_minutes ? ` · ${booking.duration_minutes} ${t('minutes')}` : ''}
@@ -310,7 +310,7 @@ export default function BookingHistory() {
                         haptic(12);
                         setCheckInBookingId(booking.id);
                       }}
-                      className="w-full py-2.5 text-[10px] tracking-[0.2em] uppercase font-medium transition-all flex items-center justify-center gap-1.5"
+                      className="w-full py-2.5 text-[13px] tracking-[0.2em] uppercase font-medium transition-all flex items-center justify-center gap-1.5"
                       style={{
                         borderTop: `1px solid ${dividerColor}`,
                         color: checkInActive
@@ -325,7 +325,7 @@ export default function BookingHistory() {
                       <LogIn className="w-3 h-3 opacity-80" />
                       {lang === 'th' ? 'ฉันมาถึงแล้ว' : 'I Have Arrived'}
                       {!checkInActive && (
-                        <span className="text-[9px] tracking-normal normal-case ml-1"
+                        <span className="text-[12px] tracking-normal normal-case ml-1"
                           style={{ color: isDark ? 'rgba(161,165,173,0.2)' : 'rgba(120,110,100,0.25)' }}>
                           ({lang === 'th' ? 'เปิดให้เช็คอินก่อนเวลาเริ่ม 60 นาที' : 'opens 60 min before'})
                         </span>
@@ -337,7 +337,7 @@ export default function BookingHistory() {
                   {canCancel && (
                     <button
                       onClick={(e) => { e.stopPropagation(); haptic(12); cancelBookingMutation.mutate(booking.id); }}
-                      className="w-full py-2.5 text-[10px] tracking-[0.2em] uppercase font-medium transition-all"
+                      className="w-full py-2.5 text-[13px] tracking-[0.2em] uppercase font-medium transition-all"
                       style={{
                         borderTop: `1px solid ${dividerColor}`,
                         color: isDark ? 'rgba(180,80,80,0.7)' : 'rgba(160,50,50,0.65)',

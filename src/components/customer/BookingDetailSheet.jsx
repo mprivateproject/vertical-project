@@ -126,12 +126,12 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
 
             {/* ── TITLE BLOCK ── */}
             <div className="space-y-1.5">
-              <p className="text-[9px] tracking-[0.3em] uppercase"
+              <p className="text-[12px] tracking-[0.3em] uppercase"
                 style={{ color: 'rgba(161,165,173,0.35)', fontFamily: 'Montserrat, sans-serif' }}>
                 Wellness · Massage
               </p>
               <h2
-                className="text-[26px] font-light leading-tight"
+                className="text-[30px] font-light leading-tight"
                 style={{ color: 'rgba(255,255,255,0.95)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.01em' }}
               >
                 {booking.service_name}
@@ -167,23 +167,23 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
               style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               <div>
-                <p className="text-[9px] tracking-[0.2em] uppercase mb-1.5"
+                <p className="text-[12px] tracking-[0.2em] uppercase mb-1.5"
                   style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
                   {lang === 'th' ? 'สถานะ' : 'Status'}
                 </p>
-                <p className="text-[14px] font-light" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                <p className="text-[17px] font-light" style={{ color: 'rgba(255,255,255,0.75)' }}>
                   {status[lang]}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-[9px] tracking-[0.2em] uppercase mb-1.5"
+                <p className="text-[12px] tracking-[0.2em] uppercase mb-1.5"
                   style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}>
                   {lang === 'th' ? 'ราคา' : 'Price'}
                 </p>
-                <p className="text-[20px] font-semibold tabular-nums" style={{ color: 'rgba(255,255,255,0.92)' }}>
+                <p className="text-[24px] font-semibold tabular-nums" style={{ color: 'rgba(255,255,255,0.92)' }}>
                   ฿{booking.price?.toLocaleString()}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: 'rgba(161,165,173,0.4)' }}>
+                <p className="text-[13px] mt-0.5" style={{ color: 'rgba(161,165,173,0.4)' }}>
                   {payment[lang]}
                 </p>
               </div>
@@ -198,7 +198,7 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
                 target="_blank"
                 rel="noopener noreferrer"
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-[12px] font-medium tracking-[0.12em] uppercase transition-all"
+                className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-[15px] font-medium tracking-[0.12em] uppercase transition-all"
                 style={{
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.09)',
@@ -214,7 +214,7 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setShowNoteInput(v => !v)}
-                className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-[12px] font-medium tracking-[0.12em] uppercase transition-all"
+                className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl text-[15px] font-medium tracking-[0.12em] uppercase transition-all"
                 style={{
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.09)',
@@ -245,7 +245,7 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
                           ? 'แจ้งความต้องการพิเศษ เช่น แรงกดที่ชอบ จุดที่ต้องการเน้น...'
                           : 'Any special requests, e.g. pressure preference, focus areas...'}
                         rows={3}
-                        className="w-full px-4 py-3 rounded-2xl text-[13px] resize-none outline-none"
+                        className="w-full px-4 py-3 rounded-2xl text-[16px] resize-none outline-none"
                         style={{
                           background: 'rgba(255,255,255,0.04)',
                           border: '1px solid rgba(255,255,255,0.1)',
@@ -257,7 +257,7 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
                         whileTap={{ scale: 0.97 }}
                         onClick={handleSaveNote}
                         disabled={noteSaving}
-                        className="w-full py-3 rounded-2xl text-[12px] font-semibold tracking-[0.15em] uppercase disabled:opacity-40"
+                        className="w-full py-3 rounded-2xl text-[15px] font-semibold tracking-[0.15em] uppercase disabled:opacity-40"
                         style={{
                           background: 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
                           border: '1px solid rgba(255,255,255,0.14)',
@@ -276,7 +276,7 @@ export default function BookingDetailSheet({ booking, onClose, onCancel, today, 
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={() => onCancel(booking.id)}
-                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[11px] tracking-[0.12em] uppercase transition-all"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-[14px] tracking-[0.12em] uppercase transition-all"
                   style={{
                     background: 'transparent',
                     border: '1px solid rgba(255,255,255,0.05)',
@@ -301,12 +301,12 @@ function MetaRow({ icon, label, value, large }) {
     <div className="flex items-start gap-3.5">
       <span className="mt-0.5 flex-shrink-0" style={{ color: 'rgba(161,165,173,0.35)' }}>{icon}</span>
       <div>
-        <p className="text-[9px] tracking-[0.2em] uppercase mb-0.5"
+        <p className="text-[12px] tracking-[0.2em] uppercase mb-0.5"
           style={{ color: 'rgba(161,165,173,0.35)', fontFamily: 'Montserrat, sans-serif' }}>
           {label}
         </p>
         <span
-          className={large ? 'text-[15px] font-light' : 'text-[13px] font-light'}
+          className={large ? 'text-[18px] font-light' : 'text-[16px] font-light'}
           style={{ color: 'rgba(255,255,255,0.75)', letterSpacing: '0.01em' }}
         >
           {value}

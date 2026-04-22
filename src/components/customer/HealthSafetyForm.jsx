@@ -68,7 +68,7 @@ function Checkbox({ checked, onChange, label, hasNote, noteValue, onNoteChange, 
           </AnimatePresence>
         </div>
         <span
-          className="text-[13px] font-light leading-relaxed"
+          className="text-[16px] font-light leading-relaxed"
           style={{
             color: checked ? 'rgba(255,255,255,0.88)' : 'rgba(161,165,173,0.65)',
             fontFamily: 'Georgia, serif',
@@ -89,7 +89,7 @@ function Checkbox({ checked, onChange, label, hasNote, noteValue, onNoteChange, 
             value={noteValue || ''}
             onChange={e => onNoteChange(e.target.value)}
             placeholder={lang === 'th' ? 'ระบุรายละเอียด...' : 'Please specify...'}
-            className="w-full px-3 py-2 rounded-xl text-[12px] outline-none"
+            className="w-full px-3 py-2 rounded-xl text-[15px] outline-none"
             style={{
               background: 'rgba(255,255,255,0.04)',
               border: '1px solid rgba(255,255,255,0.1)',
@@ -210,7 +210,7 @@ function SignaturePad({ onHasSig, lang }) {
       {hasDrawn && (
         <button
           onClick={clear}
-          className="flex items-center gap-1.5 text-[10px] tracking-[0.15em] uppercase transition-opacity hover:opacity-70"
+          className="flex items-center gap-1.5 text-[13px] tracking-[0.15em] uppercase transition-opacity hover:opacity-70"
           style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}
         >
           <RotateCcw className="w-3 h-3" />
@@ -308,17 +308,17 @@ export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
 
             {/* Title */}
             <div>
-              <p className="text-[9px] tracking-[0.3em] uppercase mb-1"
+              <p className="text-[12px] tracking-[0.3em] uppercase mb-1"
                 style={{ color: 'rgba(161,165,173,0.35)', fontFamily: 'Montserrat, sans-serif' }}>
                 Health & Safety
               </p>
               <h2
-                className="text-[22px] font-light"
+                className="text-[26px] font-light"
                 style={{ color: 'rgba(255,255,255,0.92)', fontFamily: 'Georgia, serif', letterSpacing: '0.01em' }}
               >
                 {lang === 'th' ? 'แบบคัดกรองสุขภาพ' : 'Health Screening Form'}
               </h2>
-              <p className="text-[11px] mt-1" style={{ color: 'rgba(161,165,173,0.4)' }}>
+              <p className="text-[14px] mt-1" style={{ color: 'rgba(161,165,173,0.4)' }}>
                 {lang === 'th'
                   ? 'กรุณาทำเครื่องหมายรายการที่เกี่ยวข้องกับท่าน'
                   : 'Please check all items that apply to you'}
@@ -329,7 +329,7 @@ export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
             {SECTIONS.map((section, si) => (
               <div key={section.id}>
                 <p
-                  className="text-[9px] font-semibold tracking-[0.25em] uppercase mb-3"
+                  className="text-[12px] font-semibold tracking-[0.25em] uppercase mb-3"
                   style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}
                 >
                   {lang === 'th' ? section.label_th : section.label_en}
@@ -361,14 +361,14 @@ export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
             {/* Signature */}
             <div>
               <p
-                className="text-[9px] font-semibold tracking-[0.25em] uppercase mb-3"
+                className="text-[12px] font-semibold tracking-[0.25em] uppercase mb-3"
                 style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}
               >
                 {lang === 'th' ? 'ลายมือชื่อ' : 'Signature'}
               </p>
               <SignaturePad onHasSig={setHasSig} lang={lang} />
               {!consentChecked && (
-                <p className="text-[10px] mt-2" style={{ color: 'rgba(200,120,120,0.6)' }}>
+                <p className="text-[13px] mt-2" style={{ color: 'rgba(200,120,120,0.6)' }}>
                   {lang === 'th' ? '* กรุณายืนยัน Consent & Agreement ก่อนลงชื่อ' : '* Please confirm Consent & Agreement first'}
                 </p>
               )}
@@ -379,7 +379,7 @@ export default function HealthSafetyForm({ onConfirm, onClose, lang = 'th' }) {
               whileTap={{ scale: 0.97 }}
               onClick={handleConfirm}
               disabled={!canSubmit || submitting}
-              className="w-full py-4 rounded-2xl text-[12px] font-semibold tracking-[0.22em] uppercase transition-all disabled:opacity-30"
+              className="w-full py-4 rounded-2xl text-[15px] font-semibold tracking-[0.22em] uppercase transition-all disabled:opacity-30"
               style={{
                 background: canSubmit
                   ? 'linear-gradient(150deg, rgba(60,160,60,0.15) 0%, rgba(40,120,40,0.1) 100%)'

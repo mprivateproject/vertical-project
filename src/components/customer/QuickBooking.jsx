@@ -197,14 +197,14 @@ export default function QuickBooking() {
           <Check className="w-6 h-6" style={{ color: '#C6C8CC' }} />
         </motion.div>
         <div>
-          <p className="font-semibold text-white text-[15px] tracking-[0.08em]">{t('bookingConfirmed')}</p>
-          <p className="text-[12px] mt-2 tracking-[0.05em]" style={{ color: 'rgba(161,165,173,0.7)' }}>
+          <p className="font-semibold text-white text-[18px] tracking-[0.08em]">{t('bookingConfirmed')}</p>
+          <p className="text-[15px] mt-2 tracking-[0.05em]" style={{ color: 'rgba(161,165,173,0.7)' }}>
             {selectedDate && format(selectedDate, 'EEE d MMM', { locale })} · {selectedTime}
           </p>
         </div>
         <Link
           to="/bookings"
-          className="inline-flex items-center gap-1.5 text-[11px] tracking-[0.15em] uppercase transition-opacity hover:opacity-60"
+          className="inline-flex items-center gap-1.5 text-[14px] tracking-[0.15em] uppercase transition-opacity hover:opacity-60"
           style={{ color: 'rgba(161,165,173,0.55)' }}
         >
           {t('viewBookings')} <ChevronRight className="w-3 h-3" />
@@ -223,7 +223,7 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.5, ease: E }}
       >
-        <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+        <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
           {t('service')}
         </p>
         <div className="flex gap-3">
@@ -247,13 +247,13 @@ export default function QuickBooking() {
                 }}
               >
                 <span
-                  className="block text-[13px] font-semibold tracking-[0.05em]"
+                  className="block text-[16px] font-semibold tracking-[0.05em]"
                   style={{ color: isSelected ? c.svcNameSelected : c.svcNameUnselected }}
                 >
                   {name}
                 </span>
                 <span
-                  className="text-[13px] font-bold mt-1 block tabular-nums"
+                  className="text-[16px] font-bold mt-1 block tabular-nums"
                   style={{ color: isSelected ? c.svcPriceSelected : c.svcPriceUnselected, letterSpacing: '0.02em' }}
                 >
                   ฿{svc.price?.toLocaleString()}
@@ -278,27 +278,27 @@ export default function QuickBooking() {
           }}
         >
           <p className="text-[28px] mb-4">✦</p>
-          <p className="text-[15px] font-light mb-3"
+          <p className="text-[18px] font-light mb-3"
             style={{ color: isDark ? 'rgba(255,255,255,0.82)' : 'rgba(30,25,15,0.85)', fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}>
             {lang === 'th' ? 'สำหรับ Invited Members เท่านั้น' : 'Invited Members Only'}
           </p>
-          <p className="text-[12px] leading-relaxed"
+          <p className="text-[15px] leading-relaxed"
             style={{ color: isDark ? 'rgba(161,165,173,0.55)' : 'rgba(80,65,45,0.7)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th'
               ? 'คิวการจองในวันที่ 14-31 พ.ค.'
               : 'Bookings for May 14–31'}
           </p>
-          <p className="text-[12px] leading-relaxed mb-4"
+          <p className="text-[15px] leading-relaxed mb-4"
             style={{ color: isDark ? 'rgba(161,165,173,0.55)' : 'rgba(80,65,45,0.7)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th'
               ? 'เปิดให้เฉพาะสมาชิกที่ได้รับเชิญเท่านั้น'
               : 'are open for invited members only'}
           </p>
-          <p className="text-[11px] mb-1"
+          <p className="text-[14px] mb-1"
             style={{ color: isDark ? 'rgba(161,165,173,0.38)' : 'rgba(100,85,60,0.6)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th' ? 'กรุณาติดต่อเราเพื่อรับสิทธิ์' : 'Please contact us to receive an invitation'}
           </p>
-          <p className="text-[12px] font-medium tracking-[0.08em]"
+          <p className="text-[15px] font-medium tracking-[0.08em]"
             style={{ color: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(80,65,45,0.75)' }}>
             LINE : @mprivateproject
           </p>
@@ -311,7 +311,7 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.5, ease: E }}
       >
-        <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+        <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
           {t('date')}
         </p>
 
@@ -342,7 +342,7 @@ export default function QuickBooking() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -monthDir * 16 }}
                 transition={{ duration: 0.28, ease: E }}
-                className="text-[12px] font-semibold tracking-[0.2em]"
+                className="text-[14px] font-semibold tracking-[0.2em]"
                 style={{ color: c.monthColor }}
               >
                 {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
@@ -365,7 +365,7 @@ export default function QuickBooking() {
               ? ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส']
               : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
             ).map(d => (
-              <div key={d} className="text-center text-[9px] font-medium py-1 tracking-[0.15em]" style={{ color: c.dayHeaderColor }}>
+              <div key={d} className="text-center text-[12px] font-medium py-1 tracking-[0.15em]" style={{ color: c.dayHeaderColor }}>
                 {d}
               </div>
             ))}
@@ -405,7 +405,7 @@ export default function QuickBooking() {
                           ? { duration: 0.35, ease: E }
                           : { type: 'spring', stiffness: 300, damping: 22 }
                         }
-                        className="w-8 h-8 flex items-center justify-center rounded-full text-[12px] font-semibold tabular-nums"
+                        className="w-9 h-9 flex items-center justify-center rounded-full text-[15px] font-semibold tabular-nums"
                         style={isSelected ? {
                           background: c.daySelectedBg,
                           border: `1px solid ${c.daySelectedBorder}`,
@@ -448,7 +448,7 @@ export default function QuickBooking() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4, ease: E }}
           >
-            <p className="text-[9px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+            <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
               {t('time')}
             </p>
             <div className="grid grid-cols-4 gap-2">
@@ -462,7 +462,7 @@ export default function QuickBooking() {
                     transition={{ delay: i * 0.06, duration: 0.4, ease: E }}
                     whileTap={{ scale: 0.93 }}
                     onClick={() => { haptic(8); setSelectedTime(slot); }}
-                    className="py-3.5 rounded-2xl text-[13px] font-semibold tabular-nums tracking-[0.04em]"
+                    className="py-3.5 rounded-2xl text-[16px] font-semibold tabular-nums tracking-[0.04em]"
                     style={isSelected ? {
                       background: c.slotBgSelected,
                       border: `1px solid ${c.slotBorderSelected}`,
@@ -478,7 +478,7 @@ export default function QuickBooking() {
                 );
               })}
               {availableSlots.length === 0 && (
-                <p className="col-span-4 text-center py-5 text-[12px] tracking-[0.1em]" style={{ color: c.noSlotColor }}>
+                <p className="col-span-4 text-center py-5 text-[15px] tracking-[0.1em]" style={{ color: c.noSlotColor }}>
                   ไม่มีช่วงเวลาว่าง
                 </p>
               )}
@@ -497,7 +497,7 @@ export default function QuickBooking() {
             transition={{ duration: 0.4, ease: E }}
           >
             {!isLoggedIn ? (
-              <p className="text-center text-[11px] py-2 tracking-[0.1em]" style={{ color: c.loginHint }}>
+              <p className="text-center text-[14px] py-2 tracking-[0.1em]" style={{ color: c.loginHint }}>
                 กรุณาเข้าสู่ระบบด้วย LINE เพื่อจอง
               </p>
             ) : (
@@ -511,7 +511,7 @@ export default function QuickBooking() {
                     : '0 0 32px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)',
                 }}
                 transition={{ duration: 0.4 }}
-                className="w-full py-4 rounded-2xl font-semibold text-[13px] tracking-[0.25em] uppercase transition-opacity disabled:opacity-35"
+                className="w-full py-4 rounded-2xl font-semibold text-[16px] tracking-[0.25em] uppercase transition-opacity disabled:opacity-35"
                 style={{
                   background: c.confirmBg,
                   border: `1px solid ${c.confirmBorder}`,

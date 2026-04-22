@@ -31,7 +31,7 @@ export default function ServicesSection({ services = [], isLoading }) {
     <div>
       {/* Small label above */}
       <p
-        className="px-4 mb-3 text-[11px]"
+        className="px-4 mb-3 text-[14px]"
         style={{ color: 'rgba(198,200,204,0.4)', fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.05em' }}
       >
         {label}
@@ -84,13 +84,13 @@ export default function ServicesSection({ services = [], isLoading }) {
                         />
                         <div className="absolute bottom-0 left-0 right-0 p-3">
                           <p
-                            className="text-white text-[12px] font-light"
+                            className="text-white text-[15px] font-light"
                             style={{ fontFamily: 'Montserrat, sans-serif' }}
                           >
                             {name}
                           </p>
                           {svc.price && (
-                            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(201,168,76,0.8)' }}>
+                            <p className="text-[13px] mt-0.5" style={{ color: 'rgba(201,168,76,0.8)' }}>
                               ฿{svc.price?.toLocaleString()}
                             </p>
                           )}
