@@ -55,26 +55,26 @@ export default function QuickBooking() {
     daySelectedBorder: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)',
     todayDot: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.4)',
     svcNameSelected: isDark ? '#FFFFFF' : '#2a2520',
-    svcNameUnselected: isDark ? 'rgba(161,165,173,0.6)' : 'rgba(80,75,65,0.65)',
+    svcNameUnselected: isDark ? 'rgba(161,165,173,0.6)' : 'rgba(60,50,35,0.75)',
     svcPriceSelected: isDark ? 'rgba(255,255,255,0.9)' : '#2a2520',
-    svcPriceUnselected: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.5)',
+    svcPriceUnselected: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(60,50,35,0.65)',
     svcBgSelected: isDark
       ? 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%)'
-      : 'linear-gradient(150deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.03) 100%)',
-    svcBorderSelected: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.2)',
-    svcBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
-    svcBorderUnselected: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)',
+      : 'linear-gradient(150deg, rgba(160,130,80,0.18) 0%, rgba(180,150,100,0.1) 100%)',
+    svcBorderSelected: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(160,130,80,0.4)',
+    svcBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.75)',
+    svcBorderUnselected: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(200,185,160,0.45)',
     slotSelected: isDark ? '#FFFFFF' : '#2a2520',
-    slotUnselected: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(60,55,48,0.7)',
-    slotBgSelected: isDark ? 'rgba(255,255,255,0.09)' : 'rgba(0,0,0,0.07)',
-    slotBorderSelected: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.22)',
-    slotBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.03)',
-    slotBorderUnselected: isDark ? 'rgba(255,255,255,0.055)' : 'rgba(0,0,0,0.1)',
+    slotUnselected: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(50,40,28,0.75)',
+    slotBgSelected: isDark ? 'rgba(255,255,255,0.09)' : 'rgba(160,130,80,0.18)',
+    slotBorderSelected: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(160,130,80,0.45)',
+    slotBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.8)',
+    slotBorderUnselected: isDark ? 'rgba(255,255,255,0.055)' : 'rgba(200,185,160,0.5)',
     confirmColor: isDark ? '#FFFFFF' : '#2a2520',
     confirmBg: isDark
       ? 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
-      : 'linear-gradient(150deg, rgba(0,0,0,0.07) 0%, rgba(0,0,0,0.04) 100%)',
-    confirmBorder: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.18)',
+      : 'linear-gradient(150deg, rgba(160,130,80,0.2) 0%, rgba(180,150,100,0.12) 100%)',
+    confirmBorder: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(160,130,80,0.4)',
     glassCard: isDark ? {
       background: 'rgba(255,255,255,0.04)',
       border: '1px solid rgba(255,255,255,0.1)',
@@ -272,34 +272,34 @@ export default function QuickBooking() {
           transition={{ delay: 0.12, duration: 0.5, ease: E }}
           className="rounded-2xl px-6 py-8 text-center"
           style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+            background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.75)',
+            border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(200,185,160,0.4)',
+            boxShadow: isDark ? '0 8px 32px rgba(0,0,0,0.4)' : '0 4px 20px rgba(0,0,0,0.08)',
           }}
         >
           <p className="text-[28px] mb-4">✦</p>
           <p className="text-[15px] font-light mb-3"
-            style={{ color: 'rgba(255,255,255,0.82)', fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}>
+            style={{ color: isDark ? 'rgba(255,255,255,0.82)' : 'rgba(30,25,15,0.85)', fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}>
             {lang === 'th' ? 'สำหรับ Invited Members เท่านั้น' : 'Invited Members Only'}
           </p>
           <p className="text-[12px] leading-relaxed"
-            style={{ color: 'rgba(161,165,173,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
+            style={{ color: isDark ? 'rgba(161,165,173,0.55)' : 'rgba(80,65,45,0.7)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th'
               ? 'คิวการจองในวันที่ 14-31 พ.ค.'
               : 'Bookings for May 14–31'}
           </p>
           <p className="text-[12px] leading-relaxed mb-4"
-            style={{ color: 'rgba(161,165,173,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
+            style={{ color: isDark ? 'rgba(161,165,173,0.55)' : 'rgba(80,65,45,0.7)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th'
               ? 'เปิดให้เฉพาะสมาชิกที่ได้รับเชิญเท่านั้น'
               : 'are open for invited members only'}
           </p>
           <p className="text-[11px] mb-1"
-            style={{ color: 'rgba(161,165,173,0.38)', fontFamily: 'Montserrat, sans-serif' }}>
+            style={{ color: isDark ? 'rgba(161,165,173,0.38)' : 'rgba(100,85,60,0.6)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th' ? 'กรุณาติดต่อเราเพื่อรับสิทธิ์' : 'Please contact us to receive an invitation'}
           </p>
           <p className="text-[12px] font-medium tracking-[0.08em]"
-            style={{ color: 'rgba(161,165,173,0.5)' }}>
+            style={{ color: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(80,65,45,0.75)' }}>
             LINE : @mprivateproject
           </p>
         </motion.div>
