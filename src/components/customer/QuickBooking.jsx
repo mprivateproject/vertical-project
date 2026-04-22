@@ -43,49 +43,49 @@ export default function QuickBooking() {
 
   // Adaptive colors using CSS variables
   const c = {
-    labelColor: `hsl(var(--muted-foreground) / 0.6)`,
-    monthColor: `hsl(var(--foreground))`,
-    navColor: `hsl(var(--muted-foreground) / 0.7)`,
-    dayHeaderColor: `hsl(var(--muted-foreground) / 0.5)`,
-    dayNormal: `hsl(var(--foreground) / 0.9)`,
-    dayToday: `hsl(var(--foreground))`,
-    dayPast: `hsl(var(--muted-foreground) / 0.3)`,
-    daySelected: `hsl(var(--foreground))`,
-    daySelectedBg: `hsl(var(--primary) / 0.15)`,
-    daySelectedBorder: `hsl(var(--primary) / 0.4)`,
-    todayDot: `hsl(var(--muted-foreground) / 0.5)`,
-    svcNameSelected: `hsl(var(--foreground))`,
-    svcNameUnselected: `hsl(var(--foreground) / 0.65)`,
-    svcPriceSelected: `hsl(var(--foreground))`,
-    svcPriceUnselected: `hsl(var(--foreground) / 0.55)`,
-    svcBgSelected: isDark
-      ? 'linear-gradient(150deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.08) 100%)'
-      : 'linear-gradient(150deg, hsl(var(--primary) / 0.12) 0%, hsl(var(--primary) / 0.06) 100%)',
-    svcBorderSelected: `hsl(var(--primary) / 0.35)`,
-    svcBgUnselected: `hsl(var(--card))`,
-    svcBorderUnselected: `hsl(var(--border))`,
-    slotSelected: `hsl(var(--primary-foreground))`,
-    slotUnselected: `hsl(var(--foreground) / 0.7)`,
-    slotBgSelected: `hsl(var(--primary) / 0.15)`,
-    slotBorderSelected: `hsl(var(--primary) / 0.4)`,
-    slotBgUnselected: `hsl(var(--card))`,
-    slotBorderUnselected: `hsl(var(--border))`,
-    confirmColor: `hsl(var(--primary-foreground))`,
-    confirmBg: isDark
-      ? 'linear-gradient(150deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.08) 100%)'
-      : 'linear-gradient(150deg, hsl(var(--primary) / 0.12) 0%, hsl(var(--primary) / 0.06) 100%)',
-    confirmBorder: `hsl(var(--primary) / 0.35)`,
-    glassCard: isDark ? {
-      background: 'hsl(var(--card) / 0.8)',
-      border: '1px solid hsl(var(--border))',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-    } : {
-      background: 'hsl(var(--card))',
-      border: '1px solid hsl(var(--border))',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-    },
-    noSlotColor: `hsl(var(--muted-foreground) / 0.5)`,
-    loginHint: `hsl(var(--muted-foreground) / 0.6)`,
+  labelColor: isDark ? `hsl(var(--muted-foreground) / 0.6)` : 'rgba(120,110,100,0.55)',
+  monthColor: isDark ? `hsl(var(--foreground))` : 'rgba(40,35,30,0.92)',
+  navColor: isDark ? `hsl(var(--muted-foreground) / 0.7)` : 'rgba(120,110,100,0.6)',
+  dayHeaderColor: isDark ? `hsl(var(--muted-foreground) / 0.5)` : 'rgba(120,110,100,0.5)',
+  dayNormal: isDark ? `hsl(var(--foreground) / 0.9)` : 'rgba(40,35,30,0.9)',
+  dayToday: isDark ? `hsl(var(--foreground))` : 'rgba(40,35,30,0.92)',
+  dayPast: isDark ? `hsl(var(--muted-foreground) / 0.3)` : 'rgba(120,110,100,0.3)',
+  daySelected: isDark ? `hsl(var(--foreground))` : 'rgba(40,35,30,0.92)',
+  daySelectedBg: `hsl(var(--primary) / 0.15)`,
+  daySelectedBorder: `hsl(var(--primary) / 0.4)`,
+  todayDot: isDark ? `hsl(var(--muted-foreground) / 0.5)` : 'rgba(120,110,100,0.5)',
+  svcNameSelected: isDark ? `hsl(var(--foreground))` : 'rgba(40,35,30,0.92)',
+  svcNameUnselected: isDark ? `hsl(var(--foreground) / 0.65)` : 'rgba(40,35,30,0.65)',
+  svcPriceSelected: isDark ? `hsl(var(--foreground))` : 'rgba(40,35,30,0.92)',
+  svcPriceUnselected: isDark ? `hsl(var(--foreground) / 0.55)` : 'rgba(40,35,30,0.55)',
+  svcBgSelected: isDark
+    ? 'linear-gradient(150deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.08) 100%)'
+    : 'linear-gradient(150deg, rgba(200,180,160,0.08) 0%, rgba(200,180,160,0.04) 100%)',
+  svcBorderSelected: isDark ? `hsl(var(--primary) / 0.35)` : 'rgba(180,160,140,0.3)',
+  svcBgUnselected: isDark ? `hsl(var(--card))` : '#F5F2EE',
+  svcBorderUnselected: isDark ? `hsl(var(--border))` : 'rgba(180,160,140,0.2)',
+  slotSelected: isDark ? `hsl(var(--primary-foreground))` : `hsl(var(--foreground))`,
+  slotUnselected: isDark ? `hsl(var(--foreground) / 0.7)` : 'rgba(40,35,30,0.7)',
+  slotBgSelected: `hsl(var(--primary) / 0.15)`,
+  slotBorderSelected: `hsl(var(--primary) / 0.4)`,
+  slotBgUnselected: isDark ? `hsl(var(--card))` : '#F5F2EE',
+  slotBorderUnselected: isDark ? `hsl(var(--border))` : 'rgba(180,160,140,0.2)',
+  confirmColor: isDark ? `hsl(var(--primary-foreground))` : `hsl(var(--foreground))`,
+  confirmBg: isDark
+    ? 'linear-gradient(150deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.08) 100%)'
+    : 'linear-gradient(150deg, rgba(200,180,160,0.08) 0%, rgba(200,180,160,0.04) 100%)',
+  confirmBorder: isDark ? `hsl(var(--primary) / 0.35)` : 'rgba(180,160,140,0.3)',
+  glassCard: isDark ? {
+    background: 'hsl(var(--card) / 0.8)',
+    border: '1px solid hsl(var(--border))',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+  } : {
+    background: '#F5F2EE',
+    border: '1px solid rgba(180,160,140,0.2)',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+  },
+  noSlotColor: isDark ? `hsl(var(--muted-foreground) / 0.5)` : 'rgba(120,110,100,0.5)',
+  loginHint: isDark ? `hsl(var(--muted-foreground) / 0.6)` : 'rgba(120,110,100,0.6)',
   };
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;

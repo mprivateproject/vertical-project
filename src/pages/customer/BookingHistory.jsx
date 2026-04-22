@@ -26,7 +26,7 @@ export default function BookingHistory() {
   const queryClient = useQueryClient();
 
   // Theme tokens
-  const bg = isDark ? '#0E0F11' : '#F5F2EE';
+  const bg = isDark ? '#0E0F11' : '#FFFFFF';
   const cardBg = isDark
     ? 'linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)'
     : 'linear-gradient(145deg, #ffffff 0%, #faf9f7 100%)';
