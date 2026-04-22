@@ -267,17 +267,17 @@ export default function BookingHistory() {
 
                    {/* Info */}
                    <div className="flex-1 min-w-0">
-                     <p style={{ fontSize: 'clamp(9px, 2.5vw, 11px)', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '2px', color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+                     <p style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', letterSpacing: '-0.01em', textTransform: 'uppercase', marginBottom: '4px', color: labelColor, fontFamily: '-apple-system, BlinkMacSystemFont, system-ui, sans-serif', fontWeight: 500 }}>
                        Wellness · Massage
                      </p>
                      <p
                        className="truncate leading-snug"
                        style={{
-                         fontSize: 'clamp(13px, 3.8vw, 16px)',
-                         fontWeight: 300,
+                         fontSize: 'clamp(16px, 3.8vw, 18px)',
+                         fontWeight: 600,
                          color: serviceColor,
-                         fontFamily: 'Georgia, "Times New Roman", serif',
-                         letterSpacing: '0.01em',
+                         fontFamily: '-apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+                         letterSpacing: '-0.015em',
                        }}
                      >
                        {booking.service_name}
