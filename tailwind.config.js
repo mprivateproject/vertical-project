@@ -4,6 +4,13 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+      spacing: {
+        'xs': '8px',
+        'sm': '12px',
+        'md': '16px',
+        'lg': '24px',
+        'xl': '32px',
+      },
       fontFamily: {
         thai: ['var(--font-thai)'],
         display: ['var(--font-display)'],
@@ -14,10 +21,13 @@ module.exports = {
         inter: ['Inter', 'system-ui', 'sans-serif'],
       },
   		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
+  				none: '0',
+  				sm: '12px',
+  				md: '16px',
+  				lg: '20px',
+  				xl: '24px',
+  				pill: '999px',
+  			},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

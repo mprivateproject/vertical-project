@@ -110,7 +110,8 @@ body::before {
 
 /* ── Premium Luxury Spa Glassmorphism ── */
 
-/* Glass surface base */
+/* ── Glass UI Utilities ── */
+
 .glass-surface {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -118,23 +119,75 @@ body::before {
   -webkit-backdrop-filter: blur(24px);
 }
 
-/* Gold accent color */
-.accent-gold {
-  color: #C6A87D;
+.glass-surface:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-/* Glass card with soft shadow */
 .glass-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
 }
 
-/* Soft glow effect */
-.glow-accent {
-  box-shadow: 0 0 24px rgba(198, 168, 125, 0.25);
+.glass-nav {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Accent Colors ── */
+
+.accent-gold {
+  color: #C6A87D;
+}
+
+.bg-accent-gold {
+  background: linear-gradient(135deg, #C6A87D, #B8966B);
+}
+
+/* ── Shadow Effects ── */
+
+.shadow-soft {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(198, 168, 125, 0.25);
+}
+
+.shadow-lg {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Text Colors ── */
+
+.text-primary {
+  color: #E5E7EB;
+}
+
+.text-secondary {
+  color: rgba(229, 231, 235, 0.7);
+}
+
+.text-tertiary {
+  color: rgba(229, 231, 235, 0.5);
+}
+
+/* ── Transition ── */
+
+.transition-luxury {
+  transition: all 180ms ease-out;
+}
+
+.transition-luxury-fast {
+  transition: all 150ms ease-out;
+}
+
+.transition-luxury-slow {
+  transition: all 250ms ease-out;
 }
 
 /* ── Luxury Spa Typography System ── */
