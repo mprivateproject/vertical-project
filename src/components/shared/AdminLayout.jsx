@@ -6,7 +6,7 @@ import ThemeToggle from './ThemeToggle';
 import AdminAuthGuard from './AdminAuthGuard';
 import { 
   LayoutDashboard, CalendarDays, Scissors, Users, Star,
-  BarChart3, Tag, Settings, Menu, X, GanttChartSquare
+  BarChart3, Tag, Settings, Menu, X, GanttChartSquare, DollarSign
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,6 +19,7 @@ const adminNav = [
   { key: 'invitedMembers', icon: Star, path: '/admin/invited-members' },
   { key: 'reports', icon: BarChart3, path: '/admin/reports' },
   { key: 'promotions', icon: Tag, path: '/admin/promotions' },
+  { key: 'costDashboard', icon: DollarSign, path: '/admin/cost-dashboard' },
   { key: 'settings', icon: Settings, path: '/admin/settings' },
 ];
 
