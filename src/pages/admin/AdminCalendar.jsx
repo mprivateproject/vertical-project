@@ -49,8 +49,8 @@ export default function AdminCalendar() {
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="space-y-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="font-display text-2xl font-semibold text-foreground">
           {t('schedule')}
         </h1>
@@ -63,7 +63,7 @@ export default function AdminCalendar() {
       </div>
 
       {/* Date navigation */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <button
           onClick={() => setCurrentDate(d => addDays(d, view === 'daily' ? -1 : -7))}
           className="p-2 rounded-lg hover:bg-secondary"
@@ -94,15 +94,15 @@ export default function AdminCalendar() {
             <div className="grid border-b border-border" style={{
               gridTemplateColumns: `80px repeat(${view === 'daily' ? therapists.length || 1 : 7}, 1fr)`
             }}>
-              <div className="p-3 border-r border-border bg-muted" />
+              <div className="p-4 border-r border-border bg-muted" />
               {view === 'daily'
                 ? therapists.map(th => (
-                  <div key={th.id} className="p-3 border-r border-border bg-muted text-center">
+                  <div key={th.id} className="p-4 border-r border-border bg-muted text-center">
                     <p className="text-xs font-medium text-foreground">{th.nickname}</p>
                   </div>
                 ))
                 : weekDays.map((day, i) => (
-                  <div key={i} className={`p-3 border-r border-border text-center ${isToday(day) ? 'bg-primary/5' : 'bg-muted'}`}>
+                  <div key={i} className={`p-4 border-r border-border text-center ${isToday(day) ? 'bg-primary/5' : 'bg-muted'}`}>
                     <p className="text-[10px] text-muted-foreground">{format(day, 'EEE', { locale })}</p>
                     <p className={`text-sm font-semibold ${isToday(day) ? 'text-primary' : 'text-foreground'}`}>
                       {format(day, 'd')}
@@ -121,9 +121,9 @@ export default function AdminCalendar() {
                   gridTemplateColumns: `80px repeat(${view === 'daily' ? therapists.length || 1 : 7}, 1fr)`
                 }}
               >
-                <div className="p-2 border-r border-border text-[10px] text-muted-foreground text-right pr-3">
-                  {slot}
-                </div>
+                <div className="p-3 border-r border-border text-[10px] text-muted-foreground text-right pr-4">
+                   {slot}
+                 </div>
                 {(view === 'daily' ? (therapists.length ? therapists : [null]) : weekDays).map((col, i) => {
                   const cellBookings = bookings.filter(b => {
                     if (view === 'daily') {
@@ -134,11 +134,11 @@ export default function AdminCalendar() {
                   });
 
                   return (
-                    <div key={i} className="border-r border-border/30 p-0.5 min-h-[40px]">
-                      {cellBookings.map(bk => (
-                        <div
-                          key={bk.id}
-                          className={`text-[10px] px-1.5 py-1 rounded border-l-2 ${statusColors[bk.status] || 'bg-secondary'}`}
+                    <div key={i} className="border-r border-border/30 p-1.5 min-h-[48px]">
+                       {cellBookings.map(bk => (
+                         <div
+                           key={bk.id}
+                           className={`text-[10px] px-2 py-1.5 rounded border-l-2 ${statusColors[bk.status] || 'bg-secondary'}`}
                         >
                           <p className="font-medium truncate">{bk.customer_name}</p>
                           <p className="opacity-70 truncate">{bk.service_name}</p>
