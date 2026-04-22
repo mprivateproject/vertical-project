@@ -8,9 +8,9 @@ const LuxuryInput = React.forwardRef(
         ref={ref}
         placeholder={placeholder}
         className={cn(
-          'w-full glass-card px-4 py-3.5 text-text-primary placeholder-text-secondary/50',
+          'w-full bg-glass-surface border border-glass-border backdrop-blur-[24px] rounded-md px-4 py-3.5 text-text-primary placeholder-text-secondary/50',
           'transition-all duration-180 ease-out',
-          'focus:outline-none focus:border-purple-400/50 focus:shadow-glow-purple',
+          'focus:outline-none focus:border-[#C6A87D] focus:shadow-glow',
           className
         )}
         {...props}

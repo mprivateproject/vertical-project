@@ -5,7 +5,7 @@ import { th, enUS } from 'date-fns/locale';
 import LuxuryCard from './luxury-card';
 import { cn } from '@/lib/utils';
 
-const LuxuryCalendar = ({ selectedDate, onSelectDate, lang = 'th', disabledDates = [], fullyBookedDates = [] }) => {
+const LuxuryCalendar = ({ selectedDate, onSelectDate, lang = 'th', disabledDates = [] }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const locale = lang === 'th' ? th : enUS;
   
@@ -26,7 +26,6 @@ const LuxuryCalendar = ({ selectedDate, onSelectDate, lang = 'th', disabledDates
 
   const isDateDisabled = (date) => disabledDates.some(d => d.toDateString() === date.toDateString());
   const isDateSelected = (date) => selectedDate?.toDateString() === date.toDateString();
-  const isDateFullyBooked = (date) => fullyBookedDates.some(d => d.toDateString() === date.toDateString());
 
   return (
     <LuxuryCard>
@@ -70,7 +69,6 @@ const LuxuryCalendar = ({ selectedDate, onSelectDate, lang = 'th', disabledDates
 
             const disabled = isDateDisabled(date);
             const selected = isDateSelected(date);
-            const fullyBooked = isDateFullyBooked(date);
 
             return (
               <button
@@ -78,11 +76,10 @@ const LuxuryCalendar = ({ selectedDate, onSelectDate, lang = 'th', disabledDates
                 onClick={() => !disabled && onSelectDate(date)}
                 disabled={disabled}
                 className={cn(
-                  'w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-180 ease-out type-calendar-date font-medium',
+                  'w-10 h-10 rounded-pill flex items-center justify-center transition-all duration-180 ease-out type-calendar-date',
                   disabled && 'opacity-30 cursor-not-allowed',
-                  selected && 'bg-gradient-to-br from-[#a855f7] to-[#3b82f6] type-calendar-date-selected shadow-glow-purple',
-                  fullyBooked && 'bg-gradient-to-br from-[#a855f7] to-[#3b82f6] opacity-50',
-                  !selected && !disabled && !fullyBooked && 'hover:bg-blue-500/20'
+                  selected && 'bg-[#C6A87D] type-calendar-date-selected shadow-glow',
+                  !selected && !disabled && 'hover:bg-white/8'
                 )}
               >
                 {format(date, 'd')}

@@ -1,21 +1,16 @@
-import { Outlet, useNavigate } from 'react-router-dom';
-import PageHeader from '@/components/shared/PageHeader';
-import LuxuryBottomNav from '@/components/ui/luxury-bottom-nav';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import BottomNav from './BottomNav';
+import PageHeader from './PageHeader';
 
 export default function CustomerLayout() {
-  const navigate = useNavigate();
-
-  const handleCenterClick = () => {
-    navigate('/book');
-  };
-
   return (
-    <div className="min-h-screen w-full relative">
-      <PageHeader />
-      <main className="relative z-10">
+    <div className="min-h-screen bg-background">
+      <main className="pb-24 w-full">
+        <PageHeader />
         <Outlet />
       </main>
-      <LuxuryBottomNav onCenterClick={handleCenterClick} />
+      <BottomNav />
     </div>
   );
 }

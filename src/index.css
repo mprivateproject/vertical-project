@@ -9,41 +9,41 @@
     --font-thai: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
     --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
-    --radius: 0.75rem;
+    --radius: 1.25rem;
 
-    /* ── DARK MODE — Aurora Gradient Aesthetic ── */
-    --background: 220 25% 8%;
-    --foreground: 210 20% 95%;
-    --card: 220 20% 12%;
-    --card-foreground: 210 20% 95%;
-    --popover: 220 20% 12%;
-    --popover-foreground: 210 20% 95%;
-    --primary: 270 100% 60%;
-    --primary-foreground: 220 25% 8%;
-    --secondary: 200 80% 55%;
-    --secondary-foreground: 220 25% 8%;
-    --muted: 220 15% 20%;
+    /* ── DARK MODE — Premium masculine spa aesthetic ── */
+    --background: 210 15% 6%;
+    --foreground: 210 20% 90%;
+    --card: 210 12% 10%;
+    --card-foreground: 210 20% 90%;
+    --popover: 210 12% 10%;
+    --popover-foreground: 210 20% 90%;
+    --primary: 30 45% 55%;
+    --primary-foreground: 210 15% 8%;
+    --secondary: 210 10% 15%;
+    --secondary-foreground: 210 18% 80%;
+    --muted: 210 10% 12%;
     --muted-foreground: 210 15% 65%;
-    --accent: 180 100% 50%;
-    --accent-foreground: 220 25% 8%;
+    --accent: 210 12% 18%;
+    --accent-foreground: 210 20% 88%;
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 15% 22%;
-    --input: 220 20% 16%;
-    --ring: 270 100% 60%;
-    --chart-1: 270 100% 60%;
-    --chart-2: 200 80% 55%;
-    --chart-3: 180 100% 50%;
-    --chart-4: 260 90% 55%;
-    --chart-5: 220 85% 58%;
-    --sidebar-background: 220 25% 9%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 270 100% 60%;
-    --sidebar-primary-foreground: 220 25% 8%;
-    --sidebar-accent: 200 80% 55%;
-    --sidebar-accent-foreground: 220 25% 8%;
-    --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 270 100% 60%;
+    --border: 210 10% 15%;
+    --input: 210 12% 14%;
+    --ring: 30 45% 55%;
+    --chart-1: 30 45% 55%;
+    --chart-2: 200 40% 50%;
+    --chart-3: 160 35% 48%;
+    --chart-4: 280 30% 58%;
+    --chart-5: 15 50% 52%;
+    --sidebar-background: 210 15% 7%;
+    --sidebar-foreground: 210 20% 88%;
+    --sidebar-primary: 30 45% 55%;
+    --sidebar-primary-foreground: 210 15% 8%;
+    --sidebar-accent: 210 12% 14%;
+    --sidebar-accent-foreground: 210 18% 80%;
+    --sidebar-border: 210 10% 14%;
+    --sidebar-ring: 30 45% 55%;
   }
 }
 
@@ -95,83 +95,67 @@ body {
   min-height: 100%;
   min-height: 100dvh;
   overflow-x: hidden;
-  background: linear-gradient(135deg, #0A1428 0%, #1a2a4a 50%, #0d3a5c 100%);
+  background: linear-gradient(135deg, #0B0F14 0%, #0F1720 100%);
 }
 
-/* Aurora gradient overlay */
+/* Subtle vignette */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 20% 50%, rgba(100, 200, 255, 0.15) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(150, 100, 255, 0.1) 0%, transparent 50%),
-              radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
   pointer-events: none;
   z-index: 1;
 }
 
 /* ── Premium Luxury Spa Glassmorphism ── */
 
-/* ── Glass UI Utilities (Enhanced Glassmorphism) ── */
+/* ── Glass UI Utilities ── */
 
 .glass-surface {
-  background: rgba(20, 30, 60, 0.35);
-  border: 1px solid rgba(100, 200, 255, 0.15);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 .glass-surface:hover {
-  background: rgba(20, 30, 60, 0.45);
-  border-color: rgba(100, 200, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .glass-card {
-  background: rgba(15, 25, 50, 0.4);
-  border: 1px solid rgba(100, 200, 255, 0.12);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
 }
 
 .glass-nav {
-  background: rgba(15, 25, 50, 0.35);
-  border: 1px solid rgba(100, 200, 255, 0.15);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-/* ── Aurora Accent Colors ── */
+/* ── Accent Colors ── */
 
-.accent-purple {
-  color: #a855f7;
+.accent-gold {
+  color: #C6A87D;
 }
 
-.accent-cyan {
-  color: #06b6d4;
-}
-
-.bg-gradient-purple-blue {
-  background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
-}
-
-.bg-gradient-purple-pink {
-  background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+.bg-accent-gold {
+  background: linear-gradient(135deg, #C6A87D, #B8966B);
 }
 
 /* ── Shadow Effects ── */
 
 .shadow-soft {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
 }
 
 .shadow-glow {
-  box-shadow: 0 0 24px rgba(100, 200, 255, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-}
-
-.shadow-glow-purple {
-  box-shadow: 0 0 24px rgba(168, 85, 247, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(198, 168, 125, 0.25);
 }
 
 .shadow-lg {
@@ -181,15 +165,15 @@ body::before {
 /* ── Text Colors ── */
 
 .text-primary {
-  color: #f0f9ff;
+  color: #E5E7EB;
 }
 
 .text-secondary {
-  color: rgba(240, 249, 255, 0.7);
+  color: rgba(229, 231, 235, 0.7);
 }
 
 .text-tertiary {
-  color: rgba(240, 249, 255, 0.5);
+  color: rgba(229, 231, 235, 0.5);
 }
 
 /* ── Transition ── */
@@ -206,7 +190,7 @@ body::before {
   transition: all 250ms ease-out;
 }
 
-/* ── Aurora Typography System ── */
+/* ── Luxury Spa Typography System ── */
 
 /* H1: Primary Title */
 .type-h1 {
@@ -214,7 +198,7 @@ body::before {
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  color: #f0f9ff;
+  color: #E5E7EB;
 }
 
 /* Subtitle */
@@ -222,7 +206,7 @@ body::before {
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(240, 249, 255, 0.7);
+  color: rgba(229, 231, 235, 0.7);
 }
 
 /* Section Label */
@@ -231,7 +215,7 @@ body::before {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(100, 200, 255, 0.7);
+  color: rgba(229, 231, 235, 0.6);
 }
 
 /* Service Name on Cards */
@@ -240,7 +224,7 @@ body::before {
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.01em;
-  color: #f0f9ff;
+  color: #E5E7EB;
 }
 
 /* Price Display */
@@ -248,10 +232,7 @@ body::before {
   font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #C6A87D;
 }
 
 /* Calendar: Month/Year */
@@ -259,14 +240,14 @@ body::before {
   font-size: 18px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: #f0f9ff;
+  color: #E5E7EB;
 }
 
 /* Calendar: Weekday Labels */
 .type-calendar-weekday {
   font-size: 11px;
   font-weight: 400;
-  color: rgba(100, 200, 255, 0.6);
+  color: rgba(229, 231, 235, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -276,14 +257,14 @@ body::before {
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  color: rgba(240, 249, 255, 0.85);
+  color: rgba(229, 231, 235, 0.85);
 }
 
 .type-calendar-date-selected {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #0B0F14;
 }
 
 /* Time Value */
@@ -291,12 +272,12 @@ body::before {
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: #ffffff;
+  color: #0B0F14;
 }
 
 /* Small/Secondary Text */
 .type-small {
   font-size: 12px;
   font-weight: 400;
-  color: rgba(240, 249, 255, 0.65);
+  color: rgba(229, 231, 235, 0.65);
 }
