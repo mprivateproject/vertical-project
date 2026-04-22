@@ -211,7 +211,7 @@ body {
 
 /* Calendar: Date Numbers */
 .type-calendar-date {
-  font-size: clamp(14px, 3.8vw, 16px);
+  font-size: clamp(10px, 3.8vw, 16px);
   font-weight: 400;
   letter-spacing: -0.01em;
 }
