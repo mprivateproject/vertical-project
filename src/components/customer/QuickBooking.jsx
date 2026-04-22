@@ -215,7 +215,7 @@ export default function QuickBooking() {
 
   // ── MAIN BOOKING UI ─────────────────────────────────────
   return (
-    <div className="space-y-7">
+    <div className="space-y-5">
 
       {/* ── SERVICE SELECTOR ── */}
       <motion.div
@@ -223,7 +223,7 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.5, ease: E }}
       >
-        <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+        <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-3" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
           {t('service')}
         </p>
         <div className="flex gap-3">
@@ -315,7 +315,7 @@ export default function QuickBooking() {
           {t('date')}
         </p>
 
-        <div style={{ ...glass, ...c.glassCard, backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderRadius: '20px' }} className="p-5 overflow-hidden relative">
+        <div style={{ ...glass, ...c.glassCard, backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderRadius: '20px' }} className="p-4 overflow-hidden relative">
           {/* Subtle light reflection sweep */}
           <div
             className="pointer-events-none absolute inset-0 rounded-[20px]"
@@ -325,7 +325,7 @@ export default function QuickBooking() {
           />
 
           {/* Month nav */}
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-4">
             <motion.button
               whileTap={{ scale: 0.88, opacity: 0.5 }}
               onClick={() => changeMonth(-1)}
@@ -360,7 +360,7 @@ export default function QuickBooking() {
           </div>
 
           {/* Day headers */}
-          <div className="grid grid-cols-7 mb-2">
+          <div className="grid grid-cols-7 mb-1">
             {(lang === 'th'
               ? ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส']
               : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
@@ -379,7 +379,7 @@ export default function QuickBooking() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -monthDir * 28 }}
               transition={{ duration: 0.32, ease: E }}
-              className="grid grid-cols-7 gap-y-2"
+              className="grid grid-cols-7 gap-y-1"
             >
               {(() => {
                 const start = startOfMonth(calendarMonth);
@@ -462,7 +462,7 @@ export default function QuickBooking() {
                     transition={{ delay: i * 0.06, duration: 0.4, ease: E }}
                     whileTap={{ scale: 0.93 }}
                     onClick={() => { haptic(8); setSelectedTime(slot); }}
-                    className="py-3.5 rounded-2xl text-[16px] font-semibold tabular-nums tracking-[0.04em]"
+                    className="py-2.5 rounded-2xl text-[16px] font-semibold tabular-nums tracking-[0.04em]"
                     style={isSelected ? {
                       background: c.slotBgSelected,
                       border: `1px solid ${c.slotBorderSelected}`,
