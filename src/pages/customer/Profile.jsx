@@ -61,11 +61,13 @@ export default function Profile() {
         )}
         <div>
           <h2 className="font-semibold text-lg text-foreground">{lineProfile.displayName}</h2>
-          {customer?.is_invited_member && (
-            <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium mt-1">
-              ✦ Invited Member
-            </span>
-          )}
+          <span className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-medium mt-1 ${
+            customer?.is_invited_member
+              ? 'bg-primary/10 text-primary'
+              : 'bg-secondary text-muted-foreground'
+          }`}>
+            {customer?.is_invited_member ? '✦ Invited Member' : 'Member'}
+          </span>
         </div>
       </motion.div>
 
