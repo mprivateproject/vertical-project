@@ -41,7 +41,7 @@ export default function Services() {
             — OUR PROGRAMS —
           </p>
           <h1
-            className="text-xl font-light tracking-wide"
+            className="text-sm font-light tracking-wide"
             style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.03em' }}
           >
             {lang === 'th' ? 'เลือกโปรแกรม' : 'Select Program'}
