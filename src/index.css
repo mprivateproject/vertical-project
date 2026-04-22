@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,44 +6,83 @@
 
 @layer base {
   :root {
+    /* ── Apple-native typography ── */
     --font-thai: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
-    --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
-    --radius: 1.25rem;
+    --font-display: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --radius: 12px;
 
-    /* ── DARK MODE — Premium masculine spa aesthetic ── */
-    --background: 210 15% 6%;
-    --foreground: 210 20% 90%;
-    --card: 210 12% 10%;
-    --card-foreground: 210 20% 90%;
-    --popover: 210 12% 10%;
-    --popover-foreground: 210 20% 90%;
-    --primary: 30 45% 55%;
-    --primary-foreground: 210 15% 8%;
-    --secondary: 210 10% 15%;
-    --secondary-foreground: 210 18% 80%;
-    --muted: 210 10% 12%;
-    --muted-foreground: 210 15% 65%;
-    --accent: 210 12% 18%;
-    --accent-foreground: 210 20% 88%;
-    --destructive: 0 65% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 210 10% 15%;
-    --input: 210 12% 14%;
-    --ring: 30 45% 55%;
-    --chart-1: 30 45% 55%;
-    --chart-2: 200 40% 50%;
-    --chart-3: 160 35% 48%;
-    --chart-4: 280 30% 58%;
-    --chart-5: 15 50% 52%;
-    --sidebar-background: 210 15% 7%;
-    --sidebar-foreground: 210 20% 88%;
-    --sidebar-primary: 30 45% 55%;
-    --sidebar-primary-foreground: 210 15% 8%;
-    --sidebar-accent: 210 12% 14%;
-    --sidebar-accent-foreground: 210 18% 80%;
-    --sidebar-border: 210 10% 14%;
-    --sidebar-ring: 30 45% 55%;
+    /* ── DARK MODE — Apple System Dark ── */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 206 100% 50%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 25%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 18%;
+    --input: 0 0% 15%;
+    --ring: 206 100% 50%;
+    --chart-1: 206 100% 50%;
+    --chart-2: 34 100% 50%;
+    --chart-3: 142 71% 45%;
+    --chart-4: 262 100% 50%;
+    --chart-5: 0 100% 50%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 206 100% 50%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 206 100% 50%;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      /* ── LIGHT MODE — Apple System Light ── */
+      --background: 0 0% 100%;
+      --foreground: 0 0% 0%;
+      --card: 0 0% 97%;
+      --card-foreground: 0 0% 0%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 0 0% 0%;
+      --primary: 206 100% 50%;
+      --primary-foreground: 0 0% 100%;
+      --secondary: 0 0% 95%;
+      --secondary-foreground: 0 0% 20%;
+      --muted: 0 0% 90%;
+      --muted-foreground: 0 0% 40%;
+      --accent: 0 0% 88%;
+      --accent-foreground: 0 0% 20%;
+      --destructive: 0 100% 50%;
+      --destructive-foreground: 0 0% 100%;
+      --border: 0 0% 92%;
+      --input: 0 0% 95%;
+      --ring: 206 100% 50%;
+      --chart-1: 206 100% 50%;
+      --chart-2: 34 100% 50%;
+      --chart-3: 142 71% 45%;
+      --chart-4: 262 100% 50%;
+      --chart-5: 0 100% 50%;
+      --sidebar-background: 0 0% 100%;
+      --sidebar-foreground: 0 0% 0%;
+      --sidebar-primary: 206 100% 50%;
+      --sidebar-primary-foreground: 0 0% 100%;
+      --sidebar-accent: 0 0% 95%;
+      --sidebar-accent-foreground: 0 0% 20%;
+      --sidebar-border: 0 0% 90%;
+      --sidebar-ring: 206 100% 50%;
+    }
   }
 }
 
@@ -69,11 +108,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(198, 168, 125, 0.4);
+  background: hsl(var(--muted-foreground) / 0.3);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(198, 168, 125, 0.6);
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
 /* Smooth scroll for mobile */
@@ -95,189 +134,187 @@ body {
   min-height: 100%;
   min-height: 100dvh;
   overflow-x: hidden;
-  background: linear-gradient(135deg, #0B0F14 0%, #0F1720 100%);
 }
 
-/* Subtle vignette */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
+/* ── Apple iOS Typography System ── */
 
-/* ── Premium Luxury Spa Glassmorphism ── */
-
-/* ── Glass UI Utilities ── */
-
-.glass-surface {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-.glass-surface:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-}
-
-.glass-nav {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-/* ── Accent Colors ── */
-
-.accent-gold {
-  color: #C6A87D;
-}
-
-.bg-accent-gold {
-  background: linear-gradient(135deg, #C6A87D, #B8966B);
-}
-
-/* ── Shadow Effects ── */
-
-.shadow-soft {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-}
-
-.shadow-glow {
-  box-shadow: 0 0 20px rgba(198, 168, 125, 0.25);
-}
-
-.shadow-lg {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-}
-
-/* ── Text Colors ── */
-
-.text-primary {
-  color: #E5E7EB;
-}
-
-.text-secondary {
-  color: rgba(229, 231, 235, 0.7);
-}
-
-.text-tertiary {
-  color: rgba(229, 231, 235, 0.5);
-}
-
-/* ── Transition ── */
-
-.transition-luxury {
-  transition: all 180ms ease-out;
-}
-
-.transition-luxury-fast {
-  transition: all 150ms ease-out;
-}
-
-.transition-luxury-slow {
-  transition: all 250ms ease-out;
-}
-
-/* ── Luxury Spa Typography System ── */
-
-/* H1: Primary Title */
+/* H1: Large Title */
 .type-h1 {
-  font-size: 36px;
-  font-weight: 600;
+  font-size: clamp(28px, 8vw, 34px);
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  color: #E5E7EB;
+  color: hsl(var(--foreground));
 }
 
-/* Subtitle */
-.type-subtitle {
-  font-size: 15px;
+/* Title 2 */
+.type-title-2 {
+  font-size: clamp(20px, 5.5vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: hsl(var(--foreground));
+}
+
+/* Title 3 */
+.type-title-3 {
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: hsl(var(--foreground));
+}
+
+/* Body */
+.type-body {
+  font-size: clamp(17px, 4.5vw, 18px);
+  font-weight: 400;
+  line-height: 1.6;
+  color: hsl(var(--foreground));
+}
+
+/* Subheadline */
+.type-subheadline {
+  font-size: clamp(15px, 4vw, 16px);
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(229, 231, 235, 0.7);
+  color: hsl(var(--muted-foreground));
 }
 
-/* Section Label */
-.type-label {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(229, 231, 235, 0.6);
+/* Footnote */
+.type-footnote {
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 400;
+  line-height: 1.4;
+  color: hsl(var(--muted-foreground));
 }
 
-/* Service Name on Cards */
-.type-service-name {
-  font-size: 18px;
+/* Caption 1 */
+.type-caption-1 {
+  font-size: clamp(12px, 3vw, 13px);
   font-weight: 500;
+  letter-spacing: 0.02em;
   line-height: 1.3;
-  letter-spacing: -0.01em;
-  color: #E5E7EB;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Caption 2 */
+.type-caption-2 {
+  font-size: clamp(11px, 2.8vw, 12px);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 1.2;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Service Name */
+.type-service-name {
+  font-size: clamp(18px, 5vw, 20px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: hsl(var(--foreground));
 }
 
 /* Price Display */
 .type-price {
-  font-size: 22px;
+  font-size: clamp(20px, 6vw, 28px);
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #C6A87D;
+  color: hsl(var(--primary));
 }
 
 /* Calendar: Month/Year */
 .type-calendar-header {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 600;
   letter-spacing: -0.01em;
-  color: #E5E7EB;
+  color: hsl(var(--foreground));
 }
 
 /* Calendar: Weekday Labels */
 .type-calendar-weekday {
-  font-size: 11px;
-  font-weight: 400;
-  color: rgba(229, 231, 235, 0.6);
+  font-size: clamp(11px, 2.8vw, 12px);
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 /* Calendar: Date Numbers */
 .type-calendar-date {
-  font-size: 14px;
-  font-weight: 400;
+  font-size: clamp(14px, 4vw, 16px);
+  font-weight: 500;
   letter-spacing: -0.01em;
-  color: rgba(229, 231, 235, 0.85);
+  color: hsl(var(--foreground));
 }
 
 .type-calendar-date-selected {
-  font-size: 14px;
+  font-size: clamp(14px, 4vw, 16px);
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: #0B0F14;
+  color: hsl(var(--primary-foreground));
 }
 
 /* Time Value */
 .type-time-value {
-  font-size: 16px;
+  font-size: clamp(16px, 4.5vw, 18px);
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: #0B0F14;
+  color: hsl(var(--primary-foreground));
 }
 
-/* Small/Secondary Text */
-.type-small {
-  font-size: 12px;
-  font-weight: 400;
-  color: rgba(229, 231, 235, 0.65);
+/* ── Apple UI Utilities ── */
+
+.glass-surface {
+  background: hsl(var(--card) / 0.5);
+  border: 1px solid hsl(var(--border));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-surface:hover {
+  background: hsl(var(--card) / 0.65);
+}
+
+.glass-card {
+  background: hsl(var(--card) / 0.8);
+  border: 1px solid hsl(var(--border));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.glass-nav {
+  background: hsl(var(--card) / 0.85);
+  border: 1px solid hsl(var(--border));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ── Shadow Effects ── */
+
+.shadow-soft {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 15px hsl(var(--primary) / 0.2);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Transition ── */
+
+.transition-apple {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-apple-fast {
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-apple-slow {
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }

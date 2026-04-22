@@ -1,4 +1,8 @@
-// Luxury component exports
+// Apple component exports
+export { default as AppleButton } from './apple-button';
+export { default as AppleCard } from './apple-card';
+
+// Legacy luxury exports (for backward compatibility)
 export { default as LuxuryButton } from './luxury-button';
 export { default as LuxuryCard } from './luxury-card';
 export { default as LuxuryCalendar } from './luxury-calendar';
