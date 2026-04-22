@@ -215,7 +215,7 @@ export default function QuickBooking() {
 
   // ── MAIN BOOKING UI ─────────────────────────────────────
   return (
-    <div className="space-y-3">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 2vw, 20px)' }}>
 
       {/* ── SERVICE SELECTOR ── */}
       <motion.div
@@ -223,7 +223,7 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.5, ease: E }}
       >
-        <p className="text-[18px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+        <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
           {t('service')}
         </p>
         <div className="flex gap-3">
@@ -237,24 +237,25 @@ export default function QuickBooking() {
                 animate={{ scale: isSelected ? 1.03 : 1 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-                className="flex-1 px-4 py-4 rounded-2xl text-left"
-                style={isSelected ? {
-                  background: c.svcBgSelected,
-                  border: `1px solid ${c.svcBorderSelected}`,
-                } : {
-                  background: c.svcBgUnselected,
-                  border: `1px solid ${c.svcBorderUnselected}`,
+                className="flex-1 rounded-2xl text-left"
+                style={{
+                  padding: 'clamp(8px, 2vw, 16px)',
+                  ...(isSelected ? {
+                    background: c.svcBgSelected,
+                    border: `1px solid ${c.svcBorderSelected}`,
+                  } : {
+                    background: c.svcBgUnselected,
+                    border: `1px solid ${c.svcBorderUnselected}`,
+                  })
                 }}
               >
                 <span
-                  className="block text-[24px] font-semibold tracking-[0.05em]"
-                  style={{ color: isSelected ? c.svcNameSelected : c.svcNameUnselected }}
+                  style={{ display: 'block', fontSize: 'clamp(13px, 3.5vw, 22px)', fontWeight: 600, letterSpacing: '0.05em', color: isSelected ? c.svcNameSelected : c.svcNameUnselected }}
                 >
                   {name}
                 </span>
                 <span
-                  className="text-[24px] font-bold mt-1 block tabular-nums"
-                  style={{ color: isSelected ? c.svcPriceSelected : c.svcPriceUnselected, letterSpacing: '0.02em' }}
+                  style={{ display: 'block', fontSize: 'clamp(13px, 3.5vw, 22px)', fontWeight: 700, marginTop: '2px', tabularNums: true, color: isSelected ? c.svcPriceSelected : c.svcPriceUnselected, letterSpacing: '0.02em' }}
                 >
                   ฿{svc.price?.toLocaleString()}
                 </span>
@@ -311,11 +312,11 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.5, ease: E }}
       >
-        <p className="text-[18px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+        <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
           {t('date')}
         </p>
 
-        <div style={{ ...glass, ...c.glassCard, backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderRadius: '20px' }} className="p-3 overflow-hidden relative">
+        <div style={{ ...glass, ...c.glassCard, backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderRadius: '20px', padding: 'clamp(8px, 2vw, 16px)' }} className="overflow-hidden relative">
           {/* Subtle light reflection sweep */}
           <div
             className="pointer-events-none absolute inset-0 rounded-[20px]"
@@ -325,14 +326,14 @@ export default function QuickBooking() {
           />
 
           {/* Month nav */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between" style={{ marginBottom: 'clamp(4px, 1.5vw, 12px)' }}>
             <motion.button
               whileTap={{ scale: 0.88, opacity: 0.5 }}
               onClick={() => changeMonth(-1)}
-              className="w-8 h-8 flex items-center justify-center rounded-xl transition-all"
-              style={{ color: c.navColor }}
+              className="flex items-center justify-center rounded-xl transition-all"
+              style={{ width: 'clamp(28px, 6vw, 40px)', height: 'clamp(28px, 6vw, 40px)', color: c.navColor }}
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft style={{ width: 'clamp(14px, 3vw, 20px)', height: 'clamp(14px, 3vw, 20px)' }} />
             </motion.button>
 
             <AnimatePresence mode="wait">
@@ -342,8 +343,7 @@ export default function QuickBooking() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -monthDir * 16 }}
                 transition={{ duration: 0.28, ease: E }}
-                className="text-[42px] font-semibold tracking-[0.2em]"
-                style={{ color: c.monthColor }}
+                style={{ fontSize: 'clamp(14px, 4vw, 26px)', fontWeight: 600, letterSpacing: '0.15em', color: c.monthColor }}
               >
                 {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
               </motion.span>
@@ -352,20 +352,20 @@ export default function QuickBooking() {
             <motion.button
               whileTap={{ scale: 0.88, opacity: 0.5 }}
               onClick={() => changeMonth(1)}
-              className="w-8 h-8 flex items-center justify-center rounded-xl transition-all"
-              style={{ color: c.navColor }}
+              className="flex items-center justify-center rounded-xl transition-all"
+              style={{ width: 'clamp(28px, 6vw, 40px)', height: 'clamp(28px, 6vw, 40px)', color: c.navColor }}
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight style={{ width: 'clamp(14px, 3vw, 20px)', height: 'clamp(14px, 3vw, 20px)' }} />
             </motion.button>
           </div>
 
           {/* Day headers */}
-          <div className="grid grid-cols-7 mb-1">
+          <div className="grid grid-cols-7" style={{ marginBottom: 'clamp(2px, 0.5vw, 6px)' }}>
             {(lang === 'th'
               ? ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส']
               : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
             ).map(d => (
-              <div key={d} className="text-center text-[36px] font-medium py-0.5 tracking-[0.15em]" style={{ color: c.dayHeaderColor }}>
+              <div key={d} className="text-center font-medium tracking-[0.1em]" style={{ fontSize: 'clamp(10px, 3vw, 18px)', color: c.dayHeaderColor, padding: '2px 0' }}>
                 {d}
               </div>
             ))}
@@ -379,7 +379,8 @@ export default function QuickBooking() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -monthDir * 28 }}
               transition={{ duration: 0.32, ease: E }}
-              className="grid grid-cols-7 gap-y-1"
+              className="grid grid-cols-7"
+              style={{ rowGap: 'clamp(2px, 0.8vw, 8px)' }}
             >
               {(() => {
                 const start = startOfMonth(calendarMonth);
@@ -405,7 +406,8 @@ export default function QuickBooking() {
                           ? { duration: 0.35, ease: E }
                           : { type: 'spring', stiffness: 300, damping: 22 }
                         }
-                        className="w-16 h-16 flex items-center justify-center rounded-full text-[45px] font-semibold tabular-nums"
+                        className="flex items-center justify-center rounded-full font-semibold tabular-nums"
+                        style={{ width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)' }}
                         style={isSelected ? {
                           background: c.daySelectedBg,
                           border: `1px solid ${c.daySelectedBorder}`,
@@ -448,10 +450,10 @@ export default function QuickBooking() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4, ease: E }}
           >
-            <p className="text-[18px] font-semibold tracking-[0.3em] uppercase mb-2" style={{ color: c.labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+            <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
               {t('time')}
             </p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4" style={{ gap: 'clamp(4px, 1.5vw, 10px)' }}>
               {availableSlots.map((slot, i) => {
                 const isSelected = selectedTime === slot;
                 return (
@@ -462,7 +464,8 @@ export default function QuickBooking() {
                     transition={{ delay: i * 0.06, duration: 0.4, ease: E }}
                     whileTap={{ scale: 0.93 }}
                     onClick={() => { haptic(8); setSelectedTime(slot); }}
-                    className="py-2 rounded-2xl text-[24px] font-semibold tabular-nums tracking-[0.04em]"
+                    className="rounded-2xl font-semibold tabular-nums tracking-[0.04em]"
+                    style={{ padding: 'clamp(6px, 1.5vw, 12px) 0', fontSize: 'clamp(13px, 3.5vw, 20px)' }}
                     style={isSelected ? {
                       background: c.slotBgSelected,
                       border: `1px solid ${c.slotBorderSelected}`,
@@ -511,7 +514,8 @@ export default function QuickBooking() {
                     : '0 0 32px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)',
                 }}
                 transition={{ duration: 0.4 }}
-                className="w-full py-3 rounded-2xl font-semibold text-[24px] tracking-[0.25em] uppercase transition-opacity disabled:opacity-35"
+                className="w-full rounded-2xl font-semibold tracking-[0.25em] uppercase transition-opacity disabled:opacity-35"
+                style={{ padding: 'clamp(10px, 2.5vw, 16px)', fontSize: 'clamp(13px, 3.5vw, 20px)' }}
                 style={{
                   background: c.confirmBg,
                   border: `1px solid ${c.confirmBorder}`,
