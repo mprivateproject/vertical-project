@@ -224,7 +224,7 @@ body {
 
 /* Time Value (e.g. "15:00") */
 .type-time-value {
-  font-size: clamp(15px, 5vw, 22px);
+  font-size: clamp(12px, 5vw, 22px);
   font-weight: 600;
   letter-spacing: 0.005em;
 }
