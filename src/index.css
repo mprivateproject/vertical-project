@@ -204,7 +204,7 @@ body {
 
 /* Calendar: Weekday Labels */
 .type-calendar-weekday {
-  font-size: clamp(11px, 2.6vw, 12px);
+  font-size: clamp(9px, 2.6vw, 12px);
   font-weight: 400;
   opacity: 0.55;
 }
