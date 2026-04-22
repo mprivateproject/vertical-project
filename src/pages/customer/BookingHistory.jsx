@@ -246,59 +246,57 @@ export default function BookingHistory() {
                 >
                   {/* Main card row */}
                   <button
-                    className="w-full text-left flex items-center gap-4 px-4 py-4 transition-all"
-                    onClick={() => { haptic(8); setSelectedBooking(booking); }}
+                   className="w-full text-left flex items-center gap-3 px-3 py-3 transition-all"
+                   onClick={() => { haptic(8); setSelectedBooking(booking); }}
                   >
-                    {/* Date block */}
-                    <div
-                      className="flex-shrink-0 w-14 flex flex-col items-center justify-center py-2 rounded-xl"
-                      style={{ background: dateBlockBg, border: dateBlockBorder }}
-                    >
-                      <span className="text-[12px] tracking-[0.2em] font-medium"
-                        style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
-                        {monthStr}
-                      </span>
-                      <span className="text-[28px] font-bold tabular-nums leading-tight"
-                        style={{ color: titleColor, fontFamily: 'Montserrat, sans-serif' }}>
-                        {dayStr}
-                      </span>
-                      <span className="text-[12px] tracking-[0.15em] font-medium"
-                        style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
-                        {weekStr}
-                      </span>
-                    </div>
+                   {/* Date block */}
+                   <div
+                     className="flex-shrink-0 flex flex-col items-center justify-center py-1.5 rounded-xl"
+                     style={{ width: 'clamp(44px, 12vw, 56px)', background: dateBlockBg, border: dateBlockBorder }}
+                   >
+                     <span style={{ fontSize: 'clamp(9px, 2.5vw, 11px)', letterSpacing: '0.18em', fontWeight: 600, color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+                       {monthStr}
+                     </span>
+                     <span style={{ fontSize: 'clamp(18px, 5.5vw, 24px)', fontWeight: 700, lineHeight: 1.1, color: titleColor, fontFamily: 'Montserrat, sans-serif' }}>
+                       {dayStr}
+                     </span>
+                     <span style={{ fontSize: 'clamp(9px, 2.5vw, 11px)', letterSpacing: '0.12em', fontWeight: 600, color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+                       {weekStr}
+                     </span>
+                   </div>
 
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] tracking-[0.25em] uppercase mb-1"
-                        style={{ color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
-                        Wellness · Massage
-                      </p>
-                      <p
-                        className="text-[18px] font-light truncate leading-snug"
-                        style={{
-                          color: serviceColor,
-                          fontFamily: 'Georgia, "Times New Roman", serif',
-                          letterSpacing: '0.01em',
-                        }}
-                      >
-                        {booking.service_name}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <Clock className="w-3 h-3 flex-shrink-0" style={{ color: timeColor }} />
-                        <span className="text-[14px] tabular-nums" style={{ color: timeColor }}>
-                          {booking.start_time}
-                          {booking.end_time ? ` – ${booking.end_time}` : ''}
-                          {booking.duration_minutes ? ` · ${booking.duration_minutes} ${t('minutes')}` : ''}
-                        </span>
-                      </div>
-                    </div>
+                   {/* Info */}
+                   <div className="flex-1 min-w-0">
+                     <p style={{ fontSize: 'clamp(9px, 2.5vw, 11px)', letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: '2px', color: labelColor, fontFamily: 'Montserrat, sans-serif' }}>
+                       Wellness · Massage
+                     </p>
+                     <p
+                       className="truncate leading-snug"
+                       style={{
+                         fontSize: 'clamp(13px, 3.8vw, 16px)',
+                         fontWeight: 300,
+                         color: serviceColor,
+                         fontFamily: 'Georgia, "Times New Roman", serif',
+                         letterSpacing: '0.01em',
+                       }}
+                     >
+                       {booking.service_name}
+                     </p>
+                     <div className="flex items-center gap-1.5 mt-1">
+                       <Clock className="w-2.5 h-2.5 flex-shrink-0" style={{ color: timeColor }} />
+                       <span style={{ fontSize: 'clamp(10px, 3vw, 13px)', color: timeColor }}>
+                         {booking.start_time}
+                         {booking.end_time ? ` – ${booking.end_time}` : ''}
+                         {booking.duration_minutes ? ` · ${booking.duration_minutes} ${t('minutes')}` : ''}
+                       </span>
+                     </div>
+                   </div>
 
-                    {/* Chevron */}
-                    <ChevronDown
-                      className="w-4 h-4 flex-shrink-0 -rotate-90"
-                      style={{ color: chevronColor }}
-                    />
+                   {/* Chevron */}
+                   <ChevronDown
+                     className="w-3.5 h-3.5 flex-shrink-0 -rotate-90"
+                     style={{ color: chevronColor }}
+                   />
                   </button>
 
                   {/* Check-in button */}
@@ -310,7 +308,8 @@ export default function BookingHistory() {
                         haptic(12);
                         setCheckInBookingId(booking.id);
                       }}
-                      className="w-full py-2.5 text-[13px] tracking-[0.2em] uppercase font-medium transition-all flex items-center justify-center gap-1.5"
+                      className="w-full py-2 uppercase font-medium transition-all flex items-center justify-center gap-1.5"
+                      style={{ fontSize: 'clamp(10px, 2.8vw, 12px)', letterSpacing: '0.18em', ...({}) }}
                       style={{
                         borderTop: `1px solid ${dividerColor}`,
                         color: checkInActive
@@ -337,7 +336,8 @@ export default function BookingHistory() {
                   {canCancel && (
                     <button
                       onClick={(e) => { e.stopPropagation(); haptic(12); cancelBookingMutation.mutate(booking.id); }}
-                      className="w-full py-2.5 text-[13px] tracking-[0.2em] uppercase font-medium transition-all"
+                      className="w-full py-2 uppercase font-medium transition-all"
+                      style={{ fontSize: 'clamp(10px, 2.8vw, 12px)', letterSpacing: '0.18em', ...({}) }}
                       style={{
                         borderTop: `1px solid ${dividerColor}`,
                         color: isDark ? 'rgba(180,80,80,0.7)' : 'rgba(160,50,50,0.65)',
