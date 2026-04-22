@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calculator, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -15,8 +15,17 @@ const DEFAULT_EXTRA = [
 
 export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, thisMonthBookings = [] }) {
   const [open, setOpen] = useState(false);
-  const [costs, setCosts] = useState(DEFAULT_COSTS);
-  const [extras, setExtras] = useState(DEFAULT_EXTRA);
+  const [costs, setCosts] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('costCalc_costs')) || DEFAULT_COSTS; }
+    catch { return DEFAULT_COSTS; }
+  });
+  const [extras, setExtras] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('costCalc_extras')) || DEFAULT_EXTRA; }
+    catch { return DEFAULT_EXTRA; }
+  });
+
+  useEffect(() => { localStorage.setItem('costCalc_costs', JSON.stringify(costs)); }, [costs]);
+  useEffect(() => { localStorage.setItem('costCalc_extras', JSON.stringify(extras)); }, [extras]);
 
   const sessionCount = thisMonthBookings.filter(b => b.status !== 'cancelled').length;
   const paidRevenue = monthRevenue;
