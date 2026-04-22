@@ -41,51 +41,51 @@ export default function QuickBooking() {
   const isLoggedIn = ready;
   const isInvitedMember = customer?.is_invited_member === true;
 
-  // Adaptive colors for light/dark mode
+  // Adaptive colors using CSS variables
   const c = {
-    labelColor: isDark ? 'rgba(161,165,173,0.45)' : 'rgba(80,75,65,0.6)',
-    monthColor: isDark ? '#FFFFFF' : '#2a2520',
-    navColor: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(80,75,65,0.55)',
-    dayHeaderColor: isDark ? 'rgba(161,165,173,0.3)' : 'rgba(80,75,65,0.4)',
-    dayNormal: isDark ? 'rgba(220,222,226,0.82)' : 'rgba(30,26,22,0.88)',
-    dayToday: isDark ? 'rgba(255,255,255,0.95)' : 'rgba(10,8,6,0.95)',
-    dayPast: isDark ? 'rgba(161,165,173,0.22)' : 'rgba(80,75,65,0.25)',
-    daySelected: isDark ? '#FFFFFF' : '#2a2520',
-    daySelectedBg: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
-    daySelectedBorder: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.2)',
-    todayDot: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.4)',
-    svcNameSelected: isDark ? '#FFFFFF' : '#2a2520',
-    svcNameUnselected: isDark ? 'rgba(161,165,173,0.6)' : 'rgba(60,50,35,0.75)',
-    svcPriceSelected: isDark ? 'rgba(255,255,255,0.9)' : '#2a2520',
-    svcPriceUnselected: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(60,50,35,0.65)',
+    labelColor: `hsl(var(--muted-foreground) / 0.6)`,
+    monthColor: `hsl(var(--foreground))`,
+    navColor: `hsl(var(--muted-foreground) / 0.7)`,
+    dayHeaderColor: `hsl(var(--muted-foreground) / 0.5)`,
+    dayNormal: `hsl(var(--foreground) / 0.9)`,
+    dayToday: `hsl(var(--foreground))`,
+    dayPast: `hsl(var(--muted-foreground) / 0.3)`,
+    daySelected: `hsl(var(--foreground))`,
+    daySelectedBg: `hsl(var(--primary) / 0.15)`,
+    daySelectedBorder: `hsl(var(--primary) / 0.4)`,
+    todayDot: `hsl(var(--muted-foreground) / 0.5)`,
+    svcNameSelected: `hsl(var(--foreground))`,
+    svcNameUnselected: `hsl(var(--foreground) / 0.65)`,
+    svcPriceSelected: `hsl(var(--foreground))`,
+    svcPriceUnselected: `hsl(var(--foreground) / 0.55)`,
     svcBgSelected: isDark
-      ? 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%)'
-      : 'linear-gradient(150deg, rgba(160,130,80,0.18) 0%, rgba(180,150,100,0.1) 100%)',
-    svcBorderSelected: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(160,130,80,0.4)',
-    svcBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.75)',
-    svcBorderUnselected: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(200,185,160,0.45)',
-    slotSelected: isDark ? '#FFFFFF' : '#2a2520',
-    slotUnselected: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(50,40,28,0.75)',
-    slotBgSelected: isDark ? 'rgba(255,255,255,0.09)' : 'rgba(160,130,80,0.18)',
-    slotBorderSelected: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(160,130,80,0.45)',
-    slotBgUnselected: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.8)',
-    slotBorderUnselected: isDark ? 'rgba(255,255,255,0.055)' : 'rgba(200,185,160,0.5)',
-    confirmColor: isDark ? '#FFFFFF' : '#2a2520',
+      ? 'linear-gradient(150deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.08) 100%)'
+      : 'linear-gradient(150deg, hsl(var(--primary) / 0.12) 0%, hsl(var(--primary) / 0.06) 100%)',
+    svcBorderSelected: `hsl(var(--primary) / 0.35)`,
+    svcBgUnselected: `hsl(var(--card))`,
+    svcBorderUnselected: `hsl(var(--border))`,
+    slotSelected: `hsl(var(--primary-foreground))`,
+    slotUnselected: `hsl(var(--foreground) / 0.7)`,
+    slotBgSelected: `hsl(var(--primary) / 0.15)`,
+    slotBorderSelected: `hsl(var(--primary) / 0.4)`,
+    slotBgUnselected: `hsl(var(--card))`,
+    slotBorderUnselected: `hsl(var(--border))`,
+    confirmColor: `hsl(var(--primary-foreground))`,
     confirmBg: isDark
-      ? 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
-      : 'linear-gradient(150deg, rgba(160,130,80,0.2) 0%, rgba(180,150,100,0.12) 100%)',
-    confirmBorder: isDark ? 'rgba(255,255,255,0.14)' : 'rgba(160,130,80,0.4)',
+      ? 'linear-gradient(150deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.08) 100%)'
+      : 'linear-gradient(150deg, hsl(var(--primary) / 0.12) 0%, hsl(var(--primary) / 0.06) 100%)',
+    confirmBorder: `hsl(var(--primary) / 0.35)`,
     glassCard: isDark ? {
-      background: 'rgba(255,255,255,0.04)',
-      border: '1px solid rgba(255,255,255,0.1)',
-      boxShadow: '0 16px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)',
+      background: 'hsl(var(--card) / 0.8)',
+      border: '1px solid hsl(var(--border))',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
     } : {
-      background: 'rgba(255,255,255,0.85)',
-      border: '1px solid rgba(0,0,0,0.1)',
-      boxShadow: '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.95)',
+      background: 'hsl(var(--card))',
+      border: '1px solid hsl(var(--border))',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
     },
-    noSlotColor: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.5)',
-    loginHint: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(80,75,65,0.55)',
+    noSlotColor: `hsl(var(--muted-foreground) / 0.5)`,
+    loginHint: `hsl(var(--muted-foreground) / 0.6)`,
   };
   const queryClient = useQueryClient();
   const locale = lang === 'th' ? th : enUS;
@@ -183,32 +183,32 @@ export default function QuickBooking() {
         style={glass}
         className="p-10 text-center space-y-6"
       >
-        <motion.div
-          initial={{ scale: 0, rotate: -10 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 0.2, type: 'spring', stiffness: 220, damping: 18 }}
-          className="w-14 h-14 rounded-full mx-auto flex items-center justify-center"
-          style={{
-            background: 'rgba(255,255,255,0.07)',
-            border: '1px solid rgba(255,255,255,0.18)',
-            boxShadow: '0 0 24px rgba(255,255,255,0.08)',
-          }}
-        >
-          <Check className="w-6 h-6" style={{ color: '#C6C8CC' }} />
-        </motion.div>
-        <div>
-          <p className="font-semibold text-white text-[18px] tracking-[0.08em]">{t('bookingConfirmed')}</p>
-          <p className="text-[15px] mt-2 tracking-[0.05em]" style={{ color: 'rgba(161,165,173,0.7)' }}>
-            {selectedDate && format(selectedDate, 'EEE d MMM', { locale })} · {selectedTime}
-          </p>
-        </div>
-        <Link
-          to="/bookings"
-          className="inline-flex items-center gap-1.5 text-[14px] tracking-[0.15em] uppercase transition-opacity hover:opacity-60"
-          style={{ color: 'rgba(161,165,173,0.55)' }}
-        >
-          {t('viewBookings')} <ChevronRight className="w-3 h-3" />
-        </Link>
+      <motion.div
+        initial={{ scale: 0, rotate: -10 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ delay: 0.2, type: 'spring', stiffness: 220, damping: 18 }}
+        className="w-14 h-14 rounded-full mx-auto flex items-center justify-center"
+        style={{
+          background: `hsl(var(--primary) / 0.15)`,
+          border: `1px solid hsl(var(--primary) / 0.35)`,
+          boxShadow: `0 0 24px hsl(var(--primary) / 0.2)`,
+        }}
+      >
+        <Check className="w-6 h-6" style={{ color: `hsl(var(--primary))` }} />
+      </motion.div>
+      <div>
+        <p className="font-semibold text-[18px] tracking-[0.08em]" style={{ color: `hsl(var(--foreground))`, fontFamily: 'var(--font-body)' }}>{t('bookingConfirmed')}</p>
+        <p className="text-[15px] mt-2 tracking-[0.05em]" style={{ color: `hsl(var(--muted-foreground) / 0.7)`, fontFamily: 'var(--font-body)' }}>
+          {selectedDate && format(selectedDate, 'EEE d MMM', { locale })} · {selectedTime}
+        </p>
+      </div>
+      <Link
+        to="/bookings"
+        className="inline-flex items-center gap-1.5 text-[14px] tracking-[0.15em] uppercase transition-opacity hover:opacity-60"
+        style={{ color: `hsl(var(--muted-foreground) / 0.6)`, fontFamily: 'var(--font-body)' }}
+      >
+        {t('viewBookings')} <ChevronRight className="w-3 h-3" />
+      </Link>
       </motion.div>
     );
   }
@@ -223,7 +223,7 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.5, ease: E }}
       >
-        <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
+        <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'var(--font-body)', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
           {t('service')}
         </p>
         <div className="flex gap-3">
@@ -280,28 +280,28 @@ export default function QuickBooking() {
         >
           <p className="text-[28px] mb-4">✦</p>
           <p className="text-[18px] font-light mb-3"
-            style={{ color: isDark ? 'rgba(255,255,255,0.82)' : 'rgba(30,25,15,0.85)', fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}>
-            {lang === 'th' ? 'สำหรับ Invited Members เท่านั้น' : 'Invited Members Only'}
+           style={{ color: `hsl(var(--foreground))`, fontFamily: 'var(--font-body)', letterSpacing: '0.02em' }}>
+           {lang === 'th' ? 'สำหรับ Invited Members เท่านั้น' : 'Invited Members Only'}
           </p>
           <p className="text-[15px] leading-relaxed"
-            style={{ color: isDark ? 'rgba(161,165,173,0.55)' : 'rgba(80,65,45,0.7)', fontFamily: 'Montserrat, sans-serif' }}>
-            {lang === 'th'
-              ? 'คิวการจองในวันที่ 14-31 พ.ค.'
-              : 'Bookings for May 14–31'}
+           style={{ color: `hsl(var(--muted-foreground) / 0.7)`, fontFamily: 'var(--font-body)' }}>
+           {lang === 'th'
+             ? 'คิวการจองในวันที่ 14-31 พ.ค.'
+             : 'Bookings for May 14–31'}
           </p>
           <p className="text-[15px] leading-relaxed mb-4"
-            style={{ color: isDark ? 'rgba(161,165,173,0.55)' : 'rgba(80,65,45,0.7)', fontFamily: 'Montserrat, sans-serif' }}>
-            {lang === 'th'
-              ? 'เปิดให้เฉพาะสมาชิกที่ได้รับเชิญเท่านั้น'
-              : 'are open for invited members only'}
+           style={{ color: `hsl(var(--muted-foreground) / 0.7)`, fontFamily: 'var(--font-body)' }}>
+           {lang === 'th'
+             ? 'เปิดให้เฉพาะสมาชิกที่ได้รับเชิญเท่านั้น'
+             : 'are open for invited members only'}
           </p>
           <p className="text-[14px] mb-1"
-            style={{ color: isDark ? 'rgba(161,165,173,0.38)' : 'rgba(100,85,60,0.6)', fontFamily: 'Montserrat, sans-serif' }}>
-            {lang === 'th' ? 'กรุณาติดต่อเราเพื่อรับสิทธิ์' : 'Please contact us to receive an invitation'}
+           style={{ color: `hsl(var(--muted-foreground) / 0.5)`, fontFamily: 'var(--font-body)' }}>
+           {lang === 'th' ? 'กรุณาติดต่อเราเพื่อรับสิทธิ์' : 'Please contact us to receive an invitation'}
           </p>
           <p className="text-[15px] font-medium tracking-[0.08em]"
-            style={{ color: isDark ? 'rgba(161,165,173,0.5)' : 'rgba(80,65,45,0.75)' }}>
-            LINE : @mprivateproject
+           style={{ color: `hsl(var(--muted-foreground))`, fontFamily: 'var(--font-body)' }}>
+           LINE : @mprivateproject
           </p>
         </motion.div>
       )}
@@ -312,7 +312,7 @@ export default function QuickBooking() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.5, ease: E }}
       >
-        <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
+        <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'var(--font-body)', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
           {t('date')}
         </p>
 
@@ -450,7 +450,7 @@ export default function QuickBooking() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4, ease: E }}
           >
-            <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'Montserrat, sans-serif', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
+            <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'var(--font-body)', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
               {t('time')}
             </p>
             <div className="grid grid-cols-4" style={{ gap: 'clamp(4px, 1.5vw, 10px)' }}>
@@ -481,7 +481,7 @@ export default function QuickBooking() {
                 );
               })}
               {availableSlots.length === 0 && (
-                <p className="col-span-4 text-center py-5 text-[15px] tracking-[0.1em]" style={{ color: c.noSlotColor }}>
+                <p className="col-span-4 text-center py-5 text-[15px] tracking-[0.1em]" style={{ color: c.noSlotColor, fontFamily: 'var(--font-body)' }}>
                   ไม่มีช่วงเวลาว่าง
                 </p>
               )}
@@ -500,7 +500,7 @@ export default function QuickBooking() {
             transition={{ duration: 0.4, ease: E }}
           >
             {!isLoggedIn ? (
-              <p className="text-center text-[14px] py-2 tracking-[0.1em]" style={{ color: c.loginHint }}>
+              <p className="text-center text-[14px] py-2 tracking-[0.1em]" style={{ color: c.loginHint, fontFamily: 'var(--font-body)' }}>
                 กรุณาเข้าสู่ระบบด้วย LINE เพื่อจอง
               </p>
             ) : (
