@@ -103,28 +103,28 @@ export default function AdminCustomers() {
                         className="w-11 h-11 rounded-full object-cover flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium text-sm text-foreground truncate">
-                            {customer.display_name}
-                          </p>
-                          <Badge className={`text-[10px] ${tierColors[customer.membership_tier || 'none']}`}>
-                            {customer.membership_tier || 'none'}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
-                          <span className="flex items-center gap-0.5">
-                            <Calendar className="w-3 h-3" />
-                            {customer.total_visits || 0} visits
-                          </span>
-                          <span className="flex items-center gap-0.5">
-                            <DollarSign className="w-3 h-3" />
-                            ฿{(customer.total_spent || 0).toLocaleString()}
-                          </span>
-                          <span className="flex items-center gap-0.5">
-                            <Star className="w-3 h-3" />
-                            {customer.loyalty_points || 0} pts
-                          </span>
-                        </div>
+                       <div className="flex items-center gap-2">
+                         <p className="font-semibold text-base text-foreground truncate">
+                           {customer.display_name}
+                         </p>
+                         {customer.is_invited_member && (
+                           <Badge className="text-[11px] bg-amber-100 text-amber-700">✦ Invited</Badge>
+                         )}
+                       </div>
+                       <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                         <span className="flex items-center gap-1">
+                           <Calendar className="w-3.5 h-3.5" />
+                           {customer.total_visits || 0} visits
+                         </span>
+                         <span className="flex items-center gap-1">
+                           <DollarSign className="w-3.5 h-3.5" />
+                           ฿{(customer.total_spent || 0).toLocaleString()}
+                         </span>
+                         <span className="flex items-center gap-1">
+                           <Star className="w-3.5 h-3.5" />
+                           {customer.loyalty_points || 0} pts
+                         </span>
+                       </div>
                       </div>
                       <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                     </button>
@@ -143,7 +143,7 @@ export default function AdminCustomers() {
                     </button>
                   </div>
                   {customer.notes && (
-                    <p className="text-xs text-muted-foreground mt-2 pl-14 italic">
+                    <p className="text-sm text-muted-foreground mt-2 pl-14 italic">
                       {customer.notes}
                     </p>
                   )}
