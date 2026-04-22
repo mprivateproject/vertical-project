@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 import AdminAuthGuard from '@/components/shared/AdminAuthGuard';
 import ReminderSender from '@/components/admin/ReminderSender';
+import CostCalculator from '@/components/admin/CostCalculator';
 
 const STATUS_STYLES = {
   pending:    { bg: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400', label: 'Pending' },
@@ -317,6 +318,11 @@ export default function AdminDashboard() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Cost Calculator */}
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.36 }}>
+        <CostCalculator lang={lang} bookings={allBookings} monthRevenue={monthRevenue} thisMonthBookings={thisMonthBookings} />
+      </motion.div>
 
       {/* Reminder Sender */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38 }}>
