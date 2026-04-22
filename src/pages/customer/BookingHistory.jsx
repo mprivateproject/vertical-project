@@ -129,7 +129,7 @@ export default function BookingHistory() {
             — UPCOMING · {upcoming.length} —
           </p>
           <h1
-            className="text-3xl font-light tracking-wide"
+            className="text-xl font-light tracking-wide"
             style={{ color: titleColor, fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.03em' }}
           >
             {lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Upcomings'}

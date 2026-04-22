@@ -106,7 +106,7 @@ export default function Preferences() {
             style={{ color: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(140,120,90,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
             — PERSONALIZE —
           </p>
-          <h1 className="text-[32px] font-light tracking-wide"
+          <h1 className="text-[16px] font-light tracking-wide"
             style={{ color: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(30,25,15,0.88)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.02em' }}>
             {lang === 'th' ? 'ความต้องการพิเศษ' : 'Preferences'}
           </h1>
