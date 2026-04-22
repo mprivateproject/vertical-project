@@ -128,7 +128,8 @@ export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, 
                 />
                 <button
                   onClick={() => setExtras(prev => prev.filter((_, idx) => idx !== i))}
-                  className="text-xs text-red-400 hover:text-red-600 text-right"
+                  className="text-xs text-red-400 hover:text-red-600 text-right cursor-pointer"
+                  title={th ? 'ลบรายการ' : 'Delete'}
                 >
                   ✕
                 </button>
@@ -144,7 +145,17 @@ export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, 
 
           {/* Startup Costs */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">{th ? 'ค่าใช้จ่ายตั้งแต่เริ่มกิจการ' : 'Startup Costs'}</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-muted-foreground">{th ? 'ค่าใช้จ่ายตั้งแต่เริ่มกิจการ' : 'Startup Costs'}</label>
+              {startupCosts > 0 && (
+                <button
+                  onClick={() => setStartupCosts(0)}
+                  className="text-[11px] text-red-400 hover:text-red-600"
+                >
+                  {th ? 'ลบ' : 'Clear'}
+                </button>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <input
                 type="number"
