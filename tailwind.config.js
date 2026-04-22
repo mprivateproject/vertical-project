@@ -13,7 +13,7 @@ module.exports = {
       },
       fontFamily: {
         thai: ['var(--font-thai)'],
-        display: ['var(--font-display)'],
+        heading: ['var(--font-heading)'],
         body: ['var(--font-body)'],
         system: ['-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
       },

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=SF+Pro+Display:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,82 +6,82 @@
 
 @layer base {
   :root {
-    /* ── Apple-native typography ── */
+    /* ── Typography ── */
     --font-thai: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
-    --font-display: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    --font-body: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --radius: 12px;
 
-    /* ── DARK MODE — Apple System Dark ── */
-    --background: 0 0% 7%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 12%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 206 100% 50%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 20%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 0 0% 25%;
-    --accent-foreground: 0 0% 100%;
+    /* ── DARK MODE — Deep Charcoal + Sage/Stone ── */
+    --background: 210 12% 11%;
+    --foreground: 210 8% 92%;
+    --card: 210 14% 16%;
+    --card-foreground: 210 8% 92%;
+    --popover: 210 14% 16%;
+    --popover-foreground: 210 8% 92%;
+    --primary: 149 52% 48%;
+    --primary-foreground: 210 12% 11%;
+    --secondary: 28 36% 68%;
+    --secondary-foreground: 210 12% 11%;
+    --muted: 210 10% 28%;
+    --muted-foreground: 210 8% 55%;
+    --accent: 149 48% 42%;
+    --accent-foreground: 210 12% 11%;
     --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 18%;
-    --input: 0 0% 15%;
-    --ring: 206 100% 50%;
-    --chart-1: 206 100% 50%;
-    --chart-2: 34 100% 50%;
-    --chart-3: 142 71% 45%;
-    --chart-4: 262 100% 50%;
-    --chart-5: 0 100% 50%;
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 206 100% 50%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 25%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 206 100% 50%;
+    --border: 210 12% 22%;
+    --input: 210 12% 18%;
+    --ring: 149 52% 48%;
+    --chart-1: 149 52% 48%;
+    --chart-2: 28 36% 68%;
+    --chart-3: 210 10% 28%;
+    --chart-4: 149 48% 42%;
+    --chart-5: 28 32% 55%;
+    --sidebar-background: 210 12% 12%;
+    --sidebar-foreground: 210 8% 92%;
+    --sidebar-primary: 149 52% 48%;
+    --sidebar-primary-foreground: 210 12% 11%;
+    --sidebar-accent: 149 48% 42%;
+    --sidebar-accent-foreground: 210 12% 11%;
+    --sidebar-border: 210 12% 22%;
+    --sidebar-ring: 149 52% 48%;
   }
 
   @media (prefers-color-scheme: light) {
     :root {
-      /* ── LIGHT MODE — Apple System Light ── */
-      --background: 0 0% 100%;
-      --foreground: 0 0% 0%;
-      --card: 0 0% 97%;
-      --card-foreground: 0 0% 0%;
+      /* ── LIGHT MODE — Warm Cream + Sage Accent ── */
+      --background: 28 24% 95%;
+      --foreground: 210 12% 20%;
+      --card: 0 0% 100%;
+      --card-foreground: 210 12% 20%;
       --popover: 0 0% 100%;
-      --popover-foreground: 0 0% 0%;
-      --primary: 206 100% 50%;
-      --primary-foreground: 0 0% 100%;
-      --secondary: 0 0% 95%;
-      --secondary-foreground: 0 0% 20%;
-      --muted: 0 0% 90%;
-      --muted-foreground: 0 0% 40%;
-      --accent: 0 0% 88%;
-      --accent-foreground: 0 0% 20%;
+      --popover-foreground: 210 12% 20%;
+      --primary: 149 48% 45%;
+      --primary-foreground: 28 24% 95%;
+      --secondary: 28 36% 68%;
+      --secondary-foreground: 210 12% 20%;
+      --muted: 210 10% 88%;
+      --muted-foreground: 210 10% 45%;
+      --accent: 149 44% 52%;
+      --accent-foreground: 28 24% 95%;
       --destructive: 0 100% 50%;
       --destructive-foreground: 0 0% 100%;
-      --border: 0 0% 92%;
-      --input: 0 0% 95%;
-      --ring: 206 100% 50%;
-      --chart-1: 206 100% 50%;
-      --chart-2: 34 100% 50%;
-      --chart-3: 142 71% 45%;
-      --chart-4: 262 100% 50%;
-      --chart-5: 0 100% 50%;
-      --sidebar-background: 0 0% 100%;
-      --sidebar-foreground: 0 0% 0%;
-      --sidebar-primary: 206 100% 50%;
-      --sidebar-primary-foreground: 0 0% 100%;
-      --sidebar-accent: 0 0% 95%;
-      --sidebar-accent-foreground: 0 0% 20%;
-      --sidebar-border: 0 0% 90%;
-      --sidebar-ring: 206 100% 50%;
+      --border: 210 10% 88%;
+      --input: 210 10% 93%;
+      --ring: 149 48% 45%;
+      --chart-1: 149 48% 45%;
+      --chart-2: 28 36% 68%;
+      --chart-3: 210 10% 28%;
+      --chart-4: 149 44% 52%;
+      --chart-5: 28 32% 55%;
+      --sidebar-background: 28 24% 96%;
+      --sidebar-foreground: 210 12% 20%;
+      --sidebar-primary: 149 48% 45%;
+      --sidebar-primary-foreground: 28 24% 95%;
+      --sidebar-accent: 149 44% 52%;
+      --sidebar-accent-foreground: 28 24% 95%;
+      --sidebar-border: 210 10% 88%;
+      --sidebar-ring: 149 48% 45%;
     }
   }
 }
@@ -92,7 +92,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
+    font-family: var(--font-body);
     font-size: 16px;
     letter-spacing: -0.01em;
     line-height: 1.6;
@@ -266,29 +266,38 @@ body {
 /* ── Apple UI Utilities ── */
 
 .glass-surface {
-  background: hsl(var(--card) / 0.5);
-  border: 1px solid hsl(var(--border));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: hsl(var(--card) / 0.45);
+  border: 1px solid hsl(var(--border) / 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-surface:hover {
   background: hsl(var(--card) / 0.65);
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.15);
 }
 
 .glass-card {
-  background: hsl(var(--card) / 0.8);
-  border: 1px solid hsl(var(--border));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: hsl(var(--card) / 0.55);
+  border: 1px solid hsl(var(--border) / 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 hsl(var(--foreground) / 0.05);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: 0 8px 24px hsl(var(--primary) / 0.12), inset 0 1px 0 hsl(var(--foreground) / 0.08);
 }
 
 .glass-nav {
-  background: hsl(var(--card) / 0.85);
-  border: 1px solid hsl(var(--border));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: hsl(var(--card) / 0.75);
+  border: 1px solid hsl(var(--border) / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 /* ── Shadow Effects ── */
@@ -298,7 +307,11 @@ body {
 }
 
 .shadow-glow {
-  box-shadow: 0 0 15px hsl(var(--primary) / 0.2);
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.2), 0 0 40px hsl(var(--primary) / 0.08);
+}
+
+.shadow-glow:hover {
+  box-shadow: 0 0 24px hsl(var(--primary) / 0.3), 0 0 48px hsl(var(--primary) / 0.12);
 }
 
 .shadow-lg {
