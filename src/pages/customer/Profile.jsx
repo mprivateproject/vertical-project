@@ -26,7 +26,7 @@ export default function Profile() {
 
   if (!isLoggedIn) {
     return (
-      <div className="px-5 pt-20 pb-6 space-y-6 text-center">
+      <div className="px-5 pt-20 pb-6 space-y-6 text-center bg-white">
         <div className="w-20 h-20 rounded-full bg-secondary mx-auto flex items-center justify-center">
           <Shield className="w-8 h-8 text-muted-foreground" />
         </div>
@@ -45,7 +45,7 @@ export default function Profile() {
   ];
 
   return (
-    <div className="px-5 pt-14 pb-6 space-y-6">
+    <div className="px-5 pt-14 pb-6 space-y-6 bg-white min-h-screen">
       {/* Profile header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
