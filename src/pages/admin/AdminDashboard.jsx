@@ -329,6 +329,24 @@ export default function AdminDashboard() {
         <ReminderSender lang={lang} />
       </motion.div>
 
+      {/* Cost Dashboard iframe */}
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.39 }}>
+        <Card className="border-border/60 shadow-sm overflow-hidden">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold">
+              💼 {lang === 'th' ? 'SPA Cost Dashboard' : 'SPA Cost Dashboard'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0 p-0">
+            <iframe 
+              src="https://m-project-cost.base44.app" 
+              style={{width: "100%", height: "100vh", border: "none"}}
+              title="SPA Cost Dashboard"
+            />
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Recent Bookings Table */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
         <Card className="border-border/60 shadow-sm">
