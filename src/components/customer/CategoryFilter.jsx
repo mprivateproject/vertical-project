@@ -14,7 +14,7 @@ export default function CategoryFilter({ selected, onSelect }) {
           <button
             key={cat}
             onClick={() => onSelect(cat)}
-            className={`relative px-4 py-1.5 rounded-full text-[12px] font-medium tracking-wide transition-all duration-200 active:scale-95 whitespace-nowrap border ${
+            className={`relative px-4 py-1.5 rounded-full text-[15px] font-medium tracking-wide transition-all duration-200 active:scale-95 whitespace-nowrap border ${
               selected === cat
                 ? 'bg-foreground text-background border-foreground'
                 : 'bg-transparent text-muted-foreground border-border hover:border-foreground/30'

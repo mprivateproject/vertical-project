@@ -35,13 +35,13 @@ export default function Services() {
         {/* Header */}
         <div>
           <p
-            className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-1"
+            className="text-[11px] font-semibold tracking-[0.35em] uppercase mb-1"
             style={{ color: 'rgba(161,165,173,0.4)', fontFamily: 'Montserrat, sans-serif' }}
           >
             — OUR PROGRAMS —
           </p>
           <h1
-            className="text-2xl font-light tracking-wide"
+            className="text-3xl font-light tracking-wide"
             style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, "Times New Roman", serif', letterSpacing: '0.03em' }}
           >
             {lang === 'th' ? 'เลือกโปรแกรม' : 'Select Program'}
@@ -58,7 +58,7 @@ export default function Services() {
             placeholder={lang === 'th' ? 'ค้นหาโปรแกรม...' : 'Search programs...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 pl-10 pr-4 rounded-2xl text-[13px] outline-none transition-all"
+            className="w-full h-11 pl-10 pr-4 rounded-2xl text-[16px] outline-none transition-all"
             style={{
               background: 'rgba(255,255,255,0.04)',
               border: '1px solid rgba(255,255,255,0.07)',
@@ -85,7 +85,7 @@ export default function Services() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 space-y-2">
             <p
-              className="text-[15px] font-light"
+              className="text-[18px] font-light"
               style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
               {lang === 'th' ? 'ไม่พบโปรแกรมที่ค้นหา' : 'No programs found'}

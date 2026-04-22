@@ -50,7 +50,7 @@ export default function ServiceCard({ service, index = 0 }) {
             {/* Discount badge */}
             {hasDiscount && (
               <span
-                className="absolute top-2.5 right-2.5 px-2 py-0.5 text-[10px] font-semibold rounded-full tracking-wider"
+                className="absolute top-2.5 right-2.5 px-2 py-0.5 text-[13px] font-semibold rounded-full tracking-wider"
                 style={{
                   background: 'rgba(0,0,0,0.6)',
                   border: '1px solid rgba(255,255,255,0.15)',
@@ -66,7 +66,7 @@ export default function ServiceCard({ service, index = 0 }) {
             {/* Popular badge */}
             {service.is_popular && (
               <span
-                className="absolute top-2.5 left-2.5 px-2 py-0.5 text-[9px] font-semibold rounded-full tracking-widest uppercase"
+                className="absolute top-2.5 left-2.5 px-2 py-0.5 text-[12px] font-semibold rounded-full tracking-widest uppercase"
                 style={{
                   background: 'rgba(201,168,76,0.25)',
                   border: '1px solid rgba(201,168,76,0.4)',
@@ -83,7 +83,7 @@ export default function ServiceCard({ service, index = 0 }) {
           {/* Content */}
           <div className="px-3.5 py-3 space-y-2">
             <h3
-              className="text-[13px] font-light leading-snug"
+              className="text-[16px] font-light leading-snug"
               style={{
                 color: 'rgba(255,255,255,0.88)',
                 fontFamily: 'Georgia, "Times New Roman", serif',
@@ -96,7 +96,7 @@ export default function ServiceCard({ service, index = 0 }) {
             <div className="flex items-end justify-between">
               <div className="flex items-center gap-1" style={{ color: 'rgba(161,165,173,0.45)' }}>
                 <Clock className="w-3 h-3" />
-                <span className="text-[10px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                <span className="text-[13px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   {service.duration_minutes} {t('minutes')}
                 </span>
               </div>
@@ -104,14 +104,14 @@ export default function ServiceCard({ service, index = 0 }) {
               <div className="text-right">
                 {hasDiscount && (
                   <span
-                    className="text-[10px] line-through block leading-none mb-0.5"
+                    className="text-[13px] line-through block leading-none mb-0.5"
                     style={{ color: 'rgba(161,165,173,0.3)' }}
                   >
                     ฿{service.original_price.toLocaleString()}
                   </span>
                 )}
                 <span
-                  className="text-[14px] font-semibold tabular-nums"
+                  className="text-[17px] font-semibold tabular-nums"
                   style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Montserrat, sans-serif' }}
                 >
                   ฿{service.price.toLocaleString()}
