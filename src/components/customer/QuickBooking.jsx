@@ -36,9 +36,10 @@ const haptic = (ms = 8) => {
 
 export default function QuickBooking() {
   const { t, lang } = useLang();
-  const { ready } = useLine();
+  const { ready, customer } = useLine();
   const { isDark } = useTheme();
   const isLoggedIn = ready;
+  const isInvitedMember = customer?.is_invited_member === true;
 
   // Adaptive colors for light/dark mode
   const c = {
@@ -263,8 +264,39 @@ export default function QuickBooking() {
         </div>
       </motion.div>
 
+      {/* ── INVITED MEMBER GATE ── */}
+      {!isInvitedMember && (
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.5, ease: E }}
+          className="rounded-2xl px-6 py-8 text-center"
+          style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+          }}
+        >
+          <p className="text-[28px] mb-4">✦</p>
+          <p className="text-[15px] font-light mb-2"
+            style={{ color: 'rgba(255,255,255,0.82)', fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}>
+            {lang === 'th' ? 'สำหรับ Invited Members เท่านั้น' : 'Invited Members Only'}
+          </p>
+          <p className="text-[11px] tracking-[0.1em]"
+            style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}>
+            {lang === 'th'
+              ? 'การจองเปิดให้เฉพาะสมาชิกที่ได้รับเชิญเท่านั้น\nกรุณาติดต่อเราเพื่อรับสิทธิ์'
+              : 'Booking is available exclusively for invited members.\nPlease contact us to receive an invitation.'}
+          </p>
+          <p className="text-[11px] mt-4 tracking-[0.08em]"
+            style={{ color: 'rgba(161,165,173,0.35)' }}>
+            LINE : @mprivateproject
+          </p>
+        </motion.div>
+      )}
+
       {/* ── CALENDAR ── */}
-      <motion.div
+      {isInvitedMember && <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12, duration: 0.5, ease: E }}
@@ -395,10 +427,10 @@ export default function QuickBooking() {
             </motion.div>
           </AnimatePresence>
         </div>
-      </motion.div>
+      </motion.div>}
 
       {/* ── TIME SLOTS ── */}
-      <AnimatePresence>
+      {isInvitedMember && <AnimatePresence>
         {selectedDate && (
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -443,10 +475,10 @@ export default function QuickBooking() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>}
 
       {/* ── CONFIRM BUTTON ── */}
-      <AnimatePresence>
+      {isInvitedMember && <AnimatePresence>
         {selectedDate && selectedTime && (
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -483,7 +515,7 @@ export default function QuickBooking() {
             )}
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>}
     </div>
   );
 }

@@ -103,7 +103,7 @@ const translations = {
     paid: "ชำระแล้ว",
     unpaid: "ยังไม่ชำระ",
     refunded: "คืนเงินแล้ว",
-    loyalty: "ระบบ Loyalty",
+    invitedMembers: "Invited Members",
   },
   en: {
     brand: "Vertical Project",
@@ -206,7 +206,7 @@ const translations = {
     paid: "Paid",
     unpaid: "Unpaid",
     refunded: "Refunded",
-    loyalty: "Loyalty Program",
+    invitedMembers: "Invited Members",
   }
 };
 

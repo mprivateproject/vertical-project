@@ -42,19 +42,15 @@
       "type": "number",
       "default": 0
     },
-    "loyalty_points": {
-      "type": "number",
-      "default": 0
+    "is_invited_member": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this customer has been granted Invited Member status"
     },
-    "membership_tier": {
+    "invited_at": {
       "type": "string",
-      "enum": [
-        "none",
-        "silver",
-        "gold",
-        "platinum"
-      ],
-      "default": "none"
+      "format": "date",
+      "description": "Date when invited member status was granted"
     },
     "tags": {
       "type": "array",
@@ -77,7 +73,23 @@
         "role": "admin"
       }
     },
-    "read": {},
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "line_user_id": "{{user.line_user_id}}"
+        }
+      ]
+    },
     "update": {
       "user_condition": {
         "role": "admin"
@@ -85,7 +97,12 @@
     },
     "delete": {
       "user_condition": {
-        "role": "nobody"
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
       }
     }
   }

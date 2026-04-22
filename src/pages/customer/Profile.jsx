@@ -4,13 +4,12 @@ import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { Link } from 'react-router-dom';
 import {
-  Clock, Award, Moon, Sun, Globe, LogOut,
+  Clock, Moon, Sun, Globe, LogOut,
   ChevronRight, Shield, Sliders
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import LineLoginButton from '@/components/customer/LineLoginButton';
-import LoyaltyCard from '@/components/customer/LoyaltyCard';
 
 export default function Profile() {
   const { t, lang } = useLang();
@@ -36,7 +35,6 @@ export default function Profile() {
 
   const menuItems = [
     { icon: Clock, label: lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Your Bookings', path: '/bookings' },
-    { icon: Award, label: lang === 'th' ? 'Loyalty Rewards' : 'Loyalty Rewards', path: '/loyalty' },
     { icon: Sliders, label: lang === 'th' ? 'Preference & Special Requests' : 'Preference & Special Requests', path: '/preferences' },
   ];
 
@@ -63,14 +61,13 @@ export default function Profile() {
         )}
         <div>
           <h2 className="font-semibold text-lg text-foreground">{lineProfile.displayName}</h2>
-          {lineProfile.email && (
-            <p className="text-xs text-muted-foreground">{lineProfile.email}</p>
+          {customer?.is_invited_member && (
+            <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium mt-1">
+              ✦ Invited Member
+            </span>
           )}
         </div>
       </motion.div>
-
-      {/* Loyalty Card */}
-      {customer && <LoyaltyCard customer={customer} />}
 
       {/* Menu items */}
       <div className="space-y-1">
