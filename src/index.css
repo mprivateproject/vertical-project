@@ -217,7 +217,7 @@ body {
 }
 
 .type-calendar-date-selected {
-  font-size: clamp(16px, 4.2vw, 18px);
+  font-size: clamp(12px, 4.2vw, 18px);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
