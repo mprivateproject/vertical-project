@@ -129,11 +129,20 @@ export default function AdminDashboard() {
       iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
       accent: 'border-l-amber-500',
     },
+    {
+      label: lang === 'th' ? 'Invited Members' : 'Invited Members',
+      value: customers.filter(c => c.is_invited_member).length,
+      sub: `${lang === 'th' ? 'จากทั้งหมด' : 'of'} ${customers.length} ${lang === 'th' ? 'คน' : 'customers'}`,
+      icon: UserCheck,
+      iconBg: 'bg-rose-500/10 text-rose-600 dark:text-rose-400',
+      accent: 'border-l-rose-500',
+    },
   ];
 
   const quickLinks = [
     { label: lang === 'th' ? 'ตารางวันนี้' : 'Today Schedule', icon: GanttChartSquare, to: '/admin/schedule', color: 'text-blue-600' },
     { label: lang === 'th' ? 'ลูกค้า' : 'Customers', icon: UserCheck, to: '/admin/customers', color: 'text-purple-600' },
+    { label: lang === 'th' ? 'Invited Members' : 'Invited Members', icon: UserCheck, to: '/admin/invited-members', color: 'text-rose-600' },
     { label: lang === 'th' ? 'บริการ' : 'Services', icon: Scissors, to: '/admin/services', color: 'text-green-600' },
     { label: lang === 'th' ? 'รายงาน' : 'Reports', icon: BarChart3, to: '/admin/reports', color: 'text-amber-600' },
     { label: lang === 'th' ? 'โปรโมชั่น' : 'Promotions', icon: Tag, to: '/admin/promotions', color: 'text-rose-600' },
@@ -163,7 +172,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {kpis.map(({ label, value, sub, subColor, icon: Icon, iconBg, accent }, i) => (
           <motion.div
             key={label}
