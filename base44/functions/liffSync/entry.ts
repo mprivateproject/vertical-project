@@ -21,6 +21,7 @@ const ADMIN_ACTIONS = new Set([
   'adminGetPromotions',
   'adminSavePromotion',
   'adminDeletePromotion',
+  'adminSendReminder',
 ]);
 
 // Verify LINE idToken — called only for private actions
@@ -206,6 +207,46 @@ Deno.serve(async (req) => {
         const { promoId } = body;
         await base44.asServiceRole.entities.Promotion.delete(promoId);
         return Response.json({ success: true });
+      }
+
+      if (action === 'adminSendReminder') {
+        const { bookingId, customMessage } = body;
+        const bookings = await base44.asServiceRole.entities.Booking.filter({ id: bookingId });
+        if (!bookings.length) return Response.json({ error: 'Booking not found' }, { status: 404 });
+        const booking = bookings[0];
+
+        // Get customer's LINE user ID
+        const customers = await base44.asServiceRole.entities.Customer.filter({ id: booking.customer_id });
+        if (!customers.length) return Response.json({ error: 'Customer not found' }, { status: 404 });
+        const customer = customers[0];
+
+        if (!customer.line_user_id) {
+          return Response.json({ error: 'Customer has no LINE account linked' }, { status: 400 });
+        }
+
+        const token = Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
+        if (!token) return Response.json({ error: 'LINE token not configured' }, { status: 500 });
+
+        const defaultMsg = `📌 แจ้งเตือนนัดหมาย\n\nสวัสดีครับ คุณ${customer.display_name}\nขอแจ้งเตือนนัดหมายของคุณ\n\n📅 วันที่: ${booking.booking_date}\n⏰ เวลา: ${booking.start_time}${booking.end_time ? ' - ' + booking.end_time : ''}\n💆 บริการ: ${booking.service_name}\n\nหากมีข้อสงสัยกรุณาติดต่อเราผ่าน LINE: @mprivateproject`;
+        const msg = customMessage || defaultMsg;
+
+        const lineRes = await fetch('https://api.line.me/v2/bot/message/push', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ to: customer.line_user_id, messages: [{ type: 'text', text: msg }] }),
+        });
+
+        if (!lineRes.ok) {
+          const err = await lineRes.text();
+          console.error('❌ LINE reminder push failed:', err);
+          return Response.json({ error: 'Failed to send LINE message', detail: err }, { status: 500 });
+        }
+
+        console.log('✅ Reminder sent to:', customer.line_user_id, 'for booking:', bookingId);
+        return Response.json({ success: true, sentTo: customer.display_name });
       }
     }
 

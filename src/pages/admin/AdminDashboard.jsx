@@ -17,6 +17,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import AdminAuthGuard from '@/components/shared/AdminAuthGuard';
+import ReminderSender from '@/components/admin/ReminderSender';
 
 const STATUS_STYLES = {
   pending:    { bg: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400', label: 'Pending' },
@@ -312,6 +313,11 @@ export default function AdminDashboard() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Reminder Sender */}
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38 }}>
+        <ReminderSender lang={lang} />
+      </motion.div>
 
       {/* Recent Bookings Table */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
