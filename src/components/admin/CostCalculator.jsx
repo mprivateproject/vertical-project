@@ -23,9 +23,14 @@ export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, 
     try { return JSON.parse(localStorage.getItem('costCalc_extras')) || DEFAULT_EXTRA; }
     catch { return DEFAULT_EXTRA; }
   });
+  const [startupCosts, setStartupCosts] = useState(() => {
+    try { return parseFloat(localStorage.getItem('costCalc_startup')) || 0; }
+    catch { return 0; }
+  });
 
   useEffect(() => { localStorage.setItem('costCalc_costs', JSON.stringify(costs)); }, [costs]);
   useEffect(() => { localStorage.setItem('costCalc_extras', JSON.stringify(extras)); }, [extras]);
+  useEffect(() => { localStorage.setItem('costCalc_startup', startupCosts.toString()); }, [startupCosts]);
 
   const sessionCount = thisMonthBookings.filter(b => b.status !== 'cancelled').length;
   const paidRevenue = monthRevenue;
@@ -137,26 +142,47 @@ export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, 
             )}
           </div>
 
+          {/* Startup Costs */}
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground">{th ? 'ค่าใช้จ่ายตั้งแต่เริ่มกิจการ' : 'Startup Costs'}</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={startupCosts}
+                onChange={e => setStartupCosts(parseFloat(e.target.value) || 0)}
+                placeholder="0"
+                className="flex-1 text-xs border border-border rounded-md px-2 py-1 bg-background text-foreground text-right"
+                min="0"
+              />
+              <span className="text-[10px] text-muted-foreground whitespace-nowrap">฿</span>
+            </div>
+            <p className="text-[10px] text-muted-foreground">{th ? '(อุปกรณ์ ตกแต่ง ฯลฯ)' : '(equipment, decor, etc.)'}</p>
+          </div>
+
           {/* Divider */}
           <div className="border-t border-border" />
 
           {/* Summary */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
-              <span className="text-muted-foreground">{th ? 'ต้นทุนรวม' : 'Total Cost'}</span>
+              <span className="text-muted-foreground">{th ? 'ต้นทุนรวม (เดือนนี้)' : 'Total Cost (Monthly)'}</span>
               <span className="font-semibold text-red-500">฿{Math.round(totalCost).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">{th ? 'ค่าตั้งแต่เริ่มกิจการ' : 'Startup Costs'}</span>
+              <span className="font-semibold text-red-500">฿{Math.round(startupCosts).toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">{th ? 'รายได้รวม' : 'Total Revenue'}</span>
               <span className="font-semibold text-foreground">฿{paidRevenue.toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-sm font-bold mt-1 pt-1 border-t border-border">
-              <span className={grossProfit >= 0 ? 'text-green-600' : 'text-red-500'}>
-                {th ? 'กำไรขั้นต้น' : 'Gross Profit'}
+              <span className={(grossProfit - startupCosts) >= 0 ? 'text-green-600' : 'text-red-500'}>
+                {th ? 'กำไรสุทธิ' : 'Net Profit'}
               </span>
-              <span className={grossProfit >= 0 ? 'text-green-600' : 'text-red-500'}>
-                ฿{Math.round(grossProfit).toLocaleString()}
-                <span className="text-xs font-normal ml-1">({margin}%)</span>
+              <span className={(grossProfit - startupCosts) >= 0 ? 'text-green-600' : 'text-red-500'}>
+                ฿{Math.round(grossProfit - startupCosts).toLocaleString()}
+                <span className="text-xs font-normal ml-1">({paidRevenue > 0 ? Math.round(((grossProfit - startupCosts) / paidRevenue) * 100) : 0}%)</span>
               </span>
             </div>
           </div>
