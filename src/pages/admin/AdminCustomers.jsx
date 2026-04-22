@@ -25,8 +25,8 @@ export default function AdminCustomers() {
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [editTierId, setEditTierId] = useState(null);
 
-  const updateTierMutation = useMutation({
-    mutationFn: ({ id, tier }) => adminClient.updateCustomer(id, { membership_tier: tier }),
+  const updateInvitedMutation = useMutation({
+    mutationFn: ({ id, value }) => adminClient.updateCustomer(id, { is_invited_member: value }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-customers'] });
       setEditTierId(null);
@@ -167,31 +167,39 @@ export default function AdminCustomers() {
               className="bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-xl"
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="font-semibold text-lg mb-1">แก้ไข Tier</h3>
-              <p className="text-sm text-muted-foreground mb-4">
+              <h3 className="font-semibold text-lg mb-1">Invited Member</h3>
+              <p className="text-sm text-muted-foreground mb-5">
                 <span className="font-medium text-foreground">{editTierCustomer?.display_name}</span>
               </p>
-              <div className="grid grid-cols-2 gap-2 mb-5">
-                {['none', 'silver', 'gold', 'platinum'].map(tier => (
-                  <button
-                    key={tier}
-                    onClick={() => updateTierMutation.mutate({ id: editTierId, tier })}
-                    disabled={updateTierMutation.isPending}
-                    className={`py-3 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 capitalize ${
-                      editTierCustomer?.membership_tier === tier
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border hover:border-primary/50 text-foreground'
-                    } ${tierColors[tier]}`}
-                  >
-                    {tier === 'none' ? '— none' : tier.charAt(0).toUpperCase() + tier.slice(1)}
-                  </button>
-                ))}
+              <div className="flex gap-3 mb-5">
+                <button
+                  onClick={() => updateInvitedMutation.mutate({ id: editTierId, value: true })}
+                  disabled={updateInvitedMutation.isPending}
+                  className={`flex-1 py-3 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 ${
+                    editTierCustomer?.is_invited_member
+                      ? 'border-amber-400 bg-amber-50 text-amber-700'
+                      : 'border-border hover:border-amber-300 text-foreground'
+                  }`}
+                >
+                  ✦ Invited
+                </button>
+                <button
+                  onClick={() => updateInvitedMutation.mutate({ id: editTierId, value: false })}
+                  disabled={updateInvitedMutation.isPending}
+                  className={`flex-1 py-3 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 ${
+                    !editTierCustomer?.is_invited_member
+                      ? 'border-gray-400 bg-gray-100 text-gray-700'
+                      : 'border-border hover:border-gray-300 text-foreground'
+                  }`}
+                >
+                  — ปกติ
+                </button>
               </div>
               <button
                 onClick={() => setEditTierId(null)}
                 className="w-full py-2 rounded-lg text-sm border border-border hover:bg-secondary transition-colors"
               >
-                ยกเลิก
+                ปิด
               </button>
             </motion.div>
           </motion.div>
