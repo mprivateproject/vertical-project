@@ -342,7 +342,7 @@ export default function QuickBooking() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -monthDir * 16 }}
                 transition={{ duration: 0.28, ease: E }}
-                className="text-[14px] font-semibold tracking-[0.2em]"
+                className="text-[28px] font-semibold tracking-[0.2em]"
                 style={{ color: c.monthColor }}
               >
                 {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
@@ -365,7 +365,7 @@ export default function QuickBooking() {
               ? ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส']
               : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
             ).map(d => (
-              <div key={d} className="text-center text-[12px] font-medium py-1 tracking-[0.15em]" style={{ color: c.dayHeaderColor }}>
+              <div key={d} className="text-center text-[24px] font-medium py-1 tracking-[0.15em]" style={{ color: c.dayHeaderColor }}>
                 {d}
               </div>
             ))}
@@ -405,7 +405,7 @@ export default function QuickBooking() {
                           ? { duration: 0.35, ease: E }
                           : { type: 'spring', stiffness: 300, damping: 22 }
                         }
-                        className="w-9 h-9 flex items-center justify-center rounded-full text-[15px] font-semibold tabular-nums"
+                        className="w-14 h-14 flex items-center justify-center rounded-full text-[30px] font-semibold tabular-nums"
                         style={isSelected ? {
                           background: c.daySelectedBg,
                           border: `1px solid ${c.daySelectedBorder}`,
