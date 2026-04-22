@@ -3,15 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calculator, ChevronDown, ChevronUp } from 'lucide-react';
 
 const DEFAULT_COSTS = {
-  therapistWage: 800,       // ค่าแรงนักบำบัด (บาท/session)
-  consumables: 150,         // ค่าน้ำมัน/อุปกรณ์สิ้นเปลือง
-  overhead: 300,            // ค่าโสหุ้ย (ค่าไฟ, น้ำ, เช่า แบ่งต่อ session)
-  commission: 0,            // ค่าคอมมิชชั่น (%)
+  therapistWage: 800,
+  consumables: 150,
+  overhead: 300,
+  commission: 0,
 };
+
+const DEFAULT_EXTRA = [
+  { id: 1, label: '', amount: 0 },
+];
 
 export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, thisMonthBookings = [] }) {
   const [open, setOpen] = useState(false);
   const [costs, setCosts] = useState(DEFAULT_COSTS);
+  const [extras, setExtras] = useState(DEFAULT_EXTRA);
 
   const sessionCount = thisMonthBookings.filter(b => b.status !== 'cancelled').length;
   const paidRevenue = monthRevenue;
@@ -20,7 +25,8 @@ export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, 
   const totalConsumables = costs.consumables * sessionCount;
   const totalOverhead = costs.overhead * sessionCount;
   const totalCommission = (paidRevenue * costs.commission) / 100;
-  const totalCost = totalTherapist + totalConsumables + totalOverhead + totalCommission;
+  const totalExtras = extras.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+  const totalCost = totalTherapist + totalConsumables + totalOverhead + totalCommission + totalExtras;
   const grossProfit = paidRevenue - totalCost;
   const margin = paidRevenue > 0 ? Math.round((grossProfit / paidRevenue) * 100) : 0;
 
@@ -76,6 +82,50 @@ export default function CostCalculator({ lang, bookings = [], monthRevenue = 0, 
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Extra costs */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium text-muted-foreground">{th ? 'ค่าใช้จ่ายอื่นๆ' : 'Other Expenses'}</p>
+              <button
+                onClick={() => setExtras(prev => [...prev, { id: Date.now(), label: '', amount: 0 }])}
+                className="text-[11px] text-primary hover:underline"
+              >
+                + {th ? 'เพิ่ม' : 'Add'}
+              </button>
+            </div>
+            {extras.map((ex, i) => (
+              <div key={ex.id} className="grid grid-cols-3 items-center gap-2">
+                <input
+                  type="text"
+                  placeholder={th ? 'รายการ...' : 'Item...'}
+                  value={ex.label}
+                  onChange={e => setExtras(prev => prev.map((x, idx) => idx === i ? { ...x, label: e.target.value } : x))}
+                  className="col-span-1 text-xs border border-border rounded-md px-2 py-1 bg-background text-foreground"
+                />
+                <input
+                  type="number"
+                  placeholder="0"
+                  value={ex.amount}
+                  onChange={e => setExtras(prev => prev.map((x, idx) => idx === i ? { ...x, amount: e.target.value } : x))}
+                  className="text-xs border border-border rounded-md px-2 py-1 bg-background text-foreground text-right"
+                  min="0"
+                />
+                <button
+                  onClick={() => setExtras(prev => prev.filter((_, idx) => idx !== i))}
+                  className="text-xs text-red-400 hover:text-red-600 text-right"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+            {totalExtras > 0 && (
+              <div className="flex justify-between text-xs pt-1">
+                <span className="text-muted-foreground">{th ? 'รวมค่าใช้จ่ายอื่นๆ' : 'Total Other'}</span>
+                <span className="font-medium text-foreground">฿{Math.round(totalExtras).toLocaleString()}</span>
+              </div>
+            )}
           </div>
 
           {/* Divider */}
