@@ -11,7 +11,7 @@ const haptic = (ms = 6) => { if (navigator?.vibrate) navigator.vibrate(ms); };
 // "M" monogram center icon — biohacking / ritual vibe
 function MIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+    <svg width="26" height="26" viewBox="0 0 20 20" fill="none">
       <path d="M3 16V4L10 11.5L17 4V16" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -37,37 +37,37 @@ export default function BottomNav() {
     const active = isActive(path);
     return (
       <Link
-        to={path}
-        onClick={() => haptic(6)}
-        className="flex flex-col items-center gap-[3px] px-4 py-1.5 transition-all active:scale-90"
-      >
-        <motion.div
-          animate={{ scale: active ? 1.12 : 1 }}
-          transition={{ type: 'spring', stiffness: 340, damping: 22 }}
+          to={path}
+          onClick={() => haptic(6)}
+          className="flex flex-col items-center gap-[2px] px-2 py-1 transition-all active:scale-90"
         >
-          <Icon
-            strokeWidth={active ? 2 : 1.4}
-            className="w-5 h-5"
-            style={{
-              color: active ? 'rgba(255,255,255,0.92)' : 'rgba(161,165,173,0.32)',
-              filter: active ? 'drop-shadow(0 0 5px rgba(255,255,255,0.25))' : 'none',
-              transition: 'all 0.3s cubic-bezier(0.22,1,0.36,1)',
-            }}
-          />
-        </motion.div>
-        <AnimatePresence>
-          {active && (
-            <motion.span
-              initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 3 }}
-              transition={{ duration: 0.22 }}
-              className="text-[11px] tracking-[0.15em] uppercase"
-              style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'Montserrat, sans-serif' }}
-            >
-              {t(keyName)}
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </Link>
+          <motion.div
+            animate={{ scale: active ? 1.12 : 1 }}
+            transition={{ type: 'spring', stiffness: 340, damping: 22 }}
+          >
+            <Icon
+              strokeWidth={active ? 2 : 1.4}
+              className="w-2.5 h-2.5"
+              style={{
+                color: active ? 'rgba(255,255,255,0.92)' : 'rgba(161,165,173,0.32)',
+                filter: active ? 'drop-shadow(0 0 5px rgba(255,255,255,0.25))' : 'none',
+                transition: 'all 0.3s cubic-bezier(0.22,1,0.36,1)',
+              }}
+            />
+          </motion.div>
+          <AnimatePresence>
+            {active && (
+              <motion.span
+                initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 3 }}
+                transition={{ duration: 0.22 }}
+                className="text-[6px] tracking-[0.15em] uppercase"
+                style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'Montserrat, sans-serif' }}
+              >
+                {t(keyName)}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </Link>
     );
   };
 
@@ -104,7 +104,7 @@ export default function BottomNav() {
             <motion.div
               whileTap={{ scale: 0.92 }}
               transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-              className="w-12 h-12 flex items-center justify-center rounded-full"
+              className="w-[62px] h-[62px] flex items-center justify-center rounded-full"
               style={{
                 background: 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
                 border: '1px solid rgba(255,255,255,0.15)',
