@@ -9,77 +9,41 @@
     --font-thai: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
     --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
-    --radius: 0.875rem;
+    --radius: 1.25rem;
 
-    /* ── LIGHT MODE — warm ivory spa palette ── */
-    --background: 36 30% 96%;
-    --foreground: 220 25% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
-    --primary: 38 55% 42%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 36 20% 90%;
-    --secondary-foreground: 220 20% 22%;
-    --muted: 36 15% 92%;
-    --muted-foreground: 220 15% 38%;
-    --accent: 36 25% 88%;
-    --accent-foreground: 220 18% 20%;
-    --destructive: 0 65% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 36 15% 84%;
-    --input: 36 18% 90%;
-    --ring: 38 55% 48%;
-    --chart-1: 38 55% 48%;
-    --chart-2: 200 40% 45%;
-    --chart-3: 160 35% 42%;
-    --chart-4: 280 30% 52%;
-    --chart-5: 15 50% 48%;
-    --sidebar-background: 36 25% 93%;
-    --sidebar-foreground: 220 18% 20%;
-    --sidebar-primary: 38 55% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 36 20% 87%;
-    --sidebar-accent-foreground: 220 15% 25%;
-    --sidebar-border: 36 12% 80%;
-    --sidebar-ring: 38 55% 48%;
-  }
-
-  .dark {
-    /* ── DARK MODE — metallic charcoal luxury ── */
-    --background: 220 15% 10%;
-    --foreground: 210 20% 96%;
-    --card: 220 14% 14%;
-    --card-foreground: 210 20% 96%;
-    --popover: 220 14% 14%;
-    --popover-foreground: 210 20% 96%;
-    --primary: 45 60% 68%;
-    --primary-foreground: 220 15% 8%;
-    --secondary: 220 12% 20%;
-    --secondary-foreground: 210 18% 82%;
-    --muted: 220 12% 18%;
-    --muted-foreground: 215 15% 62%;
-    --accent: 220 12% 22%;
+    /* ── DARK MODE — Premium masculine spa aesthetic ── */
+    --background: 210 15% 6%;
+    --foreground: 210 20% 90%;
+    --card: 210 12% 10%;
+    --card-foreground: 210 20% 90%;
+    --popover: 210 12% 10%;
+    --popover-foreground: 210 20% 90%;
+    --primary: 30 45% 55%;
+    --primary-foreground: 210 15% 8%;
+    --secondary: 210 10% 15%;
+    --secondary-foreground: 210 18% 80%;
+    --muted: 210 10% 12%;
+    --muted-foreground: 210 15% 65%;
+    --accent: 210 12% 18%;
     --accent-foreground: 210 20% 88%;
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 10% 22%;
-    --input: 220 12% 20%;
-    --ring: 45 60% 68%;
-    --chart-1: 45 60% 68%;
-    --chart-2: 200 40% 55%;
-    --chart-3: 160 35% 50%;
-    --chart-4: 280 30% 60%;
-    --chart-5: 15 50% 55%;
-    --sidebar-background: 220 16% 8%;
+    --border: 210 10% 15%;
+    --input: 210 12% 14%;
+    --ring: 30 45% 55%;
+    --chart-1: 30 45% 55%;
+    --chart-2: 200 40% 50%;
+    --chart-3: 160 35% 48%;
+    --chart-4: 280 30% 58%;
+    --chart-5: 15 50% 52%;
+    --sidebar-background: 210 15% 7%;
     --sidebar-foreground: 210 20% 88%;
-    --sidebar-primary: 45 60% 68%;
-    --sidebar-primary-foreground: 220 15% 8%;
-    --sidebar-accent: 220 12% 16%;
+    --sidebar-primary: 30 45% 55%;
+    --sidebar-primary-foreground: 210 15% 8%;
+    --sidebar-accent: 210 12% 14%;
     --sidebar-accent-foreground: 210 18% 80%;
-    --sidebar-border: 220 10% 18%;
-    --sidebar-ring: 45 60% 68%;
+    --sidebar-border: 210 10% 14%;
+    --sidebar-ring: 30 45% 55%;
   }
 }
 
@@ -90,23 +54,26 @@
   body {
     @apply bg-background text-foreground;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
-    font-size: 30px;
-    letter-spacing: -0.02em;
+    font-size: 16px;
+    letter-spacing: -0.01em;
     line-height: 1.6;
     font-weight: 400;
   }
 }
 
-/* Custom scrollbar for mobile feel */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
+  background: rgba(198, 168, 125, 0.4);
   border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(198, 168, 125, 0.6);
 }
 
 /* Smooth scroll for mobile */
@@ -115,12 +82,11 @@ html {
   -webkit-tap-highlight-color: transparent;
   width: 100%;
   height: 100%;
-  font-size: 25px;
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 34px;
+    /* standard desktop */
   }
 }
 
@@ -129,109 +95,136 @@ body {
   min-height: 100%;
   min-height: 100dvh;
   overflow-x: hidden;
+  background: linear-gradient(135deg, #0B0F14 0%, #0F1720 100%);
 }
 
-/* Metallic gold gradient for special text */
-.text-metallic {
-  background: linear-gradient(135deg, #c9a84c 0%, #f0d080 40%, #c9a84c 60%, #a8882a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Subtle vignette */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* Subtle metallic card shimmer */
-.card-metallic {
-  background: linear-gradient(145deg, hsl(220 14% 16%), hsl(220 14% 13%));
-  border: 1px solid hsl(220 10% 26%);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+/* ── Premium Luxury Spa Glassmorphism ── */
+
+/* Glass surface base */
+.glass-surface {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
-/* Metallic button shimmer */
-.btn-metallic {
-  background: linear-gradient(135deg, #c9a84c 0%, #f0d080 50%, #c9a84c 100%);
-  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+/* Gold accent color */
+.accent-gold {
+  color: #C6A87D;
+}
+
+/* Glass card with soft shadow */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Soft glow effect */
+.glow-accent {
+  box-shadow: 0 0 24px rgba(198, 168, 125, 0.25);
 }
 
 /* ── Luxury Spa Typography System ── */
 
 /* H1: Primary Title */
 .type-h1 {
-  font-size: clamp(28px, 6vw, 32px);
+  font-size: 36px;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   line-height: 1.2;
-  color: rgba(255, 255, 255, 0.98);
+  color: #E5E7EB;
 }
 
 /* Subtitle */
 .type-subtitle {
-  font-size: clamp(14px, 3.5vw, 16px);
+  font-size: 15px;
   font-weight: 400;
-  line-height: 1.4;
-  opacity: 0.75;
+  line-height: 1.5;
+  color: rgba(229, 231, 235, 0.7);
 }
 
-/* Section Label (e.g. "โปรแกรม", "วันที่") */
+/* Section Label */
 .type-label {
-  font-size: clamp(12px, 2.8vw, 13px);
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  opacity: 0.6;
+  color: rgba(229, 231, 235, 0.6);
 }
 
 /* Service Name on Cards */
 .type-service-name {
-  font-size: clamp(22px, 4vw, 18px);
+  font-size: 18px;
   font-weight: 500;
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
+  color: #E5E7EB;
 }
 
 /* Price Display */
 .type-price {
-  font-size: clamp(18px, 4.5vw, 20px);
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: #C6A87D;
 }
 
 /* Calendar: Month/Year */
 .type-calendar-header {
-  font-size: clamp(16px, 4vw, 18px);
+  font-size: 18px;
   font-weight: 500;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
+  color: #E5E7EB;
 }
 
 /* Calendar: Weekday Labels */
 .type-calendar-weekday {
-  font-size: clamp(9px, 2.6vw, 12px);
+  font-size: 11px;
   font-weight: 400;
-  opacity: 0.55;
+  color: rgba(229, 231, 235, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* Calendar: Date Numbers */
 .type-calendar-date {
-  font-size: clamp(10px, 3.8vw, 16px);
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.01em;
+  color: rgba(229, 231, 235, 0.85);
 }
 
 .type-calendar-date-selected {
-  font-size: clamp(12px, 4.2vw, 18px);
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: #0B0F14;
 }
 
-/* Time Value (e.g. "15:00") */
+/* Time Value */
 .type-time-value {
-  font-size: clamp(12px, 4vw, 22px);
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.02em;
+  color: #0B0F14;
 }
 
 /* Small/Secondary Text */
 .type-small {
-  font-size: clamp(11px, 2.6vw, 13px);
+  font-size: 12px;
   font-weight: 400;
-  opacity: 0.65;
+  color: rgba(229, 231, 235, 0.65);
 }
