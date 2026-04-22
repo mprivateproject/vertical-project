@@ -278,18 +278,28 @@ export default function QuickBooking() {
           }}
         >
           <p className="text-[28px] mb-4">✦</p>
-          <p className="text-[15px] font-light mb-2"
+          <p className="text-[15px] font-light mb-3"
             style={{ color: 'rgba(255,255,255,0.82)', fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}>
             {lang === 'th' ? 'สำหรับ Invited Members เท่านั้น' : 'Invited Members Only'}
           </p>
-          <p className="text-[11px] tracking-[0.1em]"
-            style={{ color: 'rgba(161,165,173,0.45)', fontFamily: 'Montserrat, sans-serif' }}>
+          <p className="text-[12px] leading-relaxed"
+            style={{ color: 'rgba(161,165,173,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
             {lang === 'th'
-              ? 'การจองเปิดให้เฉพาะสมาชิกที่ได้รับเชิญเท่านั้น\nกรุณาติดต่อเราเพื่อรับสิทธิ์'
-              : 'Booking is available exclusively for invited members.\nPlease contact us to receive an invitation.'}
+              ? 'คิวการจองในวันที่ 14-31 พ.ค.'
+              : 'Bookings for May 14–31'}
           </p>
-          <p className="text-[11px] mt-4 tracking-[0.08em]"
-            style={{ color: 'rgba(161,165,173,0.35)' }}>
+          <p className="text-[12px] leading-relaxed mb-4"
+            style={{ color: 'rgba(161,165,173,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
+            {lang === 'th'
+              ? 'เปิดให้เฉพาะสมาชิกที่ได้รับเชิญเท่านั้น'
+              : 'are open for invited members only'}
+          </p>
+          <p className="text-[11px] mb-1"
+            style={{ color: 'rgba(161,165,173,0.38)', fontFamily: 'Montserrat, sans-serif' }}>
+            {lang === 'th' ? 'กรุณาติดต่อเราเพื่อรับสิทธิ์' : 'Please contact us to receive an invitation'}
+          </p>
+          <p className="text-[12px] font-medium tracking-[0.08em]"
+            style={{ color: 'rgba(161,165,173,0.5)' }}>
             LINE : @mprivateproject
           </p>
         </motion.div>
