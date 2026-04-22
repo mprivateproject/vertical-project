@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { Link } from 'react-router-dom';
 import {
   Clock, Moon, Sun, Globe, LogOut,
-  ChevronRight, Shield, Sliders
+  ChevronRight, Shield, Sliders, LayoutDashboard
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LanguageToggle from '@/components/shared/LanguageToggle';
 import LineLoginButton from '@/components/customer/LineLoginButton';
+import { base44 } from '@/api/base44Client';
 
 export default function Profile() {
   const { t, lang } = useLang();
   const { lineProfile, customer, isLoggedIn, logout, ready } = useLine();
   const { isDark, toggleTheme } = useTheme();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-
+  useEffect(() => {
+    base44.auth.me().then(u => {
+      if (u?.role === 'admin') setIsAdmin(true);
+    }).catch(() => {});
+  }, []);
 
   if (!isLoggedIn) {
     return (
@@ -84,6 +90,19 @@ export default function Profile() {
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </Link>
         ))}
+
+        {isAdmin && (
+          <Link
+            to="/admin"
+            className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/10 transition-colors border border-primary/20 mt-2"
+          >
+            <LayoutDashboard className="w-5 h-5 text-primary" />
+            <span className="flex-1 text-sm text-primary font-medium">
+              {lang === 'th' ? 'Admin Dashboard' : 'Admin Dashboard'}
+            </span>
+            <ChevronRight className="w-4 h-4 text-primary/60" />
+          </Link>
+        )}
       </div>
 
       {/* Settings */}
