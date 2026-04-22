@@ -8,7 +8,7 @@ import {
   CalendarDays, Users, TrendingUp, DollarSign,
   Clock, CheckCircle2, XCircle, ArrowUpRight,
   Scissors, BarChart3, Tag, GanttChartSquare,
-  AlertCircle, RefreshCw, UserCheck
+  AlertCircle, RefreshCw, UserCheck, ChevronLeft
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -157,6 +157,10 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
+          <Link to="/profile" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2">
+            <ChevronLeft className="w-3.5 h-3.5" />
+            {lang === 'th' ? 'กลับหน้าโปรไฟล์' : 'Back to Profile'}
+          </Link>
           <h1 className="font-display text-2xl font-semibold text-foreground">
             {lang === 'th' ? 'แดชบอร์ด' : 'Dashboard'}
           </h1>
