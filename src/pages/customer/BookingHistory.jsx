@@ -309,8 +309,9 @@ export default function BookingHistory() {
                         setCheckInBookingId(booking.id);
                       }}
                       className="w-full py-2 uppercase font-medium transition-all flex items-center justify-center gap-1.5"
-                      style={{ fontSize: 'clamp(10px, 2.8vw, 12px)', letterSpacing: '0.18em', ...({}) }}
                       style={{
+                        fontSize: 'clamp(11px, 2.8vw, 12px)',
+                        letterSpacing: '0.18em',
                         borderTop: `1px solid ${dividerColor}`,
                         color: checkInActive
                           ? (isDark ? 'rgba(160,220,160,0.85)' : 'rgba(40,130,40,0.8)')
@@ -337,8 +338,9 @@ export default function BookingHistory() {
                     <button
                       onClick={(e) => { e.stopPropagation(); haptic(12); cancelBookingMutation.mutate(booking.id); }}
                       className="w-full py-2 uppercase font-medium transition-all"
-                      style={{ fontSize: 'clamp(10px, 2.8vw, 12px)', letterSpacing: '0.18em', ...({}) }}
                       style={{
+                        fontSize: 'clamp(11px, 2.8vw, 12px)',
+                        letterSpacing: '0.18em',
                         borderTop: `1px solid ${dividerColor}`,
                         color: isDark ? 'rgba(180,80,80,0.7)' : 'rgba(160,50,50,0.65)',
                         background: isDark ? 'rgba(180,60,60,0.04)' : 'rgba(180,60,60,0.03)',
