@@ -25,6 +25,11 @@ export default function AdminCustomers() {
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [editTierId, setEditTierId] = useState(null);
 
+  const { data: customers = [], isLoading } = useQuery({
+    queryKey: ['admin-customers'],
+    queryFn: () => adminClient.getCustomers(),
+  });
+
   const updateInvitedMutation = useMutation({
     mutationFn: ({ id, value }) => adminClient.updateCustomer(id, { is_invited_member: value }),
     onSuccess: () => {
@@ -34,11 +39,6 @@ export default function AdminCustomers() {
   });
 
   const editTierCustomer = customers.find(c => c.id === editTierId);
-
-  const { data: customers = [], isLoading } = useQuery({
-    queryKey: ['admin-customers'],
-    queryFn: () => adminClient.getCustomers(),
-  });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => adminClient.deleteCustomer(id),
