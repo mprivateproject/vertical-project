@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminClient } from '@/lib/adminClient';
 import { useLang } from '@/lib/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
 import { Search, Users, Star, DollarSign, Calendar, ChevronRight, Trash2, Crown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +14,8 @@ const tierColors = {
   silver: 'bg-slate-200 text-slate-700',
   gold: 'bg-amber-100 text-amber-700',
   platinum: 'bg-purple-100 text-purple-700',
+  vip: 'bg-rose-100 text-rose-700',
+  vvip: 'bg-fuchsia-100 text-fuchsia-700',
 };
 
 export default function AdminCustomers() {
@@ -30,8 +31,13 @@ export default function AdminCustomers() {
     queryFn: () => adminClient.getCustomers(),
   });
 
-  const updateInvitedMutation = useMutation({
-    mutationFn: ({ id, value }) => adminClient.updateCustomer(id, { is_invited_member: value }),
+  const { data: loyaltyTiers = [] } = useQuery({
+    queryKey: ['loyalty-tiers'],
+    queryFn: () => adminClient.getLoyaltyTiers(),
+  });
+
+  const updateCustomerMutation = useMutation({
+    mutationFn: ({ id, data }) => adminClient.updateCustomer(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-customers'] });
       setEditTierId(null);
@@ -103,10 +109,15 @@ export default function AdminCustomers() {
                         className="w-11 h-11 rounded-full object-cover flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                       <div className="flex items-center gap-2">
+                       <div className="flex items-center gap-2 flex-wrap">
                          <p className="font-semibold text-base text-foreground truncate">
                            {customer.display_name}
                          </p>
+                         {customer.loyalty_tier && customer.loyalty_tier !== 'none' && (
+                           <Badge className={`text-[11px] ${tierColors[customer.loyalty_tier] || ''}`}>
+                             {customer.loyalty_tier.toUpperCase()}
+                           </Badge>
+                         )}
                          {customer.is_invited_member && (
                            <Badge className="text-[11px] bg-amber-100 text-amber-700">✦ Invited</Badge>
                          )}
@@ -167,15 +178,42 @@ export default function AdminCustomers() {
               className="bg-card border border-border rounded-2xl p-6 w-full max-w-sm shadow-xl"
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="font-semibold text-lg mb-1">Invited Member</h3>
+              <h3 className="font-semibold text-lg mb-1">แก้ไข Tier</h3>
               <p className="text-sm text-muted-foreground mb-5">
                 <span className="font-medium text-foreground">{editTierCustomer?.display_name}</span>
               </p>
+
+              {/* Loyalty Tier */}
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Loyalty Tier</p>
+              <div className="grid grid-cols-3 gap-2 mb-5">
+                {loyaltyTiers.map(tier => {
+                  const isSelected = editTierCustomer?.loyalty_tier === tier.tier_key;
+                  const colorClass = tierColors[tier.tier_key] || 'bg-gray-100 text-gray-600';
+                  return (
+                    <button
+                      key={tier.tier_key}
+                      onClick={() => updateCustomerMutation.mutate({ id: editTierId, data: { loyalty_tier: tier.tier_key } })}
+                      disabled={updateCustomerMutation.isPending}
+                      className={`py-2.5 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 ${
+                        isSelected ? `border-primary ${colorClass}` : 'border-border hover:border-primary/40 text-foreground'
+                      }`}
+                    >
+                      {tier.name_th}
+                    </button>
+                  );
+                })}
+                {loyaltyTiers.length === 0 && (
+                  <p className="col-span-3 text-sm text-muted-foreground text-center py-2">ยังไม่มี Tier — ตั้งค่าใน Admin &gt; Loyalty</p>
+                )}
+              </div>
+
+              {/* Invited Member */}
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Invited Member</p>
               <div className="flex gap-3 mb-5">
                 <button
-                  onClick={() => updateInvitedMutation.mutate({ id: editTierId, value: true })}
-                  disabled={updateInvitedMutation.isPending}
-                  className={`flex-1 py-3 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 ${
+                  onClick={() => updateCustomerMutation.mutate({ id: editTierId, data: { is_invited_member: true } })}
+                  disabled={updateCustomerMutation.isPending}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 ${
                     editTierCustomer?.is_invited_member
                       ? 'border-amber-400 bg-amber-50 text-amber-700'
                       : 'border-border hover:border-amber-300 text-foreground'
@@ -184,9 +222,9 @@ export default function AdminCustomers() {
                   ✦ Invited
                 </button>
                 <button
-                  onClick={() => updateInvitedMutation.mutate({ id: editTierId, value: false })}
-                  disabled={updateInvitedMutation.isPending}
-                  className={`flex-1 py-3 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 ${
+                  onClick={() => updateCustomerMutation.mutate({ id: editTierId, data: { is_invited_member: false } })}
+                  disabled={updateCustomerMutation.isPending}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all disabled:opacity-50 ${
                     !editTierCustomer?.is_invited_member
                       ? 'border-gray-400 bg-gray-100 text-gray-700'
                       : 'border-border hover:border-gray-300 text-foreground'
@@ -195,6 +233,7 @@ export default function AdminCustomers() {
                   — ปกติ
                 </button>
               </div>
+
               <button
                 onClick={() => setEditTierId(null)}
                 className="w-full py-2 rounded-lg text-sm border border-border hover:bg-secondary transition-colors"

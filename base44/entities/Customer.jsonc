@@ -42,6 +42,24 @@
       "type": "number",
       "default": 0
     },
+    "loyalty_points": {
+      "type": "number",
+      "default": 0,
+      "description": "Accumulated loyalty points"
+    },
+    "loyalty_tier": {
+      "type": "string",
+      "enum": [
+        "none",
+        "silver",
+        "gold",
+        "platinum",
+        "vip",
+        "vvip"
+      ],
+      "default": "none",
+      "description": "Current loyalty tier key"
+    },
     "is_invited_member": {
       "type": "boolean",
       "default": false,
