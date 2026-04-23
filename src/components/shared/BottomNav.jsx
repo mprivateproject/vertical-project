@@ -99,21 +99,35 @@ export default function BottomNav() {
           <Link
             to="/quickbooking"
             onClick={() => haptic(10)}
-            className="relative flex items-center justify-center"
+            className="relative flex flex-col items-center justify-center gap-[2px]"
             style={{ marginBottom: '10px' }}
           >
             <motion.div
               whileTap={{ scale: 0.92 }}
               transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-              className="w-[62px] h-[62px] flex items-center justify-center rounded-full"
+              className="w-[53px] h-[53px] flex items-center justify-center rounded-full"
               style={{
                 background: 'linear-gradient(150deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 boxShadow: '0 0 28px rgba(255,255,255,0.06), 0 8px 24px rgba(0,0,0,0.5)',
               }}
             >
-              <MIcon />
+              <span style={{
+                fontFamily: 'Cormorant Garamond, Georgia, serif',
+                fontSize: '22px',
+                fontWeight: 600,
+                color: 'rgba(255,255,255,0.88)',
+                letterSpacing: '-0.02em',
+                lineHeight: 1,
+              }}>M</span>
             </motion.div>
+            <span style={{
+              fontSize: '5.5px',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.35)',
+              fontFamily: 'Montserrat, sans-serif',
+            }}>Self Booking</span>
           </Link>
         </div>
 
