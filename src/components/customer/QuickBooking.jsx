@@ -126,18 +126,19 @@ export default function QuickBooking() {
     enabled: !!ready,
   });
 
-  // Build a set of fully-booked date strings
-  const fullyBookedDates = useMemo(() => {
+  // Build booked slots per date and fully-booked set
+  const { bookedByDate, fullyBookedDates } = useMemo(() => {
     const byDate = {};
     monthBookings.filter(b => b.status !== 'cancelled').forEach(b => {
       if (!byDate[b.booking_date]) byDate[b.booking_date] = new Set();
       byDate[b.booking_date].add(b.start_time);
     });
-    return new Set(
+    const fullyBooked = new Set(
       Object.entries(byDate)
         .filter(([, slots]) => TIME_SLOTS.every(s => slots.has(s)))
         .map(([date]) => date)
     );
+    return { bookedByDate: byDate, fullyBookedDates: fullyBooked };
   }, [monthBookings]);
 
   const bookedSlots = useMemo(() =>
@@ -384,6 +385,8 @@ export default function QuickBooking() {
                   const isPulsing = datePulse === day.toISOString();
                   const dateStr = format(day, 'yyyy-MM-dd');
                   const isFullyBooked = !isPast && fullyBookedDates.has(dateStr);
+                  const bookedCount = bookedByDate[dateStr]?.size || 0;
+                  const remainingSlots = !isPast ? TIME_SLOTS.length - bookedCount : 0;
 
                   cells.push(
                     <div key={day.toISOString()} className="flex flex-col items-center gap-[2px]">
@@ -421,18 +424,35 @@ export default function QuickBooking() {
                       >
                         {format(day, 'd')}
                       </motion.button>
-                      {/* Fully Booked label */}
-                      {isFullyBooked && (
-                        <span style={{
-                          fontSize: 'clamp(5px, 1.5vw, 7px)',
-                          fontWeight: 600,
-                          letterSpacing: '0.05em',
-                          color: '#4ade80',
-                          lineHeight: 1,
-                          textAlign: 'center',
-                        }}>
-                          Full
-                        </span>
+                      {/* Slot indicator */}
+                      {!isPast && (
+                        isFullyBooked ? (
+                          <span style={{
+                            fontSize: 'clamp(5px, 1.5vw, 7px)',
+                            fontWeight: 600,
+                            letterSpacing: '0.03em',
+                            color: '#4ade80',
+                            lineHeight: 1,
+                            textAlign: 'center',
+                          }}>
+                            Full
+                          </span>
+                        ) : (
+                          <span style={{
+                            fontSize: 'clamp(5px, 1.5vw, 7px)',
+                            fontWeight: 500,
+                            color: remainingSlots <= 1
+                              ? '#fb923c'
+                              : isSelected
+                                ? c.daySelected
+                                : c.dayHeaderColor,
+                            lineHeight: 1,
+                            textAlign: 'center',
+                            opacity: 0.85,
+                          }}>
+                            {remainingSlots}
+                          </span>
+                        )
                       )}
                       {/* Today dot */}
                       {isCurrentDay && !isFullyBooked && (
