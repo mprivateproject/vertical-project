@@ -203,6 +203,22 @@ export default function QuickBooking() {
     setTimeout(() => setDatePulse(null), 400);
   }, []);
 
+  // ── GOOGLE CALENDAR LINK ─────────────────────────────────
+  const buildGoogleCalendarUrl = () => {
+    if (!selectedDate || !selectedTime || !selectedService) return '#';
+    const svc = selectedService;
+    const duration = svc.duration_minutes || 90;
+    const [h, m] = selectedTime.split(':').map(Number);
+    const endTotal = h * 60 + m + duration;
+    const pad = (n) => String(n).padStart(2, '0');
+    const dateStr = format(selectedDate, 'yyyyMMdd');
+    const startStr = `${dateStr}T${pad(h)}${pad(m)}00`;
+    const endStr = `${dateStr}T${pad(Math.floor(endTotal / 60))}${pad(endTotal % 60)}00`;
+    const title = encodeURIComponent(lang === 'th' ? svc.name_th : svc.name_en);
+    const details = encodeURIComponent('M Private Project — House Signature Massage');
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}`;
+  };
+
   // ── SUCCESS STATE ────────────────────────────────────────
   if (done) {
     return (
@@ -232,13 +248,76 @@ export default function QuickBooking() {
           {selectedDate && format(selectedDate, 'EEE d MMM', { locale })} · {selectedTime}
         </p>
       </div>
-      <Link
-        to="/bookings"
-        className="inline-flex items-center gap-1.5 text-[14px] tracking-[0.15em] uppercase transition-opacity hover:opacity-60"
-        style={{ color: `hsl(var(--muted-foreground) / 0.6)`, fontFamily: 'var(--font-body)' }}
-      >
-        {t('viewBookings')} <ChevronRight className="w-3 h-3" />
-      </Link>
+
+      {/* Action buttons */}
+      <div className="flex flex-col gap-3 pt-2">
+        {/* Add to Google Calendar */}
+        <a
+          href={buildGoogleCalendarUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2.5 w-full rounded-2xl py-3 px-4 transition-opacity hover:opacity-80 active:scale-95"
+          style={{
+            background: 'rgba(255,255,255,0.07)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: `hsl(var(--foreground))`,
+            fontSize: '14px',
+            fontWeight: 600,
+            letterSpacing: '0.05em',
+            fontFamily: 'var(--font-body)',
+            textDecoration: 'none',
+          }}
+        >
+          {/* Google Calendar icon (SVG) */}
+          <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
+            <rect x="6" y="6" width="36" height="36" rx="4" fill="white"/>
+            <rect x="6" y="6" width="36" height="36" rx="4" stroke="#E0E0E0" strokeWidth="1.5"/>
+            <path d="M33 6h6a3 3 0 0 1 3 3v6h-9V6Z" fill="#1A73E8"/>
+            <path d="M6 33v6a3 3 0 0 0 3 3h6v-9H6Z" fill="#34A853"/>
+            <path d="M6 15h9V6H9a3 3 0 0 0-3 3v6Z" fill="#4285F4"/>
+            <path d="M33 42h6a3 3 0 0 0 3-3v-6h-9v9Z" fill="#FBBC04"/>
+            <rect x="15" y="6" width="18" height="9" fill="#4285F4"/>
+            <rect x="33" y="15" width="9" height="18" fill="#1A73E8"/>
+            <rect x="15" y="33" width="18" height="9" fill="#34A853"/>
+            <rect x="6" y="15" width="9" height="18" fill="#4285F4"/>
+            <rect x="15" y="15" width="18" height="18" fill="white"/>
+            <text x="24" y="30" textAnchor="middle" fontSize="14" fontWeight="700" fill="#1A73E8" fontFamily="Arial">{selectedDate ? format(selectedDate, 'd') : ''}</text>
+          </svg>
+          Add to Google Calendar
+        </a>
+
+        {/* Back to Self Booking */}
+        <button
+          onClick={() => {
+            setDone(false);
+            setSelectedDate(null);
+            setSelectedTime(null);
+          }}
+          className="inline-flex items-center justify-center gap-2 w-full rounded-2xl py-3 px-4 transition-opacity hover:opacity-70 active:scale-95"
+          style={{
+            background: 'transparent',
+            border: `1px solid rgba(255,255,255,0.08)`,
+            color: `hsl(var(--muted-foreground) / 0.6)`,
+            fontSize: '13px',
+            fontWeight: 500,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            fontFamily: 'var(--font-body)',
+          }}
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+          {lang === 'th' ? 'จองเพิ่มเติม' : 'Book Another'}
+        </button>
+
+        {/* View bookings link */}
+        <Link
+          to="/bookings"
+          className="inline-flex items-center justify-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-opacity hover:opacity-60"
+          style={{ color: `hsl(var(--muted-foreground) / 0.4)`, fontFamily: 'var(--font-body)' }}
+        >
+          {t('viewBookings')} <ChevronRight className="w-3 h-3" />
+        </Link>
+      </div>
       </motion.div>
     );
   }
