@@ -16,7 +16,9 @@
         "none",
         "silver",
         "gold",
-        "platinum"
+        "platinum",
+        "vip",
+        "vvip"
       ],
       "description": "Unique tier identifier"
     },
