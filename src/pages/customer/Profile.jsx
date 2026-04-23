@@ -26,7 +26,7 @@ export default function Profile() {
 
   if (!isLoggedIn) {
     return (
-      <div className="px-5 pt-20 pb-6 space-y-6 text-center bg-white">
+      <div className="px-5 pt-20 pb-6 space-y-6 text-center">
         <div className="w-20 h-20 rounded-full bg-secondary mx-auto flex items-center justify-center">
           <Shield className="w-8 h-8 text-muted-foreground" />
         </div>
@@ -45,7 +45,7 @@ export default function Profile() {
   ];
 
   return (
-    <div className="px-5 pt-14 pb-6 space-y-6 bg-white min-h-screen">
+    <div className="px-5 pt-14 pb-6 space-y-6">
       {/* Profile header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -67,7 +67,7 @@ export default function Profile() {
         )}
         <div>
           <h2 className="font-semibold text-lg text-foreground">{lineProfile.displayName}</h2>
-          <span className={`inline-flex items-center gap-1 text-[13px] px-2.5 py-0.5 rounded-full font-medium mt-1 ${
+          <span className={`inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-medium mt-1 ${
             customer?.is_invited_member
               ? 'bg-primary/10 text-primary'
               : 'bg-secondary text-muted-foreground'
@@ -86,7 +86,7 @@ export default function Profile() {
             className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary transition-colors"
           >
             <Icon className="w-5 h-5 text-muted-foreground" />
-            <span className="flex-1 text-base text-foreground">{label}</span>
+            <span className="flex-1 text-sm text-foreground">{label}</span>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </Link>
         ))}
@@ -97,7 +97,7 @@ export default function Profile() {
             className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/10 transition-colors border border-primary/20 mt-2"
           >
             <LayoutDashboard className="w-5 h-5 text-primary" />
-            <span className="flex-1 text-base text-primary font-medium">
+            <span className="flex-1 text-sm text-primary font-medium">
               {lang === 'th' ? 'Admin Dashboard' : 'Admin Dashboard'}
             </span>
             <ChevronRight className="w-4 h-4 text-primary/60" />
@@ -110,7 +110,7 @@ export default function Profile() {
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-3">
             <Globe className="w-5 h-5 text-muted-foreground" />
-            <span className="text-base text-foreground">
+            <span className="text-sm text-foreground">
               {lang === 'th' ? 'ภาษา' : 'Language'}
             </span>
           </div>
@@ -123,7 +123,7 @@ export default function Profile() {
         >
           <div className="flex items-center gap-3">
             {isDark ? <Moon className="w-5 h-5 text-muted-foreground" /> : <Sun className="w-5 h-5 text-muted-foreground" />}
-            <span className="text-base text-foreground">
+            <span className="text-sm text-foreground">
               {isDark ? 'Dark Mode' : 'Light Mode'}
             </span>
           </div>
@@ -134,7 +134,7 @@ export default function Profile() {
           className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-destructive/5 transition-colors text-destructive"
         >
           <LogOut className="w-5 h-5" />
-          <span className="text-base font-medium">
+          <span className="text-sm font-medium">
             {lang === 'th' ? 'ออกจากระบบ' : 'Logout'}
           </span>
         </button>
@@ -143,4 +143,3 @@ export default function Profile() {
 
     </div>
   );
-}
