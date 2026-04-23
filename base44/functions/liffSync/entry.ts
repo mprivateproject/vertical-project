@@ -6,6 +6,7 @@ const PUBLIC_ACTIONS = new Set([
   'getTherapists',
   'getServiceById',
   'getBookingsByDate',
+  'getBookingsByDateRange',
   'getLoyaltyTierByKey',
 ]);
 
@@ -123,6 +124,13 @@ Deno.serve(async (req) => {
         const { bookingDate } = body;
         const bookings = await base44.asServiceRole.entities.Booking.filter({ booking_date: bookingDate });
         return Response.json({ bookings });
+      }
+
+      if (action === 'getBookingsByDateRange') {
+        const { startDate, endDate } = body;
+        const bookings = await base44.asServiceRole.entities.Booking.list('booking_date', 500);
+        const filtered = bookings.filter(b => b.booking_date >= startDate && b.booking_date <= endDate);
+        return Response.json({ bookings: filtered });
       }
 
       if (action === 'getLoyaltyTierByKey') {

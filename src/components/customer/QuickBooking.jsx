@@ -111,6 +111,35 @@ export default function QuickBooking() {
     enabled: !!selectedDate && !!ready,
   });
 
+  // Fetch all bookings for the current calendar month to detect fully booked days
+  const { data: monthBookings = [] } = useQuery({
+    queryKey: ['bookings-month', format(calendarMonth, 'yyyy-MM')],
+    queryFn: async () => {
+      const start = format(startOfMonth(calendarMonth), 'yyyy-MM-dd');
+      const end = format(endOfMonth(calendarMonth), 'yyyy-MM-dd');
+      const r = await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'getBookingsByDateRange', startDate: start, endDate: end }
+      });
+      return r.bookings || [];
+    },
+    enabled: !!ready,
+  });
+
+  // Build a set of fully-booked date strings
+  const fullyBookedDates = useMemo(() => {
+    const byDate = {};
+    monthBookings.filter(b => b.status !== 'cancelled').forEach(b => {
+      if (!byDate[b.booking_date]) byDate[b.booking_date] = new Set();
+      byDate[b.booking_date].add(b.start_time);
+    });
+    return new Set(
+      Object.entries(byDate)
+        .filter(([, slots]) => TIME_SLOTS.every(s => slots.has(s)))
+        .map(([date]) => date)
+    );
+  }, [monthBookings]);
+
   const bookedSlots = useMemo(() =>
     existingBookings.filter(b => b.status !== 'cancelled').map(b => b.start_time),
     [existingBookings]
@@ -353,38 +382,60 @@ export default function QuickBooking() {
                   const isSelected = selectedDate && isSameDay(day, selectedDate);
                   const isCurrentDay = isToday(day);
                   const isPulsing = datePulse === day.toISOString();
+                  const dateStr = format(day, 'yyyy-MM-dd');
+                  const isFullyBooked = !isPast && fullyBookedDates.has(dateStr);
 
                   cells.push(
-                    <div key={day.toISOString()} className="flex flex-col items-center gap-[3px]">
+                    <div key={day.toISOString()} className="flex flex-col items-center gap-[2px]">
                       <motion.button
-                        disabled={isPast}
-                        onClick={() => !isPast && handleDateSelect(day)}
+                        disabled={isPast || isFullyBooked}
+                        onClick={() => !isPast && !isFullyBooked && handleDateSelect(day)}
                         animate={isPulsing ? { scale: [1, 1.18, 0.96, 1] } : { scale: 1 }}
-                        whileTap={!isPast ? { scale: 0.87 } : {}}
+                        whileTap={!isPast && !isFullyBooked ? { scale: 0.87 } : {}}
                         transition={isPulsing
                           ? { duration: 0.35, ease: E }
                           : { type: 'spring', stiffness: 300, damping: 22 }
                         }
                         className="flex items-center justify-center rounded-full font-semibold tabular-nums"
-                        style={{ width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)' }}
                         style={isSelected ? {
+                          width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
                           background: c.daySelectedBg,
                           border: `1px solid ${c.daySelectedBorder}`,
                           color: c.daySelected,
                           letterSpacing: '0.02em',
                         } : isPast ? {
+                          width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
+                          color: c.dayPast,
+                          cursor: 'not-allowed',
+                        } : isFullyBooked ? {
+                          width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
                           color: c.dayPast,
                           cursor: 'not-allowed',
                         } : isCurrentDay ? {
+                          width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
                           color: c.dayToday,
                         } : {
+                          width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
                           color: c.dayNormal,
                         }}
                       >
                         {format(day, 'd')}
                       </motion.button>
+                      {/* Fully Booked label */}
+                      {isFullyBooked && (
+                        <span style={{
+                          fontSize: 'clamp(5px, 1.5vw, 7px)',
+                          fontWeight: 600,
+                          letterSpacing: '0.05em',
+                          color: '#4ade80',
+                          lineHeight: 1,
+                          textAlign: 'center',
+                        }}>
+                          Full
+                        </span>
+                      )}
                       {/* Today dot */}
-                      {isCurrentDay && (
+                      {isCurrentDay && !isFullyBooked && (
                         <div
                           className="w-[3px] h-[3px] rounded-full"
                           style={{ background: isSelected ? c.daySelected : c.todayDot }}
