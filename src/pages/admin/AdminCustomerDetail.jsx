@@ -44,11 +44,11 @@ export default function AdminCustomerDetail() {
 
   // Fetch loyalty tier
   const { data: loyaltyTier } = useQuery({
-    queryKey: ['loyalty-tier', customer?.membership_tier],
+    queryKey: ['loyalty-tier', customer?.loyalty_tier],
     queryFn: () => adminClient.getLoyaltyTiers().then(tiers =>
-      tiers?.find(t => t.tier_key === customer?.membership_tier) || null
+      tiers?.find(t => t.tier_key === customer?.loyalty_tier) || null
     ),
-    enabled: !!customer?.membership_tier,
+    enabled: !!customer?.loyalty_tier && customer?.loyalty_tier !== 'none',
   });
 
   // Update customer notes
@@ -87,7 +87,27 @@ export default function AdminCustomerDetail() {
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-semibold">{customer.display_name}</h1>
+        <div>
+          <h1 className="text-2xl font-semibold">{customer.display_name}</h1>
+          <div className="flex items-center gap-2 mt-1">
+            {customer.loyalty_tier && customer.loyalty_tier !== 'none' && (
+              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                customer.loyalty_tier === 'vvip' ? 'bg-fuchsia-100 text-fuchsia-700' :
+                customer.loyalty_tier === 'vip' ? 'bg-rose-100 text-rose-700' :
+                customer.loyalty_tier === 'platinum' ? 'bg-purple-100 text-purple-700' :
+                customer.loyalty_tier === 'gold' ? 'bg-amber-100 text-amber-700' :
+                'bg-slate-200 text-slate-700'
+              }`}>
+                {customer.loyalty_tier.toUpperCase()}
+              </span>
+            )}
+            {customer.is_invited_member && (
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                ✦ Invited Member
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Profile Section */}
