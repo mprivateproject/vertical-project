@@ -1,0 +1,55 @@
+{
+  "name": "Feedback",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "Feedback message from the user"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Optional rating 1-5"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "general",
+        "service",
+        "therapist",
+        "facility",
+        "booking"
+      ],
+      "default": "general",
+      "description": "Feedback category"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Customer display name (optional)"
+    },
+    "lang": {
+      "type": "string",
+      "description": "Language used"
+    }
+  },
+  "required": [
+    "message"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

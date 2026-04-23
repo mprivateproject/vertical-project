@@ -41,6 +41,7 @@ import AdminCostDashboard from '@/pages/admin/AdminCostDashboard';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
 import Preferences from '@/pages/customer/Preferences';
+import FeedbackPage from '@/pages/customer/Feedback';
 
 // Layouts
 import CustomerLayout from '@/components/shared/CustomerLayout';
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
         <Route path="/quickbooking" element={<QuickBookingPage />} />
         <Route path="/selfbooking" element={<SelfBookingPage />} />
         <Route path="/preferences" element={<Preferences />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
       </Route>
 
       {/* Staff routes */}

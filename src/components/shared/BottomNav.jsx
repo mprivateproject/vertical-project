@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, CalendarDays, User } from 'lucide-react';
+import { Home, CalendarDays, User, NotebookPen } from 'lucide-react';
 import { useLang } from '@/lib/LanguageContext';
 import { useSheet } from '@/lib/SheetContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,6 +22,7 @@ const LEFT_ITEMS = [
   { key: 'bookingsNav', icon: CalendarDays, path: '/bookings' },
 ];
 const RIGHT_ITEMS = [
+  { key: 'feedback', icon: NotebookPen, path: '/feedback' },
   { key: 'profile', icon: User, path: '/profile' },
 ];
 
