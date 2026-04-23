@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
@@ -8,13 +8,35 @@ import { Check } from 'lucide-react';
 
 const E = [0.22, 1, 0.36, 1];
 
-const CATEGORIES = [
-  { id: 'general',  th: 'ทั่วไป',      en: 'General' },
-  { id: 'service',  th: 'บริการ',      en: 'Service' },
-  { id: 'therapist',th: 'นักบำบัด',   en: 'Therapist' },
-  { id: 'facility', th: 'สถานที่',     en: 'Facility' },
-  { id: 'booking',  th: 'การจอง',      en: 'Booking' },
-];
+function StarRating({ label, value, onChange, isDark, textColor, mutedColor, cardBg, cardBorder }) {
+  const [hovered, setHovered] = useState(0);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl p-5 space-y-3"
+      style={{ background: cardBg, border: cardBorder }}
+    >
+      <p className="text-[11px] tracking-[0.25em] uppercase font-medium" style={{ color: mutedColor }}>
+        {label}
+      </p>
+      <div className="flex gap-3">
+        {[1, 2, 3, 4, 5].map(star => (
+          <button
+            key={star}
+            onMouseEnter={() => setHovered(star)}
+            onMouseLeave={() => setHovered(0)}
+            onClick={() => onChange(star === value ? 0 : star)}
+            className="text-3xl transition-all active:scale-90"
+            style={{ opacity: star <= (hovered || value) ? 1 : 0.2 }}
+          >
+            ✦
+          </button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 export default function FeedbackPage() {
   const { lang } = useLang();
@@ -22,9 +44,8 @@ export default function FeedbackPage() {
   const { isDark } = useTheme();
 
   const [message, setMessage] = useState('');
-  const [rating, setRating] = useState(0);
-  const [hoveredRating, setHoveredRating] = useState(0);
-  const [category, setCategory] = useState('general');
+  const [stabilityRating, setStabilityRating] = useState(0);
+  const [overallRating, setOverallRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -41,8 +62,8 @@ export default function FeedbackPage() {
     setSubmitting(true);
     await base44.entities.Feedback.create({
       message: message.trim(),
-      rating: rating || undefined,
-      category,
+      rating: overallRating || undefined,
+      category: `stability:${stabilityRating}`,
       display_name: lineProfile?.displayName || customer?.display_name || '',
       lang,
     });
@@ -72,10 +93,7 @@ export default function FeedbackPage() {
             <Check className="w-7 h-7" style={{ color: isDark ? 'rgba(160,220,160,0.9)' : 'rgba(40,130,40,0.8)' }} />
           </motion.div>
           <div>
-            <p
-              className="text-[24px] font-light"
-              style={{ color: textColor, fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}
-            >
+            <p className="text-[24px] font-light" style={{ color: textColor, fontFamily: 'Georgia, serif', letterSpacing: '0.02em' }}>
               {lang === 'th' ? 'ขอบคุณมากๆ' : 'Thank You'}
             </p>
             <p className="text-[14px] mt-2" style={{ color: mutedColor }}>
@@ -83,7 +101,7 @@ export default function FeedbackPage() {
             </p>
           </div>
           <button
-            onClick={() => { setDone(false); setMessage(''); setRating(0); setCategory('general'); }}
+            onClick={() => { setDone(false); setMessage(''); setStabilityRating(0); setOverallRating(0); }}
             className="text-[13px] tracking-[0.2em] uppercase"
             style={{ color: mutedColor }}
           >
@@ -99,93 +117,41 @@ export default function FeedbackPage() {
       <div className="relative z-10 px-5 pt-14 space-y-6">
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: E }}
-        >
-          <p className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-1"
-            style={{ color: mutedColor, fontFamily: 'var(--font-body)' }}>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: E }}>
+          <p className="text-[9px] font-semibold tracking-[0.35em] uppercase mb-1" style={{ color: mutedColor, fontFamily: 'var(--font-body)' }}>
             — {lang === 'th' ? 'ข้อเสนอแนะ' : 'FEEDBACK'} —
           </p>
-          <h1
-            className="text-2xl font-light tracking-wide"
-            style={{ color: textColor, fontFamily: 'var(--font-heading)', letterSpacing: '0.03em' }}
-          >
+          <h1 className="text-2xl font-light tracking-wide" style={{ color: textColor, fontFamily: 'var(--font-heading)', letterSpacing: '0.03em' }}>
             {lang === 'th' ? 'แบ่งปันความรู้สึก' : 'Share Your Thoughts'}
           </h1>
         </motion.div>
 
-        {/* Rating */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08, duration: 0.5, ease: E }}
-          className="rounded-2xl p-5 space-y-3"
-          style={{ background: cardBg, border: cardBorder }}
-        >
-          <p className="text-[11px] tracking-[0.25em] uppercase font-medium" style={{ color: mutedColor }}>
-            {lang === 'th' ? 'ความพึงพอใจ' : 'Rating'}
-          </p>
-          <div className="flex gap-3">
-            {[1, 2, 3, 4, 5].map(star => (
-              <button
-                key={star}
-                onMouseEnter={() => setHoveredRating(star)}
-                onMouseLeave={() => setHoveredRating(0)}
-                onClick={() => setRating(star === rating ? 0 : star)}
-                className="text-3xl transition-all active:scale-90"
-                style={{ opacity: star <= (hoveredRating || rating) ? 1 : 0.2 }}
-              >
-                ✦
-              </button>
-            ))}
-          </div>
-        </motion.div>
+        {/* Stability Rating */}
+        <StarRating
+          label={lang === 'th' ? 'ความเสถียรของระบบ' : 'System Stability'}
+          value={stabilityRating}
+          onChange={setStabilityRating}
+          isDark={isDark}
+          textColor={textColor}
+          mutedColor={mutedColor}
+          cardBg={cardBg}
+          cardBorder={cardBorder}
+        />
 
-        {/* Category */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12, duration: 0.5, ease: E }}
-          className="space-y-3"
-        >
-          <p className="text-[11px] tracking-[0.25em] uppercase font-medium" style={{ color: mutedColor }}>
-            {lang === 'th' ? 'หมวดหมู่' : 'Category'}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map(cat => {
-              const isSelected = category === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setCategory(cat.id)}
-                  className="px-4 py-2 rounded-full text-[12px] tracking-[0.12em] transition-all active:scale-95"
-                  style={{
-                    background: isSelected
-                      ? (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)')
-                      : (isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
-                    border: isSelected
-                      ? (isDark ? '1px solid rgba(255,255,255,0.2)' : '1px solid rgba(0,0,0,0.15)')
-                      : (isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.07)'),
-                    color: isSelected ? textColor : mutedColor,
-                    fontFamily: 'var(--font-body)',
-                  }}
-                >
-                  {lang === 'th' ? cat.th : cat.en}
-                </button>
-              );
-            })}
-          </div>
-        </motion.div>
+        {/* Overall Rating */}
+        <StarRating
+          label={lang === 'th' ? 'ความพึงพอใจโดยรวม' : 'Overall Satisfaction'}
+          value={overallRating}
+          onChange={setOverallRating}
+          isDark={isDark}
+          textColor={textColor}
+          mutedColor={mutedColor}
+          cardBg={cardBg}
+          cardBorder={cardBorder}
+        />
 
         {/* Message */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.16, duration: 0.5, ease: E }}
-          className="space-y-3"
-        >
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16, duration: 0.5, ease: E }} className="space-y-3">
           <p className="text-[11px] tracking-[0.25em] uppercase font-medium" style={{ color: mutedColor }}>
             {lang === 'th' ? 'ข้อเสนอแนะ' : 'Message'}
           </p>
@@ -193,28 +159,14 @@ export default function FeedbackPage() {
             value={message}
             onChange={e => setMessage(e.target.value)}
             rows={5}
-            placeholder={
-              lang === 'th'
-                ? 'แบ่งปันประสบการณ์หรือข้อเสนอแนะของคุณ...'
-                : 'Share your experience or suggestions...'
-            }
+            placeholder={lang === 'th' ? 'แบ่งปันประสบการณ์หรือข้อเสนอแนะของคุณ...' : 'Share your experience or suggestions...'}
             className="w-full px-4 py-3 rounded-2xl text-[16px] resize-none outline-none transition-all"
-            style={{
-              background: inputBg,
-              border: inputBorder,
-              color: textColor,
-              fontFamily: 'Georgia, serif',
-              lineHeight: 1.6,
-            }}
+            style={{ background: inputBg, border: inputBorder, color: textColor, fontFamily: 'Georgia, serif', lineHeight: 1.6 }}
           />
         </motion.div>
 
         {/* Submit */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5, ease: E }}
-        >
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5, ease: E }}>
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleSubmit}
