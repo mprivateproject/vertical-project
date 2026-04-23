@@ -67,7 +67,10 @@ async function syncCustomer(base44, lineUserId, profile = {}) {
     if (displayName) updates.display_name = displayName;
     if (pictureUrl) updates.picture_url = pictureUrl;
     if (email) updates.email = email;
-    customer = await base44.asServiceRole.entities.Customer.update(existing[0].id, updates);
+    await base44.asServiceRole.entities.Customer.update(existing[0].id, updates);
+    // Re-fetch to get ALL fields including loyalty_tier, is_invited_member, etc.
+    const refreshed = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
+    customer = refreshed[0];
     console.log('✅ syncCustomer: updated:', customer.id);
   } else {
     customer = await base44.asServiceRole.entities.Customer.create({
