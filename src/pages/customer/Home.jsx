@@ -188,17 +188,34 @@ export default function Home() {
             }}>
               Nonthaburi
             </p>
-            <p style={{
-              fontFamily: 'Inter, system-ui, sans-serif',
-              fontSize: '10px',
-              fontWeight: 400,
-              letterSpacing: '0.24em',
-              color: 'rgba(255,255,255,0.28)',
-              textTransform: 'uppercase',
-              paddingLeft: '0.24em',
-            }}>
-              LINE : @mprivateproject
-            </p>
+            <a
+              href="https://lin.ee/qEHrpx0"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '7px',
+                marginTop: '2px',
+                textDecoration: 'none',
+              }}
+            >
+              {/* LINE icon SVG */}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.084 2 11.111c0 4.52 3.663 8.306 8.615 9.012.335.072.791.22.906.506.104.26.068.668.033.931l-.146.88c-.045.26-.206 1.016.89.554 1.096-.462 5.913-3.482 8.07-5.963C21.636 15.318 22 13.27 22 11.111 22 6.084 17.523 2 12 2z" fill="rgba(0,195,0,0.75)"/>
+                <path d="M9.5 9H8.25a.25.25 0 0 0-.25.25v4.5c0 .138.112.25.25.25H9.5a.25.25 0 0 0 .25-.25v-4.5A.25.25 0 0 0 9.5 9zM15.75 9H14.5a.25.25 0 0 0-.25.25v2.673L12.427 9.11A.25.25 0 0 0 12.22 9H11a.25.25 0 0 0-.25.25v4.5c0 .138.112.25.25.25h1.25a.25.25 0 0 0 .25-.25v-2.672l1.827 2.816a.25.25 0 0 0 .207.106h1.216a.25.25 0 0 0 .25-.25v-4.5A.25.25 0 0 0 15.75 9z" fill="white"/>
+              </svg>
+              <span style={{
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontSize: '10px',
+                fontWeight: 400,
+                letterSpacing: '0.24em',
+                color: 'rgba(255,255,255,0.38)',
+                textTransform: 'uppercase',
+              }}>
+                LINE : @mprivateproject
+              </span>
+            </a>
           </motion.div>
         </div>
       </div>
