@@ -105,6 +105,7 @@ const translations = {
     refunded: "คืนเงินแล้ว",
     invitedMembers: "Invited Members",
     feedback: "ข้อเสนอแนะ",
+    costDashboard: "Cost Dashboard",
   },
   en: {
     brand: "Vertical Project",
@@ -209,6 +210,7 @@ const translations = {
     refunded: "Refunded",
     invitedMembers: "Invited Members",
     feedback: "Feedback",
+    costDashboard: "Cost Dashboard",
   }
 };
 

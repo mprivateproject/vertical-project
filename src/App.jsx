@@ -38,6 +38,7 @@ import AdminInvitedMembers from '@/pages/admin/AdminInvitedMembers';
 import AdminSettings from '@/pages/admin/AdminSettings';
 import ScheduleBoard from '@/pages/admin/ScheduleBoard';
 import AdminCostDashboard from '@/pages/admin/AdminCostDashboard';
+import AdminFeedback from '@/pages/admin/AdminFeedback';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
 import Preferences from '@/pages/customer/Preferences';
@@ -82,6 +83,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/schedule" element={<ScheduleBoard />} />
         <Route path="/admin/cost-dashboard" element={<AdminCostDashboard />} />
+        <Route path="/admin/feedback" element={<AdminFeedback />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />
