@@ -91,7 +91,7 @@ export default function QuickBooking() {
   const locale = lang === 'th' ? th : enUS;
 
   const today = new Date();
-  const LOCKED_MONTH = new Date(2025, 3, 1); // April 2025 — locked
+  const LOCKED_MONTH = new Date(today.getFullYear(), today.getMonth(), 1); // Current month — locked
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedService, setSelectedService] = useState(SERVICES[0]);
