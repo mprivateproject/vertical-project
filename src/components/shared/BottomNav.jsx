@@ -75,7 +75,7 @@ export default function BottomNav() {
   if (isSheetOpen) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-6 px-5">
+    <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pb-6 px-5">
       <nav
         className="flex items-center"
         style={{
