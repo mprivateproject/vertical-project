@@ -45,7 +45,9 @@ async function fetchWithRetry(
     const res = await fetch(url, { ...options, signal });
     return res;
   } catch (error) {
-    if (retries > 0 && (error instanceof Error && error.name === 'AbortError')) {
+    const isAbortError = error instanceof Error && error.name === 'AbortError';
+    const isNetworkError = error instanceof TypeError;
+    if (retries > 0 && (isAbortError || isNetworkError)) {
       // Timeout หรือ network error ให้ retry
       const delay = RETRY_DELAY_MS * (MAX_RETRIES - retries + 1); // exponential backoff
       await new Promise(resolve => setTimeout(resolve, delay));
