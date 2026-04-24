@@ -91,11 +91,12 @@ export default function QuickBooking() {
   const locale = lang === 'th' ? th : enUS;
 
   const today = new Date();
+  const LOCKED_MONTH = new Date(2025, 3, 1); // April 2025 — locked
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedService, setSelectedService] = useState(SERVICES[0]);
   const [done, setDone] = useState(false);
-  const [calendarMonth, setCalendarMonth] = useState(new Date());
+  const [calendarMonth, setCalendarMonth] = useState(LOCKED_MONTH);
   const [monthDir, setMonthDir] = useState(1);
   const [datePulse, setDatePulse] = useState(null); // key of pulsing date
 
@@ -189,10 +190,8 @@ export default function QuickBooking() {
     },
   });
 
-  const changeMonth = useCallback((dir) => {
-    haptic(6);
-    setMonthDir(dir);
-    setCalendarMonth(m => dir > 0 ? addMonths(m, 1) : subMonths(m, 1));
+  const changeMonth = useCallback((_dir) => {
+    // Month navigation is locked — April 2025 only
   }, []);
 
   const handleDateSelect = useCallback((day) => {
@@ -393,38 +392,11 @@ export default function QuickBooking() {
             }}
           />
 
-          {/* Month nav */}
-          <div className="flex items-center justify-between" style={{ marginBottom: 'clamp(4px, 1.5vw, 12px)' }}>
-            <motion.button
-              whileTap={{ scale: 0.88, opacity: 0.5 }}
-              onClick={() => changeMonth(-1)}
-              className="flex items-center justify-center rounded-xl transition-all"
-              style={{ width: 'clamp(28px, 6vw, 40px)', height: 'clamp(28px, 6vw, 40px)', color: c.navColor }}
-            >
-              <ChevronLeft style={{ width: 'clamp(14px, 3vw, 20px)', height: 'clamp(14px, 3vw, 20px)' }} />
-            </motion.button>
-
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={format(calendarMonth, 'yyyy-MM')}
-                initial={{ opacity: 0, x: monthDir * 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -monthDir * 16 }}
-                transition={{ duration: 0.28, ease: E }}
-                style={{ fontSize: 'clamp(14px, 4vw, 26px)', fontWeight: 600, letterSpacing: '0.15em', color: c.monthColor }}
-              >
-                {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
-              </motion.span>
-            </AnimatePresence>
-
-            <motion.button
-              whileTap={{ scale: 0.88, opacity: 0.5 }}
-              onClick={() => changeMonth(1)}
-              className="flex items-center justify-center rounded-xl transition-all"
-              style={{ width: 'clamp(28px, 6vw, 40px)', height: 'clamp(28px, 6vw, 40px)', color: c.navColor }}
-            >
-              <ChevronRight style={{ width: 'clamp(14px, 3vw, 20px)', height: 'clamp(14px, 3vw, 20px)' }} />
-            </motion.button>
+          {/* Month header — locked, no nav */}
+          <div className="flex items-center justify-center" style={{ marginBottom: 'clamp(4px, 1.5vw, 12px)' }}>
+            <span style={{ fontSize: 'clamp(14px, 4vw, 26px)', fontWeight: 600, letterSpacing: '0.15em', color: c.monthColor }}>
+              {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
+            </span>
           </div>
 
           {/* Day headers */}
