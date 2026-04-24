@@ -225,7 +225,19 @@ Deno.serve(async (req) => {
     try {
       payload = await req.json();
     } catch (error) {
-      return Response.json({ error: 'Invalid JSON payload' }, { status: 400 });
+      const parseError = error instanceof Error ? error.message : String(error);
+      return Response.json(
+        {
+          error: 'Invalid JSON payload: expected a valid JSON object body',
+          expected: {
+            type: 'booking_confirmation | status_changed',
+            lineUserId: 'string (required for booking_confirmation)',
+            bookingData: 'object (required)',
+          },
+          details: parseError,
+        },
+        { status: 400 }
+      );
     }
 
     const { type, lineUserId, bookingData } = payload;
