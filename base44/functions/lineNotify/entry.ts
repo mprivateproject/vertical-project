@@ -45,7 +45,9 @@ async function fetchWithRetry(
     const res = await fetch(url, { ...options, signal });
     return res;
   } catch (error) {
-    if (retries > 0 && (error instanceof Error && error.name === 'AbortError')) {
+    const isAbortError = error instanceof Error && error.name === 'AbortError';
+    const isNetworkError = error instanceof TypeError;
+    if (retries > 0 && (isAbortError || isNetworkError)) {
       // Timeout หรือ network error ให้ retry
       const delay = RETRY_DELAY_MS * (MAX_RETRIES - retries + 1); // exponential backoff
       await new Promise(resolve => setTimeout(resolve, delay));
@@ -225,7 +227,19 @@ Deno.serve(async (req) => {
     try {
       payload = await req.json();
     } catch (error) {
-      return Response.json({ error: 'Invalid JSON payload' }, { status: 400 });
+      const parseError = error instanceof Error ? error.message : String(error);
+      return Response.json(
+        {
+          error: 'Invalid JSON payload: expected a valid JSON object body',
+          expected: {
+            type: 'booking_confirmation | status_changed',
+            lineUserId: 'string (required for booking_confirmation)',
+            bookingData: 'object (required)',
+          },
+          details: parseError,
+        },
+        { status: 400 }
+      );
     }
 
     const { type, lineUserId, bookingData } = payload;
