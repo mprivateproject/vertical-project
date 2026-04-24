@@ -6,83 +6,120 @@
 
 @layer base {
   :root {
-    /* ── Typography ── */
-    --font-thai: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
-    --font-heading: 'Cormorant Garamond', Georgia, serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    --radius: 13px;
+   /* ── Typography ── */
+--font-thai: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Thai', system-ui, sans-serif;
+--font-heading: 'Cormorant Garamond', Georgia, serif;
+--font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+--radius: 14px;
 
-    /* ── DARK MODE — Deep Charcoal + Sage/Stone ── */
-    --background: 210 12% 11%;
-    --foreground: 210 8% 92%;
-    --card: 210 14% 16%;
-    --card-foreground: 210 8% 92%;
-    --popover: 210 14% 16%;
-    --popover-foreground: 210 8% 92%;
-    --primary: 270 55% 60%;
-    --primary-foreground: 210 12% 11%;
-    --secondary: 270 20% 35%;
-    --secondary-foreground: 210 8% 92%;
-    --muted: 210 10% 28%;
-    --muted-foreground: 210 8% 55%;
-    --accent: 270 50% 52%;
-    --accent-foreground: 210 12% 11%;
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 210 12% 22%;
-    --input: 210 12% 18%;
-    --ring: 270 55% 60%;
-    --chart-1: 270 55% 60%;
-    --chart-2: 270 30% 45%;
-    --chart-3: 210 10% 28%;
-    --chart-4: 270 50% 52%;
-    --chart-5: 270 25% 38%;
-    --sidebar-background: 210 12% 12%;
-    --sidebar-foreground: 210 8% 92%;
-    --sidebar-primary: 270 55% 60%;
-    --sidebar-primary-foreground: 210 12% 11%;
-    --sidebar-accent: 270 50% 52%;
-    --sidebar-accent-foreground: 210 12% 11%;
-    --sidebar-border: 210 12% 22%;
-    --sidebar-ring: 270 55% 60%;
+/* ── DARK MODE — Refined Charcoal + Sage + Warm Accent ── */
+--background: 210 14% 10%;
+--foreground: 210 10% 96%;
+
+/* Surfaces */
+--card: 210 12% 14%;
+--card-foreground: 210 10% 96%;
+--popover: 210 12% 14%;
+--popover-foreground: 210 10% 96%;
+
+/* Primary (Luxury Violet - controlled) */
+--primary: 270 45% 58%;
+--primary-foreground: 210 14% 10%;
+
+/* Secondary (Muted Sage Stone) */
+--secondary: 150 12% 32%;
+--secondary-foreground: 150 10% 90%;
+
+/* Accent (Warm Champagne Highlight ✨) */
+--accent: 38 35% 62%;
+--accent-foreground: 210 14% 10%;
+
+/* Neutral Layers */
+--muted: 210 10% 22%;
+--muted-foreground: 210 8% 60%;
+
+/* Functional */
+--destructive: 0 70% 52%;
+--destructive-foreground: 0 0% 100%;
+
+/* UI Structure */
+--border: 210 12% 20%;
+--input: 210 12% 16%;
+--ring: 270 45% 58%;
+
+/* Data Viz (less repetitive) */
+--chart-1: 270 45% 58%;
+--chart-2: 150 18% 38%;
+--chart-3: 38 35% 62%;
+--chart-4: 210 12% 30%;
+--chart-5: 270 25% 40%;
+
+/* Sidebar */
+--sidebar-background: 210 14% 11%;
+--sidebar-foreground: 210 10% 94%;
+--sidebar-primary: 270 45% 58%;
+--sidebar-primary-foreground: 210 14% 10%;
+--sidebar-accent: 38 35% 62%;
+--sidebar-accent-foreground: 210 14% 10%;
+--sidebar-border: 210 12% 20%;
+--sidebar-ring: 270 45% 58%;
   }
+@media (prefers-color-scheme: light) {
+  :root {
+    /* ── LIGHT MODE — Refined Warm Cream + Natural Palette ── */
 
-  @media (prefers-color-scheme: light) {
-    :root {
-      /* ── LIGHT MODE — Warm Cream + Sage Accent ── */
-      --background: 28 24% 95%;
-      --foreground: 210 12% 20%;
-      --card: 0 0% 100%;
-      --card-foreground: 210 12% 20%;
-      --popover: 0 0% 100%;
-      --popover-foreground: 210 12% 20%;
-      --primary: 270 52% 52%;
-      --primary-foreground: 28 24% 95%;
-      --secondary: 270 18% 88%;
-      --secondary-foreground: 270 30% 25%;
-      --muted: 210 10% 88%;
-      --muted-foreground: 210 10% 45%;
-      --accent: 270 48% 60%;
-      --accent-foreground: 28 24% 95%;
-      --destructive: 0 100% 50%;
-      --destructive-foreground: 0 0% 100%;
-      --border: 210 10% 88%;
-      --input: 210 10% 93%;
-      --ring: 270 52% 52%;
-      --chart-1: 270 52% 52%;
-      --chart-2: 270 28% 55%;
-      --chart-3: 210 10% 28%;
-      --chart-4: 270 48% 60%;
-      --chart-5: 270 22% 42%;
-      --sidebar-background: 28 24% 96%;
-      --sidebar-foreground: 210 12% 20%;
-      --sidebar-primary: 270 52% 52%;
-      --sidebar-primary-foreground: 28 24% 95%;
-      --sidebar-accent: 270 48% 60%;
-      --sidebar-accent-foreground: 28 24% 95%;
-      --sidebar-border: 210 10% 88%;
-      --sidebar-ring: 270 52% 52%;
-    }
+    /* Base */
+    --background: 32 28% 96%;
+    --foreground: 210 14% 16%;
+
+    /* Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 210 14% 16%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 14% 16%;
+
+    /* Primary (Controlled Violet) */
+    --primary: 270 45% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary (Sage — calming, spa identity) */
+    --secondary: 150 18% 86%;
+    --secondary-foreground: 150 20% 28%;
+
+    /* Accent (Warm Champagne ✨ premium touch) */
+    --accent: 38 45% 68%;
+    --accent-foreground: 210 14% 16%;
+
+    /* Neutral */
+    --muted: 210 12% 90%;
+    --muted-foreground: 210 10% 40%;
+
+    /* Functional */
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Structure */
+    --border: 210 12% 84%;
+    --input: 210 12% 92%;
+    --ring: 270 45% 50%;
+
+    /* Data Visualization */
+    --chart-1: 270 45% 50%;
+    --chart-2: 150 22% 40%;
+    --chart-3: 38 45% 68%;
+    --chart-4: 210 12% 40%;
+    --chart-5: 270 25% 42%;
+
+    /* Sidebar */
+    --sidebar-background: 32 26% 95%;
+    --sidebar-foreground: 210 14% 18%;
+    --sidebar-primary: 270 45% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 38 45% 68%;
+    --sidebar-accent-foreground: 210 14% 16%;
+    --sidebar-border: 210 12% 84%;
+    --sidebar-ring: 270 45% 50%;
+  }
   }
 }
 
