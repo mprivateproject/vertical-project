@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
     if (type === 'booking_confirmation' && lineUserId && bookingData) {
       const { serviceName, bookingDate, startTime, price, customerName } = bookingData;
 
-      const customerMsg = `✅ ยืนยันการจอง\n\nบริการ: ${serviceName}\nวันที่: ${bookingDate}\nเวลา: ${startTime}\nราคา: ฿${Number(price).toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
+      const customerMsg = `✅ ยืนยันการจอง (testing)\n\nบริการ: ${serviceName}\nวันที่: ${bookingDate}\nเวลา: ${startTime}\nราคา: ฿${Number(price).toLocaleString()}\n\nขอบคุณที่ใช้บริการครับ 🙏`;
       const adminMsg = `\n📅 มีการจองใหม่!\nลูกค้า: ${customerName || '-'}\nบริการ: ${serviceName}\nวันที่: ${bookingDate} เวลา: ${startTime}\nราคา: ฿${Number(price).toLocaleString()}`;
 
       const [customerOk, adminOk] = await Promise.all([
