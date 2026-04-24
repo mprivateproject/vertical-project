@@ -217,6 +217,45 @@ export default function Home() {
               </span>
             </a>
           </motion.div>
+
+          {/* Map */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.85, duration: 0.9 }}
+            style={{ marginTop: '20px', width: '100%', maxWidth: '320px' }}
+          >
+            <div style={{
+              borderRadius: '16px',
+              overflow: 'hidden',
+              border: '1px solid rgba(203,187,160,0.15)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            }}>
+              <iframe
+                title="M Private Project Location"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3873.1!2d100.5!3d13.86!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zTm9udGhhYnVyaQ!5e0!3m2!1sth!2sth!4v1"
+                width="100%"
+                height="160"
+                style={{ display: 'block', border: 0, filter: 'grayscale(1) brightness(0.6) contrast(1.1)' }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+            <p style={{
+              fontFamily: 'Inter, system-ui, sans-serif',
+              fontSize: '9px',
+              fontWeight: 400,
+              letterSpacing: '0.25em',
+              color: 'rgba(255,255,255,0.22)',
+              textTransform: 'uppercase',
+              textAlign: 'center',
+              marginTop: '8px',
+            }}>
+              Nonthaburi · By Appointment Only
+            </p>
+          </motion.div>
+
         </div>
       </div>
     </div>
