@@ -14,7 +14,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-mo
 import { Link } from 'react-router-dom';
 
 const SERVICES = [
-  { id: 'house_signature_90', name_th: 'House Signature 90 นาที', name_en: 'House Signature 90 Min', duration_minutes: 90, price: 2950 },
+  { id: 'house_signature_90', name_th: 'House Signature', name_en: 'House Signature', duration_minutes: 90, price: 2950 },
 ];
 const DEFAULT_THERAPIST = 'M';
 const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
@@ -582,7 +582,7 @@ export default function QuickBooking() {
           >
             {!isLoggedIn ? (
               <p className="text-center text-[14px] py-2 tracking-[0.1em]" style={{ color: c.loginHint, fontFamily: 'var(--font-body)' }}>
-                กรุณาเข้าสู่ระบบด้วย LINE เพื่อจอง
+                กรุณาเข้าสู่ระบบด้วย LINE 
               </p>
             ) : (
               <motion.button
