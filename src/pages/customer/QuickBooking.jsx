@@ -63,15 +63,15 @@ export default function QuickBookingPage() {
                 className="font-semibold mb-2"
                 style={{ fontSize: '17px', letterSpacing: '0.04em', color: 'rgba(255,255,255,0.92)', fontFamily: 'var(--font-body)' }}
               >
-                {lang === 'th' ? 'ระบบทดลองใช้งาน' : 'Beta Testing Mode'}
+                {lang === 'th' ? 'ระบบทดลองใช้งาน' : 'Testing Mode'}
               </p>
 
               <p
                 style={{ fontSize: '14px', lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-body)', letterSpacing: '0.03em' }}
               >
                 {lang === 'th'
-                  ? 'ขณะนี้เป็นแค่การทดลองระบบเท่านั้น\nยังไม่ได้เปิดให้ใช้งานจริง\nเมื่อพร้อมแล้วจะแจ้งให้ทราบอีกครั้ง'
-                  : 'This is a system demo only.\nNot yet open for real bookings.\nWe will notify you when it\'s live.'}
+                  ? 'ระบบจองด้วยตัวเอง อยู่ในช่วงทดลอง\nหากเปิดให้บริการจริงจะมีการอัปเดตให้ทราบอีกครั้ง'
+                  : 'This is for testing.\nWe will notify you upon our official launch.'}
               </p>
 
               <button
@@ -85,7 +85,7 @@ export default function QuickBookingPage() {
                   fontFamily: 'var(--font-body)',
                 }}
               >
-                {lang === 'th' ? 'รับทราบ' : 'Got it'}
+                {lang === 'th' ? 'รับทราบ' : 'Close'}
               </button>
             </motion.div>
           </motion.div>
