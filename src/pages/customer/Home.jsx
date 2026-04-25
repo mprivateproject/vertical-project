@@ -218,43 +218,51 @@ export default function Home() {
             </a>
           </motion.div>
 
-          {/* Map */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
+          {/* Map link */}
+          <motion.a
+            href="https://maps.app.goo.gl/T6STh82nTi6ku78c6"
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.85, duration: 0.9 }}
-            style={{ marginTop: '20px', width: '100%', maxWidth: '320px' }}
+            style={{
+              marginTop: '18px',
+              display: 'inline-flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '6px',
+              textDecoration: 'none',
+              cursor: 'pointer',
+            }}
           >
+            {/* Map pin icon */}
             <div style={{
-              borderRadius: '16px',
-              overflow: 'hidden',
-              border: '1px solid rgba(203,187,160,0.15)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: 'rgba(203,187,160,0.08)',
+              border: '1px solid rgba(203,187,160,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}>
-              <iframe
-                title="M Private Project Location"
-                src="https://maps.google.com/maps?q=13.8625,100.5039&z=16&output=embed"
-                width="100%"
-                height="160"
-                style={{ display: 'block', border: 0, filter: 'grayscale(1) brightness(0.6) contrast(1.1)' }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(203,187,160,0.75)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
             </div>
-            <p style={{
+            <span style={{
               fontFamily: 'Inter, system-ui, sans-serif',
               fontSize: '9px',
               fontWeight: 400,
-              letterSpacing: '0.25em',
-              color: 'rgba(255,255,255,0.22)',
+              letterSpacing: '0.28em',
+              color: 'rgba(203,187,160,0.5)',
               textTransform: 'uppercase',
-              textAlign: 'center',
-              marginTop: '8px',
             }}>
-              Nonthaburi · By Appointment Only
-            </p>
-          </motion.div>
+              แผนที่การเดินทาง
+            </span>
+          </motion.a>
 
         </div>
       </div>
