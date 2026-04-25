@@ -1,0 +1,22 @@
+export function ServiceCard({
+  title,
+  price,
+  duration,
+}: {
+  title: string
+  price: string
+  duration: string
+}) {
+  return (
+    <div className="glass-card p-5 space-y-3 rounded-xl">
+      <div className="type-service-name">{title}</div>
+
+      <div className="flex items-center justify-between">
+        <span className="type-price">{price}</span>
+        <span className="type-caption-1 text-muted-fg">{duration}</span>
+      </div>
+
+      <Button className="w-full mt-2">Book Now</Button>
+    </div>
+  )
+}
