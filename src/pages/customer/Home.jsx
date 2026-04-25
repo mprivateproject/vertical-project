@@ -233,7 +233,7 @@ export default function Home() {
             }}>
               <iframe
                 title="M Private Project Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3873.1!2d100.5!3d13.86!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zTm9udGhhYnVyaQ!5e0!3m2!1sth!2sth!4v1"
+                src="https://maps.google.com/maps?q=13.8625,100.5039&z=16&output=embed"
                 width="100%"
                 height="160"
                 style={{ display: 'block', border: 0, filter: 'grayscale(1) brightness(0.6) contrast(1.1)' }}
