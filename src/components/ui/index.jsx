@@ -15,3 +15,12 @@ export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 export { Badge } from './badge';
 export { Button } from './button';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs';
+
+export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      className="w-full rounded-xl bg-input px-4 py-2 text-sm text-fg border border-border focus:ring-2 focus:ring-ring outline-none transition-apple"
+      {...props}
+    />
+  )
+}
