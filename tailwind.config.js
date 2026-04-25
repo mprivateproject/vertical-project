@@ -1,47 +1,20 @@
 import type { Config } from "tailwindcss"
 
+/** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: ["class"],
   content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        bg: "hsl(var(--background))",
-        fg: "hsl(var(--foreground))",
-
-        primary: "hsl(var(--primary))",
-        "primary-fg": "hsl(var(--primary-foreground))",
-
-        secondary: "hsl(var(--secondary))",
-        "secondary-fg": "hsl(var(--secondary-foreground))",
-
-        accent: "hsl(var(--accent))",
-        "accent-fg": "hsl(var(--accent-foreground))",
-
-        muted: "hsl(var(--muted))",
-        "muted-fg": "hsl(var(--muted-foreground))",
-
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-
-        card: "hsl(var(--card))",
-      },
-      borderRadius: {
-        xl: "var(--radius)",
-      },
-      fontFamily: {
-        body: "var(--font-body)",
-        heading: "var(--font-heading)",
-        thai: "var(--font-thai)",
-      },
-      transitionTimingFunction: {
-        apple: "cubic-bezier(0.4, 0, 0.2, 1)",
+        primary: "hsl(var(--primary))",
       },
     },
   },
   plugins: [],
-} satisfies Config
+}
