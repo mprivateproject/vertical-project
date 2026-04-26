@@ -99,7 +99,7 @@ export default function Home() {
         {/* ═══ HEADLINE ═══ */}
         <div
           className="flex flex-col items-center justify-center flex-1"
-          style={{ paddingLeft: '24px', paddingRight: '24px', marginTop: '-40px' }}
+          style={{ paddingLeft: '24px', paddingRight: '24px', marginTop: '60px' }}
         >
           {/* SOFT */}
           <motion.p
