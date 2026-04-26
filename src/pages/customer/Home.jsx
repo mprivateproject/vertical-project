@@ -105,7 +105,7 @@ export default function Home() {
               fontFamily: '"Playfair Display", Georgia, serif',
               fontSize: 'clamp(16px, 5.5vw, 28px)',
               fontWeight: 300,
-              letterSpacing: '0.45em',
+              letterSpacing: '0.35em',
               color: 'rgba(255,255,255,0.78)',
               lineHeight: 1,
               textTransform: 'uppercase',
@@ -123,12 +123,12 @@ export default function Home() {
             transition={{ delay: 0.34, duration: 0.85, ease: E }}
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              fontSize: 'clamp(80px, 19vw, 110px)',
-              fontWeight: 650,
+              fontSize: 'clamp(100px, 20vw, 130px)',
+              fontWeight: 600,
               fontStyle: 'italic',
               letterSpacing: '0.01em',
               color: '#FFFFFF',
-              lineHeight: 0.88,
+              lineHeight: 0.90,
               marginTop: '-2px',
               textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)',
             }}
@@ -161,7 +161,7 @@ export default function Home() {
               fontWeight: 500,
               letterSpacing: '0.42em',
               color: '#CBBBA0',
-              textTransform: 'uppercase',
+              textTransform: 'lowercase',
               paddingLeft: '0.38em',
               marginBottom: '20px',
             }}
@@ -179,11 +179,11 @@ export default function Home() {
           >
             <p style={{
               fontFamily: 'Inter, system-ui, sans-serif',
-              fontSize: '10px',
-              fontWeight: 400,
+              fontSize: '9px',
+              fontWeight: 350,
               letterSpacing: '0.3em',
               color: 'rgba(255,255,255,0.38)',
-              textTransform: 'uppercase',
+              textTransform: 'lowercase',
               paddingLeft: '0.3em',
             }}>
               Nonthaburi
@@ -207,11 +207,11 @@ export default function Home() {
               </svg>
               <span style={{
                 fontFamily: 'Inter, system-ui, sans-serif',
-                fontSize: '10px',
-                fontWeight: 400,
+                fontSize: '9px',
+                fontWeight: 350,
                 letterSpacing: '0.24em',
                 color: 'rgba(255,255,255,0.38)',
-                textTransform: 'uppercase',
+                textTransform: 'lowercase',
               }}>
                 LINE : @mprivateproject
               </span>
@@ -254,11 +254,11 @@ export default function Home() {
             </div>
             <span style={{
               fontFamily: 'Inter, system-ui, sans-serif',
-              fontSize: '9px',
-              fontWeight: 400,
+              fontSize: '8px',
+              fontWeight: 350,
               letterSpacing: '0.28em',
               color: 'rgba(203,187,160,0.5)',
-              textTransform: 'uppercase',
+              textTransform: 'lowercase',
             }}>
               แผนที่การเดินทาง
             </span>
