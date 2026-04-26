@@ -1,15 +1,17 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import BottomNav from './BottomNav';
 import PageHeader from './PageHeader';
 import DesktopLayout from './DesktopLayout';
 import { useViewMode } from '@/lib/ViewModeContext';
 
 function MobileLayout() {
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
   return (
     <div className="min-h-screen bg-background">
-      <main className="pb-24 w-full">
-        <PageHeader />
+      <main className={isHome ? 'w-full' : 'pb-24 w-full'}>
+        {!isHome && <PageHeader />}
         <Outlet />
       </main>
       <BottomNav />

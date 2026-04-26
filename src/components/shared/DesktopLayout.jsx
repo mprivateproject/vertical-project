@@ -264,27 +264,7 @@ export default function DesktopLayout({ isTablet = false }) {
       </aside>
 
       {/* ── MAIN CONTENT ── */}
-      <main style={{ flex: 1, minWidth: 0, overflowY: 'auto' }}>
-        {/* Top bar for non-home pages */}
-        {pathname !== '/' && (
-          <div
-            style={{
-              position: 'sticky',
-              top: 0,
-              zIndex: 20,
-              height: '60px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              padding: '0 24px',
-              background: isDark ? 'rgba(10,9,8,0.8)' : 'rgba(245,242,238,0.8)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              borderBottom: isDark ? '1px solid rgba(203,187,160,0.07)' : '1px solid rgba(203,187,160,0.2)',
-            }}
-          >
-          </div>
-        )}
+      <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', position: 'relative' }}>
         <Outlet />
       </main>
 
