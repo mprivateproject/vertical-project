@@ -10,7 +10,7 @@ export default function Home() {
       {/* ── Background photo ── */}
 
       <motion.img
-      src="https://photos.google.com/share/AF1QipOnHSzGjY2_TvXr8O0b4kUYQDHfu97v8_eW99PoGl5CkkAyQm36dif6CpZCn4vlhA/photo/AF1QipNtbL0j1PxFmb_HBmZN9Q0_auXj97HqP4wBGT0b?key=eXBOZTdQRGRZMVY2WFJkdlhSRUNfalRxMzc4M1hR"
+      src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
       initial={{ scale: 1.06 }}
       animate={{ scale: 1 }}
       transition={{ duration: 3, ease: 'easeOut' }}
