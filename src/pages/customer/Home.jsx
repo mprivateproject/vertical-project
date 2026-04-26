@@ -131,7 +131,7 @@ export default function Home() {
               fontSize: 'clamp(100px, 20vw, 130px)',
               fontWeight: 600,
               fontStyle: 'italic',
-              letterSpacing: '0.01em',
+              letterSpacing: '0.1em',
               color: '#FFFFFF',
               lineHeight: 0.90,
               marginTop: '-2px',
