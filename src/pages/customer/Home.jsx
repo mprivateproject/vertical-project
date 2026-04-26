@@ -8,13 +8,13 @@ export default function Home() {
     <div className="relative w-full overflow-hidden" style={{ minHeight: '100dvh', background: '#080604' }}>
 
       {/* ── Background photo ── */}
-      <img
+      <motion.img
         src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
-        alt="Spa"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0.52, filter: 'blur(0.4px) saturate(0.85)' }}
-      />
-
+        initial={{ scale: 1.06 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 6, ease: 'easeOut' }}
+      className="absolute inset-0 w-full h-full object-cover"
+    />
       {/* ── Cinematic gradient overlay ── */}
       <div className="absolute inset-0" style={{
         background: 'linear-gradient(180deg, rgba(5,4,3,0.72) 0%, rgba(5,4,3,0.08) 32%, rgba(5,4,3,0.12) 62%, rgba(5,4,3,0.88) 100%)',
@@ -103,9 +103,9 @@ export default function Home() {
             transition={{ delay: 0.22, duration: 0.85, ease: E }}
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              fontSize: 'clamp(22px, 8vw, 40px)',
+              fontSize: 'clamp(18px, 6vw, 32px)',
               fontWeight: 400,
-              letterSpacing: '0.55em',
+              letterSpacing: '0.65em',
               color: 'rgba(255,255,255,0.78)',
               lineHeight: 1,
               textTransform: 'uppercase',
