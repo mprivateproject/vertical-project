@@ -91,7 +91,7 @@ export default function Home() {
           <div style={{
             width: '1px',
             height: '32px',
-            marginTop: '14px',
+            marginTop: '16px',
             background: 'linear-gradient(180deg, rgba(229,211,179,0.28) 0%, transparent 100%)',
           }} />
         </motion.div>
@@ -99,7 +99,7 @@ export default function Home() {
         {/* ═══ HEADLINE ═══ */}
         <div
           className="flex flex-col items-center justify-center flex-1"
-          style={{ paddingLeft: '24px', paddingRight: '24px', marginTop: '-28px' }}
+          style={{ paddingLeft: '24px', paddingRight: '24px', marginTop: '-40px' }}
         >
           {/* SOFT */}
           <motion.p
