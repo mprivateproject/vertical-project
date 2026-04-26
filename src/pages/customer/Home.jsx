@@ -12,7 +12,7 @@ export default function Home() {
         src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
         initial={{ scale: 1.06 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 6, ease: 'easeOut' }}
+        transition={{ duration: 4, ease: 'easeOut' }}
       className="absolute inset-0 w-full h-full object-cover"
     />
       {/* ── Cinematic gradient overlay ── */}
