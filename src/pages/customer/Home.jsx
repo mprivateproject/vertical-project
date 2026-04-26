@@ -99,7 +99,7 @@ export default function Home() {
         {/* ═══ HEADLINE ═══ */}
         <div
           className="flex flex-col items-center justify-center flex-1"
-          style={{ paddingLeft: '24px', paddingRight: '24px', marginTop: '60px' }}
+          style={{ paddingLeft: '24px', paddingRight: '24px', marginTop: '10px' }}
         >
           {/* SOFT */}
           <motion.p
@@ -128,7 +128,7 @@ export default function Home() {
             transition={{ delay: 0.34, duration: 0.85, ease: E }}
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              fontSize: 'clamp(100px, 20vw, 130px)',
+              fontSize: 'clamp(100px, 20vw, 140px)',
               fontWeight: 600,
               fontStyle: 'italic',
               letterSpacing: '0.05em',
