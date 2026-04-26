@@ -12,6 +12,7 @@ import { LanguageProvider } from '@/lib/LanguageContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { LineProvider } from '@/lib/LineContext';
 import { SheetProvider } from '@/lib/SheetContext';
+import { ViewModeProvider } from '@/lib/ViewModeContext';
 
 // Customer pages
 import Home from '@/pages/customer/Home.jsx';
@@ -98,12 +99,14 @@ function App() {
         <LanguageProvider>
           <ThemeProvider>
             <LineProvider>
+              <ViewModeProvider>
               <SheetProvider>
               <Router>
                 <AuthenticatedApp />
               </Router>
               <Toaster />
               </SheetProvider>
+              </ViewModeProvider>
             </LineProvider>
           </ThemeProvider>
         </LanguageProvider>

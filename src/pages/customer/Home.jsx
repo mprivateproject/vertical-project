@@ -1,9 +1,13 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Monitor } from 'lucide-react';
+import ViewModeSelector from '@/components/shared/ViewModeSelector';
 
 const E = [0.22, 1, 0.36, 1];
 
 export default function Home() {
+  const [showSelector, setShowSelector] = useState(false);
+
   return (
     <div className="relative w-full overflow-hidden" style={{ minHeight: '100dvh', background: '#080604' }}>
 
@@ -271,6 +275,40 @@ export default function Home() {
 
         </div>
       </div>
+
+      {/* View mode toggle button */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        onClick={() => setShowSelector(true)}
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          zIndex: 50,
+          width: '36px',
+          height: '36px',
+          borderRadius: '50%',
+          background: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(203,187,160,0.2)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+      >
+        <Monitor style={{ width: '14px', height: '14px', color: 'rgba(203,187,160,0.6)' }} />
+      </motion.button>
+
+      {/* View Mode Selector Modal */}
+      <AnimatePresence>
+        {showSelector && (
+          <ViewModeSelector onClose={() => setShowSelector(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

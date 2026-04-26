@@ -2,8 +2,10 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import BottomNav from './BottomNav';
 import PageHeader from './PageHeader';
+import DesktopLayout from './DesktopLayout';
+import { useViewMode } from '@/lib/ViewModeContext';
 
-export default function CustomerLayout() {
+function MobileLayout() {
   return (
     <div className="min-h-screen bg-background">
       <main className="pb-24 w-full">
@@ -13,4 +15,12 @@ export default function CustomerLayout() {
       <BottomNav />
     </div>
   );
+}
+
+export default function CustomerLayout() {
+  const { viewMode } = useViewMode();
+
+  if (viewMode === 'desktop') return <DesktopLayout isTablet={false} />;
+  if (viewMode === 'tablet') return <DesktopLayout isTablet={true} />;
+  return <MobileLayout />;
 }
