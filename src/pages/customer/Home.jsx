@@ -88,7 +88,7 @@ export default function Home() {
               paddingLeft: '0.44em',
             }}
           >
-            {lang === 'th' ? 'เอ็ม ไพรเวท โปรเจกต์' : 'M Private Project'}
+            {lang === 'th' ? 'M Private Project' : 'M Private Project'}
           </p>
           <div
             style={{
