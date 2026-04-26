@@ -133,7 +133,7 @@ export default function Home() {
               letterSpacing: '0.02em',
               color: '#FFFFFF',
               lineHeight: 0.90,
-              marginTop: '-2px',
+              marginTop: '1px',
               textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)',
             }}
           >
