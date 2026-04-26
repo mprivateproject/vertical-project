@@ -103,7 +103,7 @@ export default function Home() {
             transition={{ delay: 0.22, duration: 0.85, ease: E }}
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              fontSize: 'clamp(16px, 5.5vw, 30px)',
+              fontSize: 'clamp(16px, 5.5vw, 28px)',
               fontWeight: 400,
               letterSpacing: '0.65em',
               color: 'rgba(255,255,255,0.78)',
@@ -126,7 +126,7 @@ export default function Home() {
               fontSize: 'clamp(60px, 19vw, 110px)',
               fontWeight: 700,
               fontStyle: 'italic',
-              letterSpacing: '-0.015em',
+              letterSpacing: '-0.035em',
               color: '#FFFFFF',
               lineHeight: 0.88,
               marginTop: '-2px',
