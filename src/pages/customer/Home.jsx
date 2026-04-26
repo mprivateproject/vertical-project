@@ -119,7 +119,7 @@ export default function Home() {
               textShadow: '0 2px 24px rgba(0,0,0,0.5)',
             }}
           >
-            {lang === 'th' ? 'ความอ่อนโยน' : 'Soft'}
+            Soft
           </motion.p>
 
           {/* Opening */}
@@ -139,7 +139,7 @@ export default function Home() {
               textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)',
             }}
           >
-            {lang === 'th' ? 'เปิดตัว' : 'Opening'}
+            Opening
           </motion.p>
 
           {/* Diamond divider */}
@@ -172,7 +172,7 @@ export default function Home() {
               marginBottom: '20px',
             }}
           >
-            {lang === 'th' ? 'รับเฉพาะผู้ได้รับเชิญ' : 'Invitations Only'}
+            Invitations Only
           </motion.p>
 
           {/* Location + LINE */}
