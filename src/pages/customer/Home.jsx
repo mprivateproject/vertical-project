@@ -8,12 +8,17 @@ export default function Home() {
     <div className="relative w-full overflow-hidden" style={{ minHeight: '100dvh', background: '#080604' }}>
 
       {/* ── Background photo ── */}
+
       <motion.img
-        src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
-        initial={{ scale: 1.06 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 3, ease: 'easeOut' }}
+      src="..."
+      initial={{ scale: 1.06 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 3, ease: 'easeOut' }}
       className="absolute inset-0 w-full h-full object-cover"
+      style={{
+      opacity: 0.52,
+      filter: 'blur(0.4px) saturate(0.85)'
+      }}
     />
       {/* ── Cinematic gradient overlay ── */}
       <div className="absolute inset-0" style={{
