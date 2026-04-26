@@ -123,7 +123,7 @@ export default function Home() {
             transition={{ delay: 0.34, duration: 0.85, ease: E }}
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              fontSize: 'clamp(60px, 19vw, 110px)',
+              fontSize: 'clamp(80px, 19vw, 110px)',
               fontWeight: 700,
               fontStyle: 'italic',
               letterSpacing: '-0.035em',
