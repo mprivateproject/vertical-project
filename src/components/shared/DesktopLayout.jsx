@@ -233,6 +233,12 @@ export default function DesktopLayout({ isTablet = false }) {
             ))}
           </button>
 
+          {/* About / Contact links */}
+          <div style={{ display: 'flex', gap: '12px', paddingLeft: isTablet ? 0 : '4px', justifyContent: isTablet ? 'center' : 'flex-start' }}>
+            <Link to="/about" style={{ fontFamily: 'Inter, sans-serif', fontSize: '10px', letterSpacing: '0.15em', textTransform: 'lowercase', color: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(60,50,40,0.3)', textDecoration: 'none' }}>about</Link>
+            <Link to="/contact" style={{ fontFamily: 'Inter, sans-serif', fontSize: '10px', letterSpacing: '0.15em', textTransform: 'lowercase', color: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(60,50,40,0.3)', textDecoration: 'none' }}>contact</Link>
+          </div>
+
           {/* View mode button */}
           <button
             onClick={() => setShowSelector(true)}

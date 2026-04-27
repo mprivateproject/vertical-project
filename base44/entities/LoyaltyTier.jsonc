@@ -40,6 +40,11 @@
       },
       "description": "List of benefits in English"
     },
+    "description": {
+      "type": "string",
+      "description": "Optional tier description (up to 1000 characters)",
+      "maxLength": 1000
+    },
     "discount_percentage": {
       "type": "number",
       "default": 0,
@@ -71,13 +76,17 @@
         "role": "admin"
       }
     },
-    "read": {},
     "update": {
       "user_condition": {
         "role": "admin"
       }
     },
     "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
       "user_condition": {
         "role": "admin"
       }

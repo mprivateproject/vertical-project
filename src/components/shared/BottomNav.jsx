@@ -75,7 +75,13 @@ export default function BottomNav() {
   if (isSheetOpen) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pb-6 px-5">
+    <div className="fixed bottom-0 left-0 right-0 z-40 flex flex-col items-center pb-6 px-5 gap-2">
+      {/* About / Contact micro-links */}
+      <div className="flex items-center gap-4">
+        <Link to="/about" style={{ fontFamily: 'Inter, sans-serif', fontSize: '9px', letterSpacing: '0.18em', textTransform: 'lowercase', color: 'rgba(255,255,255,0.2)', textDecoration: 'none' }}>about</Link>
+        <span style={{ color: 'rgba(255,255,255,0.1)', fontSize: '8px' }}>·</span>
+        <Link to="/contact" style={{ fontFamily: 'Inter, sans-serif', fontSize: '9px', letterSpacing: '0.18em', textTransform: 'lowercase', color: 'rgba(255,255,255,0.2)', textDecoration: 'none' }}>contact</Link>
+      </div>
       <nav
         className="flex items-center"
         style={{
