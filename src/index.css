@@ -45,12 +45,15 @@
 --input: 210 12% 16%;
 --ring: 270 50% 65%;
 
-/* Data Viz (less repetitive) */
---chart-1: 270 35% 52%;
---chart-2: 150 18% 38%;
---chart-3: 38 35% 62%;
---chart-4: 210 12% 30%;
---chart-5: 270 20% 38%;
+/* Data Viz — distinct colors */
+--chart-1: #01696f;
+--chart-2: #da7101;
+--chart-3: #437a22;
+--chart-4: #006494;
+--chart-5: #a12c7b;
+
+/* Teal accent — for active states, send buttons, focus rings */
+--accent-primary: 183 99% 22%;
 
 /* Sidebar */
 --sidebar-background: 210 14% 11%;
@@ -332,6 +335,14 @@ body {
 --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
 
 :focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: 2px solid hsl(var(--accent-primary));
   outline-offset: 2px;
+}
+
+/* ── Dark mode shadows ── */
+.dark {
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow:    0 2px 8px rgba(0,0,0,0.5);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.6);
 }

@@ -13,6 +13,7 @@ export default {
         foreground: "hsl(var(--foreground))",
         border: "hsl(var(--border))",
         primary: "hsl(var(--primary))",
+        "accent-primary": "hsl(var(--accent-primary))",
       },
     },
   },
