@@ -194,7 +194,7 @@ export default function Home() {
                 paddingLeft: '0.3em',
               }}
             >
-              {lang === 'th' ? 'นนทบุรี' : 'Nonthaburi'}
+              {lang === 'th' ? 'Nonthaburi' : 'Nonthaburi'}
             </p>
             <a
               href="https://lin.ee/qEHrpx0"
