@@ -131,7 +131,7 @@ export default function BookingHistory() {
             className="text-2xl font-light tracking-wide"
             style={{ color: titleColor, fontFamily: 'var(--font-heading)', letterSpacing: '0.03em' }}
           >
-            {lang === 'th' ? 'บุ้คกิ้งของคุณ' : 'Upcomings'}
+            {lang === 'th' ? 'รายการนัดหมาย' : 'Reservation'}
           </h1>
         </motion.div>
 
