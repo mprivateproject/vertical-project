@@ -43,11 +43,11 @@ export default function About() {
 
         </p>
 
-        <p>
-          M Private Project exists for guests who seek something beyond the ordinary spa
-          visit. We operate on a members-and-referrals basis, keeping our community intimate
-          and our quality consistently high. Our environment is calm, uncluttered, and
-          intentionally designed — a space where you can truly switch off.
+        <p>M Private Project exists for guests who seek something beyond the ordinary spa visit. We operate on a members-and-referrals basis, keeping clients intimate. Our environment is calm, uncluttered, and intentionally designed — a space where you can truly switch off.
+
+
+
+
         </p>
 
         <p>
