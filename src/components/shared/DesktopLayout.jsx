@@ -8,11 +8,11 @@ import { AnimatePresence } from 'framer-motion';
 import ViewModeSelector from './ViewModeSelector';
 
 const NAV_ITEMS = [
-  { key: 'home', icon: Home, path: '/', labelTh: 'หน้าแรก', labelEn: 'Home' },
-  { key: 'bookingsNav', icon: CalendarDays, path: '/bookings', labelTh: 'การจอง', labelEn: 'Bookings' },
-  { key: 'feedback', icon: NotebookPen, path: '/feedback', labelTh: 'ความคิดเห็น', labelEn: 'Feedback' },
-  { key: 'profile', icon: User, path: '/profile', labelTh: 'โปรไฟล์', labelEn: 'Profile' },
-];
+{ key: 'home', icon: Home, path: '/', labelTh: 'หน้าแรก', labelEn: 'Home' },
+{ key: 'bookingsNav', icon: CalendarDays, path: '/bookings', labelTh: 'การจอง', labelEn: 'Bookings' },
+{ key: 'feedback', icon: NotebookPen, path: '/feedback', labelTh: 'ความคิดเห็น', labelEn: 'Feedback' },
+{ key: 'profile', icon: User, path: '/profile', labelTh: 'โปรไฟล์', labelEn: 'Profile' }];
+
 
 const BG_IMAGE = 'https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png';
 
@@ -31,8 +31,8 @@ export default function DesktopLayout({ isTablet = false }) {
   return (
     <div
       className="flex min-h-screen"
-      style={{ background: isDark ? '#0a0908' : '#f5f2ee' }}
-    >
+      style={{ background: isDark ? '#0a0908' : '#f5f2ee' }}>
+      
       {/* ── SIDEBAR ── */}
       <aside
         style={{
@@ -40,20 +40,20 @@ export default function DesktopLayout({ isTablet = false }) {
           flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',
-          background: isDark
-            ? 'rgba(10,9,8,0.95)'
-            : 'rgba(245,242,238,0.95)',
-          borderRight: isDark
-            ? '1px solid rgba(203,187,160,0.08)'
-            : '1px solid rgba(203,187,160,0.25)',
+          background: isDark ?
+          'rgba(10,9,8,0.95)' :
+          'rgba(245,242,238,0.95)',
+          borderRight: isDark ?
+          '1px solid rgba(203,187,160,0.08)' :
+          '1px solid rgba(203,187,160,0.25)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
           position: 'sticky',
           top: 0,
           height: '100vh',
-          overflowY: 'auto',
-        }}
-      >
+          overflowY: 'auto'
+        }}>
+        
         {/* Logo */}
         <div
           style={{
@@ -61,11 +61,11 @@ export default function DesktopLayout({ isTablet = false }) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: isTablet ? 'center' : 'flex-start',
-            borderBottom: isDark
-              ? '1px solid rgba(203,187,160,0.07)'
-              : '1px solid rgba(203,187,160,0.2)',
-          }}
-        >
+            borderBottom: isDark ?
+            '1px solid rgba(203,187,160,0.07)' :
+            '1px solid rgba(203,187,160,0.2)'
+          }}>
+          
           <Link to="/" style={{ textDecoration: 'none' }}>
             <p style={{
               fontFamily: '"Playfair Display", "Cormorant Garamond", Georgia, serif',
@@ -74,24 +74,24 @@ export default function DesktopLayout({ isTablet = false }) {
               letterSpacing: '0.04em',
               color: '#E5D3B3',
               lineHeight: 1,
-              textShadow: '0 0 20px rgba(229,211,179,0.18)',
+              textShadow: '0 0 20px rgba(229,211,179,0.18)'
             }}>
               M
             </p>
           </Link>
-          {!isTablet && (
-            <p style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '8px',
-              fontWeight: 400,
-              letterSpacing: '0.4em',
-              color: 'rgba(203,187,160,0.4)',
-              textTransform: 'uppercase',
-              marginTop: '4px',
-            }}>
+          {!isTablet &&
+          <p style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: '8px',
+            fontWeight: 400,
+            letterSpacing: '0.4em',
+            color: 'rgba(203,187,160,0.4)',
+            textTransform: 'uppercase',
+            marginTop: '4px'
+          }}>
               Private Project
             </p>
-          )}
+          }
         </div>
 
         {/* Nav items */}
@@ -110,41 +110,41 @@ export default function DesktopLayout({ isTablet = false }) {
                   justifyContent: isTablet ? 'center' : 'flex-start',
                   borderRadius: '14px',
                   textDecoration: 'none',
-                  background: active
-                    ? (isDark ? 'rgba(203,187,160,0.1)' : 'rgba(203,187,160,0.15)')
-                    : 'transparent',
-                  border: active
-                    ? (isDark ? '1px solid rgba(203,187,160,0.2)' : '1px solid rgba(203,187,160,0.3)')
-                    : '1px solid transparent',
-                  transition: 'all 0.2s ease',
-                }}
-              >
+                  background: active ?
+                  isDark ? 'rgba(203,187,160,0.1)' : 'rgba(203,187,160,0.15)' :
+                  'transparent',
+                  border: active ?
+                  isDark ? '1px solid rgba(203,187,160,0.2)' : '1px solid rgba(203,187,160,0.3)' :
+                  '1px solid transparent',
+                  transition: 'all 0.2s ease'
+                }}>
+                
                 <Icon
                   style={{
                     width: '18px',
                     height: '18px',
-                    color: active
-                      ? '#E5D3B3'
-                      : (isDark ? 'rgba(255,255,255,0.3)' : 'rgba(60,50,40,0.4)'),
-                    flexShrink: 0,
+                    color: active ?
+                    '#E5D3B3' :
+                    isDark ? 'rgba(255,255,255,0.3)' : 'rgba(60,50,40,0.4)',
+                    flexShrink: 0
                   }}
-                  strokeWidth={active ? 2 : 1.5}
-                />
-                {!isTablet && (
-                  <span style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: '13px',
-                    fontWeight: active ? 500 : 400,
-                    letterSpacing: '0.04em',
-                    color: active
-                      ? '#E5D3B3'
-                      : (isDark ? 'rgba(255,255,255,0.45)' : 'rgba(60,50,40,0.55)'),
-                  }}>
+                  strokeWidth={active ? 2 : 1.5} />
+                
+                {!isTablet &&
+                <span style={{
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '13px',
+                  fontWeight: active ? 500 : 400,
+                  letterSpacing: '0.04em',
+                  color: active ?
+                  '#E5D3B3' :
+                  isDark ? 'rgba(255,255,255,0.45)' : 'rgba(60,50,40,0.55)'
+                }}>
                     {lang === 'th' ? labelTh : labelEn}
                   </span>
-                )}
-              </Link>
-            );
+                }
+              </Link>);
+
           })}
 
           {/* Self Booking link */}
@@ -159,33 +159,33 @@ export default function DesktopLayout({ isTablet = false }) {
               borderRadius: '14px',
               textDecoration: 'none',
               marginTop: '8px',
-              background: isActive('/quickbooking')
-                ? (isDark ? 'rgba(203,187,160,0.12)' : 'rgba(203,187,160,0.18)')
-                : (isDark ? 'rgba(203,187,160,0.05)' : 'rgba(203,187,160,0.08)'),
+              background: isActive('/quickbooking') ?
+              isDark ? 'rgba(203,187,160,0.12)' : 'rgba(203,187,160,0.18)' :
+              isDark ? 'rgba(203,187,160,0.05)' : 'rgba(203,187,160,0.08)',
               border: isDark ? '1px solid rgba(203,187,160,0.18)' : '1px solid rgba(203,187,160,0.28)',
-              transition: 'all 0.2s ease',
-            }}
-          >
+              transition: 'all 0.2s ease'
+            }} className="--color-mint-500: oklch(0.72 0.11 178);\n\n">
+            
             <span style={{
               fontFamily: '"Playfair Display", Georgia, serif',
               fontSize: isTablet ? '18px' : '16px',
               fontWeight: 600,
               color: '#E5D3B3',
-              lineHeight: 1,
+              lineHeight: 1
             }}>
               M
             </span>
-            {!isTablet && (
-              <span style={{
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '12px',
-                fontWeight: 500,
-                letterSpacing: '0.08em',
-                color: '#E5D3B3',
-              }}>
+            {!isTablet &&
+            <span style={{
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '12px',
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              color: '#E5D3B3'
+            }}>
                 Self Booking
               </span>
-            )}
+            }
           </Link>
         </nav>
 
@@ -197,11 +197,11 @@ export default function DesktopLayout({ isTablet = false }) {
             flexDirection: 'column',
             gap: '8px',
             alignItems: isTablet ? 'center' : 'flex-start',
-            borderTop: isDark
-              ? '1px solid rgba(203,187,160,0.07)'
-              : '1px solid rgba(203,187,160,0.2)',
-          }}
-        >
+            borderTop: isDark ?
+            '1px solid rgba(203,187,160,0.07)' :
+            '1px solid rgba(203,187,160,0.2)'
+          }}>
+          
           {/* Language toggle */}
           <button
             onClick={toggleLang}
@@ -212,25 +212,25 @@ export default function DesktopLayout({ isTablet = false }) {
               borderRadius: '10px',
               border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(60,50,40,0.15)',
               background: 'transparent',
-              cursor: 'pointer',
-            }}
-          >
-            {['TH', 'EN'].map((l, i) => (
-              <span
-                key={l}
-                style={{
-                  fontFamily: 'Montserrat, sans-serif',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  letterSpacing: '0.1em',
-                  color: (lang === l.toLowerCase())
-                    ? '#E5D3B3'
-                    : (isDark ? 'rgba(255,255,255,0.25)' : 'rgba(60,50,40,0.3)'),
-                }}
-              >
+              cursor: 'pointer'
+            }}>
+            
+            {['TH', 'EN'].map((l, i) =>
+            <span
+              key={l}
+              style={{
+                fontFamily: 'Montserrat, sans-serif',
+                fontSize: '10px',
+                fontWeight: 600,
+                letterSpacing: '0.1em',
+                color: lang === l.toLowerCase() ?
+                '#E5D3B3' :
+                isDark ? 'rgba(255,255,255,0.25)' : 'rgba(60,50,40,0.3)'
+              }}>
+              
                 {l}{i === 0 && <span style={{ color: 'rgba(255,255,255,0.15)', margin: '0 3px' }}>|</span>}
               </span>
-            ))}
+            )}
           </button>
 
           {/* About / Contact links */}
@@ -251,20 +251,20 @@ export default function DesktopLayout({ isTablet = false }) {
               border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(60,50,40,0.15)',
               background: 'transparent',
               cursor: 'pointer',
-              color: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(60,50,40,0.45)',
-            }}
-          >
+              color: isDark ? 'rgba(255,255,255,0.35)' : 'rgba(60,50,40,0.45)'
+            }}>
+            
             <ViewIcon style={{ width: '13px', height: '13px' }} />
-            {!isTablet && (
-              <span style={{
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '10px',
-                letterSpacing: '0.1em',
-                textTransform: 'lowercase',
-              }}>
+            {!isTablet &&
+            <span style={{
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '10px',
+              letterSpacing: '0.1em',
+              textTransform: 'lowercase'
+            }}>
                 {viewMode} view
               </span>
-            )}
+            }
           </button>
         </div>
       </aside>
@@ -276,10 +276,10 @@ export default function DesktopLayout({ isTablet = false }) {
 
       {/* View Mode Selector Modal */}
       <AnimatePresence>
-        {showSelector && (
-          <ViewModeSelector onClose={() => setShowSelector(false)} />
-        )}
+        {showSelector &&
+        <ViewModeSelector onClose={() => setShowSelector(false)} />
+        }
       </AnimatePresence>
-    </div>
-  );
+    </div>);
+
 }
