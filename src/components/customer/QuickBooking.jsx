@@ -38,8 +38,9 @@ export default function QuickBooking() {
   const { t, lang } = useLang();
   const { ready, customer } = useLine();
   const { isDark } = useTheme();
-  const isLoggedIn = ready;
-  const isInvitedMember = customer?.is_invited_member === true;
+  const SANDBOX_MODE = true; // bypass LINE login for testing
+  const isLoggedIn = SANDBOX_MODE || ready;
+  const isInvitedMember = SANDBOX_MODE || customer?.is_invited_member === true;
 
   // Adaptive colors using CSS variables
   const c = {
