@@ -193,9 +193,9 @@ export default function QuickBooking() {
 
   const changeMonth = useCallback((_dir) => {
 
+
     // Month navigation is locked — April 2025 only
-  }, []);
-  const handleDateSelect = useCallback((day) => {
+  }, []);const handleDateSelect = useCallback((day) => {
     haptic(8);
     setSelectedDate(day);
     setSelectedTime(null);
@@ -395,7 +395,7 @@ export default function QuickBooking() {
 
           {/* Month header — locked, no nav */}
           <div className="flex items-center justify-center" style={{ marginBottom: 'clamp(4px, 1.5vw, 12px)' }}>
-            <span style={{ fontSize: 'clamp(14px, 4vw, 26px)', fontWeight: 600, letterSpacing: '0.15em', color: c.monthColor }} className="@theme">
+            <span style={{ fontSize: 'clamp(14px, 4vw, 26px)', fontWeight: 600, letterSpacing: '0.15em', color: c.monthColor }} className="--color-mint-500: oklch(0.72 0.11 178);">
               {format(calendarMonth, 'MMMM yyyy', { locale }).toUpperCase()}
             </span>
           </div>
