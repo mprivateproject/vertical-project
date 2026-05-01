@@ -13,9 +13,9 @@ export default function About() {
           fontWeight: 700,
           color: '#E5D3B3',
           letterSpacing: '0.04em',
-          marginBottom: '32px',
-        }}
-      >
+          marginBottom: '32px'
+        }}>
+        
         {lang === 'th' ? 'เกี่ยวกับเรา' : 'About M Private Project'}
       </h1>
 
@@ -27,9 +27,9 @@ export default function About() {
           color: 'rgba(255,255,255,0.72)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px',
-        }}
-      >
+          gap: '20px'
+        }}>
+        
         <p>
           M Private Project is an exclusive, invitation-only wellness sanctuary located in
           Nonthaburi, Thailand. We offer a refined selection of therapeutic massage and body
@@ -37,10 +37,10 @@ export default function About() {
         </p>
 
         <p>
-          Our signature service — the House Signature massage — is a 90-minute full-body
-          experience crafted to restore balance, ease tension, and leave guests feeling
-          genuinely renewed. Every session is tailored to the individual, guided by skilled
-          therapists who bring both technical expertise and genuine warmth to their work.
+
+
+
+
         </p>
 
         <p>
@@ -70,12 +70,12 @@ export default function About() {
             fontSize: '13px',
             color: 'rgba(255,255,255,0.35)',
             letterSpacing: '0.1em',
-            textTransform: 'lowercase',
-          }}
-        >
+            textTransform: 'lowercase'
+          }}>
+          
           Nonthaburi, Thailand &nbsp;·&nbsp; Invitations Only &nbsp;·&nbsp; LINE: @mprivateproject
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
