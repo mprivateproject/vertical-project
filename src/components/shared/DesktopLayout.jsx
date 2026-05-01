@@ -140,7 +140,7 @@ export default function DesktopLayout({ isTablet = false }) {
                       ? '#E5D3B3'
                       : (isDark ? 'rgba(255,255,255,0.45)' : 'rgba(60,50,40,0.55)'),
                   }}>
-                    {lang === 'แสดงความคิดเห็น' ? labelTh : labelEn}
+                    {lang === 'th' ? labelTh : labelEn}
                   </span>
                 )}
               </Link>
