@@ -1,5 +1,11 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+// ─────────────────────────────────────────────────────────
+// SANDBOX MODE — all booking actions public (no LINE token)
+// Set to false when ready to go live
+// ─────────────────────────────────────────────────────────
+const SANDBOX_MODE = true;
+
 // Actions that do NOT require LINE identity verification
 const PUBLIC_ACTIONS = new Set([
   'getServices',
@@ -8,6 +14,8 @@ const PUBLIC_ACTIONS = new Set([
   'getBookingsByDate',
   'getBookingsByDateRange',
   'getLoyaltyTierByKey',
+  // Sandbox: booking actions open without LINE auth
+  ...(SANDBOX_MODE ? ['getBookings', 'createBooking', 'cancelBooking', 'updateBookingStatus', 'updateCustomerPreferences', 'syncCustomer'] : []),
 ]);
 
 // Actions that require admin role (Base44 authenticated user)
@@ -298,16 +306,28 @@ Deno.serve(async (req) => {
       if (!bookingData) {
         return Response.json({ error: 'bookingData required' }, { status: 400 });
       }
-      const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
-      if (!customers.length) {
-        return Response.json({ error: 'Customer not found — sync customer first' }, { status: 400 });
+
+      // Sandbox: create booking with placeholder customer
+      let bookingUserId = bookingData.user_id || 'sandbox_user';
+      let bookingCustomerId = bookingData.customer_id || 'sandbox_customer';
+      let bookingCustomerName = bookingData.customer_name || 'Guest';
+
+      if (!SANDBOX_MODE) {
+        const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
+        if (!customers.length) {
+          return Response.json({ error: 'Customer not found — sync customer first' }, { status: 400 });
+        }
+        const verifiedCustomer = customers[0];
+        bookingUserId = verifiedCustomer.id;
+        bookingCustomerId = verifiedCustomer.id;
+        bookingCustomerName = verifiedCustomer.display_name || bookingData.customer_name || '';
       }
-      const verifiedCustomer = customers[0];
+
       const booking = await base44.asServiceRole.entities.Booking.create({
         ...bookingData,
-        user_id: verifiedCustomer.id,
-        customer_id: verifiedCustomer.id,
-        customer_name: verifiedCustomer.display_name || bookingData.customer_name || '',
+        user_id: bookingUserId,
+        customer_id: bookingCustomerId,
+        customer_name: bookingCustomerName,
       });
       console.log('✅ Booking created:', booking.id, 'for customer:', verifiedCustomer.id);
 
@@ -343,6 +363,11 @@ Deno.serve(async (req) => {
 
     // ── GET BOOKINGS (own) ─────────────────────────────
     if (action === 'getBookings') {
+      if (SANDBOX_MODE) {
+        // Return all non-admin bookings in sandbox mode
+        const bookings = await base44.asServiceRole.entities.Booking.list('-booking_date', 200);
+        return Response.json({ bookings });
+      }
       const customers = await base44.asServiceRole.entities.Customer.filter({ line_user_id: lineUserId });
       const customerId = customers[0]?.id;
       const bookings = customerId

@@ -16,10 +16,16 @@ const LineContext = createContext(null)
 
 const LIFF_ID = '2009806106-7u8AyzZg'
 
+// ─────────────────────────────────────────────────────────
+// SANDBOX MODE — bypass LINE login entirely
+// Set to false when ready to go live
+// ─────────────────────────────────────────────────────────
+const SANDBOX_MODE = true
+
 export const LineProvider = ({ children }) => {
-  const [loading, setLoading] = useState(true)  // liff.init in progress
-  const [ready, setReady] = useState(false)      // liff ready + logged in
-  const [synced, setSynced] = useState(false)    // syncCustomer completed
+  const [loading, setLoading] = useState(!SANDBOX_MODE) // sandbox = instant
+  const [ready, setReady] = useState(SANDBOX_MODE)      // sandbox = always ready
+  const [synced, setSynced] = useState(SANDBOX_MODE)    // sandbox = skip sync
   const [profile, setProfile] = useState(null)
   const [customer, setCustomer] = useState(null)
   const [error, setError] = useState(null)
@@ -27,8 +33,9 @@ export const LineProvider = ({ children }) => {
   const initDoneRef = useRef(false)
   const syncDoneRef = useRef(false)
 
-  // ── Step 1: LIFF init + login ───────────────────────────
+  // ── Step 1: LIFF init + login (skipped in SANDBOX_MODE) ─
   useEffect(() => {
+    if (SANDBOX_MODE) return // skip entirely
     if (initDoneRef.current) return
     initDoneRef.current = true
 
@@ -65,8 +72,9 @@ export const LineProvider = ({ children }) => {
     })()
   }, [])
 
-  // ── Step 2: syncCustomer — runs ONCE after ready ────────
+  // ── Step 2: syncCustomer — skipped in SANDBOX_MODE ──────
   useEffect(() => {
+    if (SANDBOX_MODE) return // skip sync in sandbox
     if (!ready) return
     if (syncDoneRef.current) return
     syncDoneRef.current = true
@@ -82,7 +90,6 @@ export const LineProvider = ({ children }) => {
       setSynced(true)
     }).catch(err => {
       console.error('❌ SYNC: syncCustomer failed', err)
-      // Still mark synced so app doesn't hang — booking will fail gracefully
       setSynced(true)
     })
   }, [ready])
