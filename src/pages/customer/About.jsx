@@ -50,11 +50,11 @@ export default function About() {
 
         </p>
 
-        <p>
-          Built and operated by a small team passionate about hospitality and well-being,
-          M Private Project combines modern booking technology with a deeply personal
-          approach to service. We believe the best experiences happen when attention to
-          detail meets genuine human connection.
+        <p>M Private Project combines modern booking technology with a deeply personal approach to service. We believe the best experiences happen when attention to detail meets genuine human connection.
+
+
+
+
         </p>
 
         <p>
