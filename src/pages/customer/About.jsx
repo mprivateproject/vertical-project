@@ -73,7 +73,7 @@ export default function About() {
             textTransform: 'lowercase',
           }}
         >
-          Nonthaburi, Thailand &nbsp ;·&nbsp; LINE: @mprivateproject
+          Nonthaburi, Thailand &nbsp;·&nbsp; LINE: @mprivateproject
         </div>
       </div>
     </div>
