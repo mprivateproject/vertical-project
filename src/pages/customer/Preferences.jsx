@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
+import { useViewMode } from '@/lib/ViewModeContext';
 import { liffSyncClient } from '@/lib/liffSyncClient';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Check } from 'lucide-react';
+import { ChevronLeft, Check, Smartphone, Monitor, Tablet } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const E = [0.22, 1, 0.36, 1];
@@ -52,10 +53,17 @@ const OPTIONS = [
   },
 ];
 
+const VIEW_OPTIONS = [
+  { id: 'mobile', icon: Smartphone, th: 'มือถือ', en: 'Mobile' },
+  { id: 'tablet', icon: Tablet,     th: 'แท็บเล็ต', en: 'Tablet' },
+  { id: 'desktop', icon: Monitor,   th: 'คอมพิวเตอร์', en: 'Desktop' },
+];
+
 export default function Preferences() {
   const { lang } = useLang();
   const { customer } = useLine();
   const { isDark } = useTheme();
+  const { viewMode, setMode } = useViewMode();
   const [selected, setSelected] = useState([]);
   const [freeText, setFreeText] = useState('');
   const [saving, setSaving] = useState(false);
@@ -200,6 +208,73 @@ export default function Preferences() {
             );
           })}
         </div>
+
+        {/* Divider */}
+        <div style={{ height: '1px', background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(180,160,120,0.2)' }} />
+
+        {/* View Mode Selector */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.4, ease: E }}
+        >
+          <p className="text-[12px] font-semibold tracking-[0.3em] uppercase mb-3"
+            style={{ color: isDark ? 'rgba(161,165,173,0.4)' : 'rgba(140,120,90,0.55)', fontFamily: 'Montserrat, sans-serif' }}>
+            {lang === 'th' ? 'การแสดงผล' : 'Display Mode'}
+          </p>
+          <p className="text-[13px] mb-4"
+            style={{ color: isDark ? 'rgba(161,165,173,0.35)' : 'rgba(120,105,80,0.5)' }}>
+            {lang === 'th' ? 'เลือกรูปแบบการแสดงผลที่เหมาะกับอุปกรณ์ของคุณ' : 'Choose the layout that best fits your device'}
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {VIEW_OPTIONS.map(({ id, icon: Icon, th, en }) => {
+              const isActive = viewMode === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => setMode(id)}
+                  className="flex flex-col items-center gap-2 py-4 rounded-2xl transition-all"
+                  style={{
+                    background: isActive
+                      ? (isDark ? 'rgba(255,255,255,0.07)' : 'rgba(180,150,100,0.12)')
+                      : (isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.6)'),
+                    border: isActive
+                      ? (isDark ? '1px solid rgba(255,255,255,0.18)' : '1px solid rgba(180,150,100,0.4)')
+                      : (isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(200,185,160,0.4)'),
+                  }}
+                >
+                  <Icon
+                    style={{
+                      width: '20px', height: '20px',
+                      color: isActive
+                        ? (isDark ? 'rgba(255,255,255,0.9)' : 'rgba(120,90,40,0.9)')
+                        : (isDark ? 'rgba(161,165,173,0.35)' : 'rgba(140,120,90,0.4)'),
+                    }}
+                    strokeWidth={isActive ? 2 : 1.5}
+                  />
+                  <span
+                    className="text-[12px] tracking-[0.08em]"
+                    style={{
+                      color: isActive
+                        ? (isDark ? 'rgba(255,255,255,0.85)' : 'rgba(80,60,30,0.85)')
+                        : (isDark ? 'rgba(161,165,173,0.4)' : 'rgba(140,120,90,0.5)'),
+                      fontFamily: 'Montserrat, sans-serif',
+                      fontWeight: isActive ? 600 : 400,
+                    }}
+                  >
+                    {lang === 'th' ? th : en}
+                  </span>
+                  {isActive && (
+                    <div
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ background: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(160,130,80,0.7)' }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
 
         {/* Divider */}
         <div style={{ height: '1px', background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(180,160,120,0.2)' }} />
