@@ -11,8 +11,8 @@ export default function PageHeader() {
   const { lang, toggleLang } = useLang();
   const { isDark, toggleTheme } = useTheme();
 
-  // Only show on non-home pages
-  if (pathname === '/') return null;
+  // Full-bleed hero pages handle their own chrome
+  if (pathname === '/' || pathname === '/countdown') return null;
 
   return (
     <div
