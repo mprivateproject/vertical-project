@@ -1,4 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+
+function normalizeStartTime(t: string): string {
+  if (!t) return '';
+  const parts = String(t).split(':');
+  const h = Number(parts[0]);
+  const m = Number(parts[1] ?? 0);
+  if (Number.isNaN(h) || Number.isNaN(m)) return String(t).slice(0, 5);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+// Actions that do NOT require LINE identity verification (catalog / slot visibility only)
 const PUBLIC_ACTIONS = new Set([
   'getServices',
   'getTherapists',
@@ -6,6 +17,7 @@ const PUBLIC_ACTIONS = new Set([
   'getBookingsByDate',
   'getBookingsByDateRange',
   'getLoyaltyTierByKey',
+  'getAvailabilitySlots',
 ]);
 
 // Actions that require admin role (Base44 authenticated user)
@@ -135,6 +147,25 @@ Deno.serve(async (req) => {
         const { tier_key } = body;
         const tiers = await base44.asServiceRole.entities.LoyaltyTier.filter({ tier_key });
         return Response.json({ tier: tiers[0] || null });
+      }
+
+      if (action === 'getAvailabilitySlots') {
+        const { slotDate } = body;
+        if (!slotDate) {
+          return Response.json({ error: 'slotDate required' }, { status: 400 });
+        }
+        const rows = await base44.asServiceRole.entities.AvailabilitySlot.filter({ slot_date: slotDate });
+        const active = rows.filter((r: { is_active?: boolean }) => r.is_active !== false);
+        const byTime = new Map<string, number>();
+        for (const r of active) {
+          const tt = normalizeStartTime(r.start_time);
+          const mc = Number(r.max_concurrent) > 0 ? Number(r.max_concurrent) : 1;
+          byTime.set(tt, Math.max(byTime.get(tt) || 0, mc));
+        }
+        const slots = [...byTime.entries()]
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([start_time, max_concurrent]) => ({ start_time, max_concurrent }));
+        return Response.json({ slots });
       }
 
     }
@@ -305,6 +336,30 @@ Deno.serve(async (req) => {
       const bookingUserId = verifiedCustomer.id;
       const bookingCustomerId = verifiedCustomer.id;
       const bookingCustomerName = verifiedCustomer.display_name || bookingData.customer_name || '';
+
+      const bdDate = bookingData.booking_date;
+      const bdStart = normalizeStartTime(bookingData.start_time);
+      const slotRows = await base44.asServiceRole.entities.AvailabilitySlot.filter({ slot_date: bdDate });
+      const matching = slotRows.filter(
+        (r: { is_active?: boolean; start_time: string }) =>
+          r.is_active !== false && normalizeStartTime(r.start_time) === bdStart,
+      );
+      if (!matching.length) {
+        return Response.json({ error: 'No availability for this date and time' }, { status: 400 });
+      }
+      const maxConcurrent = Math.max(
+        ...matching.map((r: { max_concurrent?: number }) =>
+          Number(r.max_concurrent) > 0 ? Number(r.max_concurrent) : 1,
+        ),
+      );
+      const dayBookings = await base44.asServiceRole.entities.Booking.filter({ booking_date: bdDate });
+      const occupied = dayBookings.filter(
+        (b: { status?: string; start_time: string }) =>
+          b.status !== 'cancelled' && normalizeStartTime(b.start_time) === bdStart,
+      ).length;
+      if (occupied >= maxConcurrent) {
+        return Response.json({ error: 'This time slot is fully booked' }, { status: 400 });
+      }
 
       const booking = await base44.asServiceRole.entities.Booking.create({
         ...bookingData,

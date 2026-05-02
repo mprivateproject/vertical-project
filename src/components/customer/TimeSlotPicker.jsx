@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useLang } from '@/lib/LanguageContext';
-import { format, addDays, isSameDay, isToday, isBefore, startOfDay } from 'date-fns';
+import { format, addDays, isSameDay, isToday } from 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { motion } from 'framer-motion';
+import { normalizeStartTime } from '@/lib/time-slot-utils';
 
 const generateTimeSlots = (start = '09:00', end = '20:00', interval = 30) => {
   const slots = [];
@@ -17,20 +18,31 @@ const generateTimeSlots = (start = '09:00', end = '20:00', interval = 30) => {
   return slots;
 };
 
-export default function TimeSlotPicker({ 
-  selectedDate, onDateSelect, 
-  selectedTime, onTimeSelect,
+export default function TimeSlotPicker({
+  selectedDate,
+  onDateSelect,
+  selectedTime,
+  onTimeSelect,
   bookedSlots = [],
-  duration = 60 
+  /** Admin-defined spa-wide slots (normalized HH:mm); omit for legacy grid */
+  allowedSlots,
+  slotConcurrency = {},
+  bookedCounts = {},
+  duration = 60,
 }) {
   const { t, lang } = useLang();
   const locale = lang === 'th' ? th : enUS;
-  
+
   const dates = useMemo(() => {
     return Array.from({ length: 14 }, (_, i) => addDays(new Date(), i));
   }, []);
 
-  const timeSlots = useMemo(() => generateTimeSlots(), []);
+  const timeSlots = useMemo(() => {
+    if (allowedSlots !== undefined) {
+      return [...allowedSlots].sort((a, b) => a.localeCompare(b));
+    }
+    return generateTimeSlots();
+  }, [allowedSlots]);
 
   const now = new Date();
 
@@ -81,36 +93,50 @@ export default function TimeSlotPicker({
         <div>
           <h3 className="font-semibold text-foreground mb-3">{t('availableSlots')}</h3>
           <div className="grid grid-cols-4 gap-2">
-            {timeSlots.map((slot, i) => {
-              const isBooked = bookedSlots.includes(slot);
-              const isSelected = selectedTime === slot;
-              
-              // Disable past time slots for today
-              const isPast = isToday(selectedDate) && (() => {
-                const [slotH, slotM] = slot.split(':').map(Number);
-                return slotH < now.getHours() || (slotH === now.getHours() && slotM <= now.getMinutes());
-              })();
+            {timeSlots.length === 0 ? (
+              <p className="col-span-4 text-center py-6 text-sm text-muted-foreground">{t('noSlots')}</p>
+            ) : (
+              timeSlots.map((slot, i) => {
+                const slotKey = normalizeStartTime(slot);
+                const maxC =
+                  allowedSlots !== undefined
+                    ? Number(slotConcurrency[slotKey]) > 0
+                      ? Number(slotConcurrency[slotKey])
+                      : 1
+                    : 1;
+                const used =
+                  allowedSlots !== undefined ? bookedCounts[slotKey] || 0 : bookedSlots.includes(slotKey) ? 1 : 0;
+                const atCapacity = used >= maxC;
+                const isSelected = normalizeStartTime(selectedTime) === slotKey;
 
-              return (
-                <motion.button
-                  key={slot}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: i * 0.02 }}
-                  disabled={isBooked || isPast}
-                  onClick={() => onTimeSelect(slot)}
-                  className={`py-2.5 rounded-lg text-sm font-medium transition-all active:scale-95 ${
-                    isSelected
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : isBooked || isPast
-                        ? 'bg-muted text-muted-foreground/40 cursor-not-allowed'
-                        : 'bg-card border border-border text-foreground hover:border-primary/30'
-                  }`}
-                >
-                  {slot}
-                </motion.button>
-              );
-            })}
+                const isPast =
+                  isToday(selectedDate) &&
+                  (() => {
+                    const [slotH, slotM] = slotKey.split(':').map(Number);
+                    return slotH < now.getHours() || (slotH === now.getHours() && slotM <= now.getMinutes());
+                  })();
+
+                return (
+                  <motion.button
+                    key={slotKey}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: i * 0.02 }}
+                    disabled={atCapacity || isPast}
+                    onClick={() => onTimeSelect(slotKey)}
+                    className={`py-2.5 rounded-lg text-sm font-medium transition-all active:scale-95 ${
+                      isSelected
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : atCapacity || isPast
+                          ? 'bg-muted text-muted-foreground/40 cursor-not-allowed'
+                          : 'bg-card border border-border text-foreground hover:border-primary/30'
+                    }`}
+                  >
+                    {slotKey}
+                  </motion.button>
+                );
+              })
+            )}
           </div>
         </div>
       )}

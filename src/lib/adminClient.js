@@ -63,4 +63,21 @@ export const adminClient = {
 
   deleteLoyaltyTier: (tierId) =>
     base44.entities.LoyaltyTier.delete(tierId),
+
+  getAvailabilitySlotsByDate: (slotDate) =>
+    base44.entities.AvailabilitySlot.filter({ slot_date: slotDate }),
+
+  replaceAvailabilityForDate: async (slotDate, startTimes) => {
+    const existing = await base44.entities.AvailabilitySlot.filter({ slot_date: slotDate });
+    await Promise.all(existing.map((row) => base44.entities.AvailabilitySlot.delete(row.id)));
+    const sorted = [...new Set(startTimes)].sort((a, b) => a.localeCompare(b));
+    for (const start_time of sorted) {
+      await base44.entities.AvailabilitySlot.create({
+        slot_date: slotDate,
+        start_time,
+        max_concurrent: 1,
+        is_active: true,
+      });
+    }
+  },
 };

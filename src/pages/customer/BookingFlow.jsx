@@ -14,12 +14,13 @@ import TimeSlotPicker from '@/components/customer/TimeSlotPicker';
 import PaymentMethodPicker from '@/components/customer/PaymentMethodPicker';
 import PromptPayQR from '@/components/customer/PromptPayQR';
 import LineLoginButton from '@/components/customer/LineLoginButton';
+import { normalizeStartTime } from '@/lib/time-slot-utils';
 
 const STEPS = ['therapist', 'datetime', 'payment', 'confirm'];
 
 export default function BookingFlow() {
   const { t, lang } = useLang();
-  const { idToken, ready } = useLine();
+  const { ready } = useLine();
   const isLoggedIn = ready;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -63,12 +64,44 @@ export default function BookingFlow() {
     enabled: !!selectedDate && !!ready,
   });
 
-  const bookedSlots = useMemo(() => {
-    return existingBookings
-      .filter(b => b.status !== 'cancelled')
-      .filter(b => !selectedTherapist || b.therapist_id === selectedTherapist?.id)
-      .map(b => b.start_time);
-  }, [existingBookings, selectedTherapist]);
+  const { data: availabilitySlots = [] } = useQuery({
+    queryKey: ['availability-slots', selectedDate && format(selectedDate, 'yyyy-MM-dd')],
+    queryFn: async () => {
+      const result = await liffSyncClient.call({
+        url: '/functions/liffSync',
+        method: 'POST',
+        data: { action: 'getAvailabilitySlots', slotDate: format(selectedDate, 'yyyy-MM-dd') },
+      });
+      return result.slots || [];
+    },
+    enabled: !!selectedDate && !!ready,
+  });
+
+  const allowedSlots = useMemo(
+    () => availabilitySlots.map((s) => normalizeStartTime(s.start_time)),
+    [availabilitySlots],
+  );
+
+  const slotConcurrency = useMemo(() => {
+    const m = {};
+    for (const s of availabilitySlots) {
+      const k = normalizeStartTime(s.start_time);
+      const mc = Number(s.max_concurrent) > 0 ? Number(s.max_concurrent) : 1;
+      m[k] = Math.max(m[k] || 0, mc);
+    }
+    return m;
+  }, [availabilitySlots]);
+
+  const bookedCounts = useMemo(() => {
+    const m = {};
+    existingBookings
+      .filter((b) => b.status !== 'cancelled')
+      .forEach((b) => {
+        const k = normalizeStartTime(b.start_time);
+        m[k] = (m[k] || 0) + 1;
+      });
+    return m;
+  }, [existingBookings]);
 
   const createBookingMutation = useMutation({
     mutationFn: async () => {
@@ -101,6 +134,8 @@ export default function BookingFlow() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['availability-slots'] });
+      queryClient.invalidateQueries({ queryKey: ['bookings-for-date'] });
       setBookingComplete(true);
     },
   });
@@ -247,7 +282,9 @@ export default function BookingFlow() {
               onDateSelect={setSelectedDate}
               selectedTime={selectedTime}
               onTimeSelect={setSelectedTime}
-              bookedSlots={bookedSlots}
+              allowedSlots={allowedSlots}
+              slotConcurrency={slotConcurrency}
+              bookedCounts={bookedCounts}
               duration={service?.duration_minutes}
             />
           )}

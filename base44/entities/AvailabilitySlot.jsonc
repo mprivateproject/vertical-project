@@ -1,0 +1,29 @@
+{
+  "name": "AvailabilitySlot",
+  "type": "object",
+  "properties": {
+    "slot_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Calendar day for this slot (yyyy-MM-dd)"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Slot start time e.g. 14:00"
+    },
+    "max_concurrent": {
+      "type": "number",
+      "default": 1,
+      "description": "Max simultaneous bookings at this spa-wide slot"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "When false, slot is hidden from customers"
+    }
+  },
+  "required": [
+    "slot_date",
+    "start_time"
+  ]
+}

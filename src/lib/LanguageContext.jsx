@@ -106,6 +106,13 @@ const translations = {
     invitedMembers: "Invited Members",
     feedback: "ข้อเสนอแนะ",
     costDashboard: "Cost Dashboard",
+    availability: "ช่วงเวลาว่าง",
+    availabilityHint: "กำหนดว่าวันใดเปิดให้จองเริ่มต้นกี่โมง (ใช้กับทั้งร้าน)",
+    availabilitySaved: "บันทึกช่วงเวลาว่างแล้ว",
+    availabilityToggleHint: "เปิด/ปิดช่วงเวลาแล้วกดบันทึก",
+    availabilitySelectAll: "เลือกทั้งหมด",
+    availabilityClearAll: "ล้างทั้งหมด",
+    availabilityLoading: "กำลังโหลด…",
     countdownComplete: "ถึงเวลาแล้ว — ยินดีต้อนรับ",
   },
   en: {
@@ -212,6 +219,13 @@ const translations = {
     invitedMembers: "Invited Members",
     feedback: "Feedback",
     costDashboard: "Cost Dashboard",
+    availability: "Availability",
+    availabilityHint: "Choose which start times customers can book for each day (spa-wide).",
+    availabilitySaved: "Availability saved.",
+    availabilityToggleHint: "Toggle slots on or off, then save.",
+    availabilitySelectAll: "Select all",
+    availabilityClearAll: "Clear all",
+    availabilityLoading: "Loading…",
     countdownComplete: "The moment has arrived — welcome",
   }
 };
