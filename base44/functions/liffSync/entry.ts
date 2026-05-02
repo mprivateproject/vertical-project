@@ -1,6 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-
-// Actions that do NOT require LINE identity verification (catalog / slot visibility only)
 const PUBLIC_ACTIONS = new Set([
   'getServices',
   'getTherapists',

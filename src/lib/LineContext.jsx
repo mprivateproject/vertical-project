@@ -15,7 +15,6 @@ import { liffSyncClient } from '@/lib/liffSyncClient'
 const LineContext = createContext(null)
 
 const LIFF_ID = '2009806106-7u8AyzZg'
-
 export const LineProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [ready, setReady] = useState(false)
