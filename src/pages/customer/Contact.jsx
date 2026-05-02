@@ -128,7 +128,7 @@ export default function Contact() {
           textAlign: 'center',
         }}
       >
-        {lang === 'th' ? 'รับสมาชิกเฉพาะผู้ได้รับเชิญเท่านั้น' : 'membership by invitation only'}
+        {lang === 'th' ? '' : ''}
       </p>
     </div>
   );
