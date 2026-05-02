@@ -4,7 +4,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 // SANDBOX MODE — all booking actions public (no LINE token)
 // Set to false when ready to go live
 // ─────────────────────────────────────────────────────────
-const SANDBOX_MODE = true;
+const SANDBOX_MODE = false;
 
 // Actions that do NOT require LINE identity verification
 const PUBLIC_ACTIONS = new Set([
