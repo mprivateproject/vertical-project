@@ -106,6 +106,7 @@ const translations = {
     invitedMembers: "Invited Members",
     feedback: "ข้อเสนอแนะ",
     costDashboard: "Cost Dashboard",
+    countdownComplete: "ถึงเวลาแล้ว — ยินดีต้อนรับ",
   },
   en: {
     brand: "Vertical Project",
@@ -211,6 +212,7 @@ const translations = {
     invitedMembers: "Invited Members",
     feedback: "Feedback",
     costDashboard: "Cost Dashboard",
+    countdownComplete: "The moment has arrived — welcome",
   }
 };
 
