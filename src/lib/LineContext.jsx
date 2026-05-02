@@ -20,7 +20,7 @@ const LIFF_ID = '2009806106-7u8AyzZg'
 // SANDBOX MODE — bypass LINE login entirely
 // Set to false when ready to go live
 // ─────────────────────────────────────────────────────────
-const SANDBOX_MODE = true
+const SANDBOX_MODE = false
 
 export const LineProvider = ({ children }) => {
   const [loading, setLoading] = useState(!SANDBOX_MODE) // sandbox = instant
