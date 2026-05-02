@@ -1,0 +1,40 @@
+{
+  "name": "CalendarBlock",
+  "type": "object",
+  "properties": {
+    "block_date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date to block (no bookings allowed)"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Optional reason for blocking"
+    },
+    "blocked_by": {
+      "type": "string",
+      "description": "Admin email who created the block"
+    }
+  },
+  "required": [
+    "block_date"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

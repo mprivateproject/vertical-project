@@ -7,7 +7,7 @@ import AdminAuthGuard from './AdminAuthGuard';
 import { 
   LayoutDashboard, CalendarDays, Scissors, Users, Star,
   BarChart3, Tag, Settings, Menu, X, GanttChartSquare, DollarSign, MessageSquare,
-  CalendarClock,
+  CalendarClock, Lock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -16,6 +16,8 @@ const adminNav = [
   { key: 'schedule', icon: CalendarDays, path: '/admin/calendar' },
   { key: 'scheduleBoard', icon: GanttChartSquare, path: '/admin/schedule' },
   { key: 'availability', icon: CalendarClock, path: '/admin/availability' },
+  { key: 'therapistSchedule', icon: Users, path: '/admin/therapist-schedule' },
+  { key: 'calendarBlocks', icon: Lock, path: '/admin/calendar-blocks' },
   { key: 'services', icon: Scissors, path: '/admin/services' },
   { key: 'customers', icon: Users, path: '/admin/customers' },
   { key: 'invitedMembers', icon: Star, path: '/admin/invited-members' },

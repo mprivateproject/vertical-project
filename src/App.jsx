@@ -37,6 +37,8 @@ import ScheduleBoard from '@/pages/admin/ScheduleBoard';
 import AdminCostDashboard from '@/pages/admin/AdminCostDashboard';
 import AdminFeedback from '@/pages/admin/AdminFeedback';
 import AdminAvailability from '@/pages/admin/AdminAvailability';
+import AdminTherapistSchedule from '@/pages/admin/AdminTherapistSchedule';
+import AdminCalendarBlocks from '@/pages/admin/AdminCalendarBlocks';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
 import Preferences from '@/pages/customer/Preferences';
@@ -89,6 +91,8 @@ const AuthenticatedApp = () => {
         <Route path="/admin/availability" element={<AdminAvailability />} />
         <Route path="/admin/cost-dashboard" element={<AdminCostDashboard />} />
         <Route path="/admin/feedback" element={<AdminFeedback />} />
+        <Route path="/admin/therapist-schedule" element={<AdminTherapistSchedule />} />
+        <Route path="/admin/calendar-blocks" element={<AdminCalendarBlocks />} />
       </Route>
 
       <Route path="*" element={<PageNotFound />} />

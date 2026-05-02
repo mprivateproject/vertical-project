@@ -63,15 +63,15 @@ export default function QuickBookingPage() {
                 className="font-semibold mb-2"
                 style={{ fontSize: '17px', letterSpacing: '0.04em', color: 'rgba(255,255,255,0.92)', fontFamily: 'var(--font-body)' }}
               >
-                {lang === 'th' ? 'ระบบทดลองใช้งาน' : 'Testing Mode'}
+                {lang === 'th' ? 'ตารางเดือน พ.ค.' : 'May bookings'}
               </p>
 
               <p
                 style={{ fontSize: '14px', lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-body)', letterSpacing: '0.03em' }}
               >
                 {lang === 'th'
-                  ? 'ระบบจองด้วยตัวเอง อยู่ในช่วงทดลอง\nหากเปิดให้บริการจริงจะมีการอัปเดตให้ทราบอีกครั้ง'
-                  : 'This is for testing.\nWe will notify you upon our official launch.'}
+                  ? 'เปิดจอง วันอาทิตย์ที่ 10 เวลา 18.00 น. สอบถามเพิ่มเติม ไลน์: @mprivateproject'
+                  : 'Booking opens at May 10, 6.00 pm. For more info please contract line: @mprivateproject'}
               </p>
 
               <button

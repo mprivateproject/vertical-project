@@ -5,25 +5,43 @@
     "slot_date": {
       "type": "string",
       "format": "date",
-      "description": "Calendar day for this slot (yyyy-MM-dd)"
+      "description": "The date of this slot (yyyy-MM-dd)"
     },
     "start_time": {
       "type": "string",
-      "description": "Slot start time e.g. 14:00"
+      "description": "Start time e.g. 10:00"
     },
     "max_concurrent": {
       "type": "number",
       "default": 1,
-      "description": "Max simultaneous bookings at this spa-wide slot"
+      "description": "Max simultaneous bookings allowed at this slot"
     },
     "is_active": {
       "type": "boolean",
       "default": true,
-      "description": "When false, slot is hidden from customers"
+      "description": "Whether this slot is open for booking"
     }
   },
   "required": [
     "slot_date",
     "start_time"
-  ]
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }

@@ -18,6 +18,7 @@ const PUBLIC_ACTIONS = new Set([
   'getBookingsByDateRange',
   'getLoyaltyTierByKey',
   'getAvailabilitySlots',
+  'getCalendarBlocks',
 ]);
 
 // Actions that require admin role (Base44 authenticated user)
@@ -147,6 +148,15 @@ Deno.serve(async (req) => {
         const { tier_key } = body;
         const tiers = await base44.asServiceRole.entities.LoyaltyTier.filter({ tier_key });
         return Response.json({ tier: tiers[0] || null });
+      }
+
+      if (action === 'getCalendarBlocks') {
+        const { startDate, endDate } = body;
+        const allBlocks = await base44.asServiceRole.entities.CalendarBlock.list('block_date', 200);
+        const blocks = startDate && endDate
+          ? allBlocks.filter(b => b.block_date >= startDate && b.block_date <= endDate)
+          : allBlocks;
+        return Response.json({ blocks });
       }
 
       if (action === 'getAvailabilitySlots') {
