@@ -14,23 +14,13 @@
 const API_BASE = '/api/apps/69df58a04843389be3df3f2e'
 const TIMEOUT = 15000
 
-// ─────────────────────────────────────────────────────────
-// SANDBOX MODE — bypass LINE auth for all booking actions
-// Set to false when ready to go live
-// ─────────────────────────────────────────────────────────
-const SANDBOX_MODE = true
-
-// Actions that do NOT require LINE identity verification
+// Actions that do NOT require LINE identity verification (calendar browse / catalog only)
 const PUBLIC_ACTIONS = new Set([
   'getServices',
   'getTherapists',
   'getServiceById',
   'getBookingsByDate',
   'getBookingsByDateRange',
-  'getBookings',
-  'createBooking',
-  'cancelBooking',
-  'updateBookingStatus',
   'adminGetBookingsByDate',
   'adminUpdateBooking',
   'adminGetAllBookings',
@@ -67,7 +57,7 @@ function forceRelogin(reason) {
 // ─────────────────────────────────────────────────────────
 async function request(config) {
   const action = config.data?.action
-  const isPublic = SANDBOX_MODE || PUBLIC_ACTIONS.has(action)
+  const isPublic = PUBLIC_ACTIONS.has(action)
 
   // Build headers
   const headers = { 'Content-Type': 'application/json' }
