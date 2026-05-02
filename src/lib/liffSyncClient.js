@@ -21,6 +21,7 @@ const PUBLIC_ACTIONS = new Set([
   'getServiceById',
   'getBookingsByDate',
   'getBookingsByDateRange',
+  'getAvailabilitySlots',
   'adminGetBookingsByDate',
   'adminUpdateBooking',
   'adminGetAllBookings',

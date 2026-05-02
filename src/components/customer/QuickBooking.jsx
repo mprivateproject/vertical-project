@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLang } from '@/lib/LanguageContext';
 import { useLine } from '@/lib/LineContext';
 import { useTheme } from '@/lib/ThemeContext';
@@ -12,13 +12,32 @@ import { th, enUS } from 'date-fns/locale';
 import { Check, ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { normalizeStartTime } from '@/lib/time-slot-utils';
 
 const SERVICES = [
 { id: 'house_signature_90', name_th: 'House Signature', name_en: 'House Signature', duration_minutes: 90, price: 2950 }];
 
 const DEFAULT_THERAPIST = 'M';
-const TIME_SLOTS = ['12:00', '15:00', '18:00', '21:00'];
 const E = [0.22, 1, 0.36, 1];
+
+function dayRemainingCapacity(dayDate, slots, countsMap, nowRef) {
+  if (!slots?.length) return 0;
+  const dateStr = format(dayDate, 'yyyy-MM-dd');
+  const counts = countsMap[dateStr] || {};
+  let sum = 0;
+  for (const s of slots) {
+    const st = normalizeStartTime(s.start_time);
+    const maxC = Number(s.max_concurrent) > 0 ? Number(s.max_concurrent) : 1;
+    const used = counts[st] || 0;
+    if (used >= maxC) continue;
+    if (isToday(dayDate)) {
+      const [h, m] = st.split(':').map(Number);
+      if (h * 60 + m <= nowRef.getHours() * 60 + nowRef.getMinutes()) continue;
+    }
+    sum += maxC - used;
+  }
+  return sum;
+}
 
 const glass = {
   background: 'rgba(255,255,255,0.025)',
@@ -127,35 +146,90 @@ export default function QuickBooking() {
     enabled: !!ready
   });
 
-  // Build booked slots per date and fully-booked set
-  const { bookedByDate, fullyBookedDates } = useMemo(() => {
-    const byDate = {};
-    monthBookings.filter((b) => b.status !== 'cancelled').forEach((b) => {
-      if (!byDate[b.booking_date]) byDate[b.booking_date] = new Set();
-      byDate[b.booking_date].add(b.start_time);
-    });
-    const fullyBooked = new Set(
-      Object.entries(byDate).
-      filter(([, slots]) => TIME_SLOTS.every((s) => slots.has(s))).
-      map(([date]) => date)
-    );
-    return { bookedByDate: byDate, fullyBookedDates: fullyBooked };
-  }, [monthBookings]);
-
-  const bookedSlots = useMemo(() =>
-  existingBookings.filter((b) => b.status !== 'cancelled').map((b) => b.start_time),
-  [existingBookings]
+  const monthDays = useMemo(
+    () => eachDayOfInterval({ start: startOfMonth(calendarMonth), end: endOfMonth(calendarMonth) }),
+    [calendarMonth],
   );
 
-  const now = new Date();
-  const availableSlots = TIME_SLOTS.filter((slot) => {
-    if (bookedSlots.includes(slot)) return false;
-    if (selectedDate && isToday(selectedDate)) {
-      const [h, m] = slot.split(':').map(Number);
-      if (h * 60 + m <= now.getHours() * 60 + now.getMinutes()) return false;
-    }
-    return true;
+  const availabilityQueries = useQueries({
+    queries: monthDays.map((day) => {
+      const ds = format(day, 'yyyy-MM-dd');
+      return {
+        queryKey: ['availability-slots', ds],
+        queryFn: async () => {
+          const r = await liffSyncClient.call({
+            url: '/functions/liffSync',
+            method: 'POST',
+            data: { action: 'getAvailabilitySlots', slotDate: ds },
+          });
+          return Array.isArray(r.slots) ? r.slots : [];
+        },
+        enabled: !!ready,
+        staleTime: 60_000,
+      };
+    }),
   });
+
+  const bookingCountsByDate = useMemo(() => {
+    const m = {};
+    monthBookings.filter((b) => b.status !== 'cancelled').forEach((b) => {
+      if (!m[b.booking_date]) m[b.booking_date] = {};
+      const k = normalizeStartTime(b.start_time);
+      m[b.booking_date][k] = (m[b.booking_date][k] || 0) + 1;
+    });
+    return m;
+  }, [monthBookings]);
+
+  const availabilitySerialized = JSON.stringify(
+    monthDays.map((_, i) => availabilityQueries[i]?.data ?? null),
+  );
+
+  const { fullyBookedDates, remainingByDate } = useMemo(() => {
+    const fullyBooked = new Set();
+    const remain = {};
+    const nowRef = new Date();
+    monthDays.forEach((day, i) => {
+      const ds = format(day, 'yyyy-MM-dd');
+      if (isBefore(day, startOfDay(today))) return;
+      const slots = availabilityQueries[i]?.data;
+      const cap = dayRemainingCapacity(day, slots, bookingCountsByDate, nowRef);
+      remain[ds] = cap;
+      if (cap <= 0) fullyBooked.add(ds);
+    });
+    return { fullyBookedDates: fullyBooked, remainingByDate: remain };
+  }, [monthDays, bookingCountsByDate, today, availabilitySerialized]);
+
+  const selectedDayIdx =
+    selectedDate ? monthDays.findIndex((d) => isSameDay(d, selectedDate)) : -1;
+  const dayAvailabilitySlots =
+    selectedDayIdx >= 0 ? availabilityQueries[selectedDayIdx]?.data ?? [] : [];
+
+  const countsForSelected = useMemo(() => {
+    const m = {};
+    existingBookings.filter((b) => b.status !== 'cancelled').forEach((b) => {
+      const k = normalizeStartTime(b.start_time);
+      m[k] = (m[k] || 0) + 1;
+    });
+    return m;
+  }, [existingBookings]);
+
+  const availableSlots = useMemo(() => {
+    if (!selectedDate) return [];
+    const nowRef = new Date();
+    const list = [];
+    for (const s of dayAvailabilitySlots) {
+      const st = normalizeStartTime(s.start_time);
+      const maxC = Number(s.max_concurrent) > 0 ? Number(s.max_concurrent) : 1;
+      const used = countsForSelected[st] || 0;
+      if (used >= maxC) continue;
+      if (isToday(selectedDate)) {
+        const [h, m] = st.split(':').map(Number);
+        if (h * 60 + m <= nowRef.getHours() * 60 + nowRef.getMinutes()) continue;
+      }
+      list.push(st);
+    }
+    return [...new Set(list)].sort((a, b) => a.localeCompare(b));
+  }, [selectedDate, dayAvailabilitySlots, countsForSelected]);
 
   const createBooking = useMutation({
     mutationFn: async () => {
@@ -186,15 +260,18 @@ export default function QuickBooking() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['availability-slots'] });
+      queryClient.invalidateQueries({ queryKey: ['bookings-quick'] });
+      queryClient.invalidateQueries({ queryKey: ['bookings-month'] });
       setDone(true);
     }
   });
 
   const changeMonth = useCallback((_dir) => {
+    // Month navigation is locked — current month only
+  }, []);
 
-
-    // Month navigation is locked — April 2025 only
-  }, []);const handleDateSelect = useCallback((day) => {
+  const handleDateSelect = useCallback((day) => {
     haptic(8);
     setSelectedDate(day);
     setSelectedTime(null);
@@ -363,7 +440,7 @@ export default function QuickBooking() {
                   {name}
                 </span>
                 <span
-                  style={{ display: 'block', fontSize: 'clamp(13px, 3.5vw, 22px)', fontWeight: 700, marginTop: '2px', tabularNums: true, color: isSelected ? c.svcPriceSelected : c.svcPriceUnselected, letterSpacing: '0.02em' }}>
+                  style={{ display: 'block', fontSize: 'clamp(13px, 3.5vw, 22px)', fontWeight: 700, marginTop: '2px', fontVariantNumeric: 'tabular-nums', color: isSelected ? c.svcPriceSelected : c.svcPriceUnselected, letterSpacing: '0.02em' }}>
                   
                   ฿{svc.price?.toLocaleString()}
                 </span>
@@ -436,8 +513,7 @@ export default function QuickBooking() {
                   const isPulsing = datePulse === day.toISOString();
                   const dateStr = format(day, 'yyyy-MM-dd');
                   const isFullyBooked = !isPast && fullyBookedDates.has(dateStr);
-                  const bookedCount = bookedByDate[dateStr]?.size || 0;
-                  const remainingSlots = !isPast ? TIME_SLOTS.length - bookedCount : 0;
+                  const remainingSlots = !isPast ? remainingByDate[dateStr] ?? 0 : 0;
 
                   cells.push(
                     <div key={day.toISOString()} className="flex flex-col items-center gap-[2px]">
@@ -546,15 +622,18 @@ export default function QuickBooking() {
                   whileTap={{ scale: 0.93 }}
                   onClick={() => {haptic(8);setSelectedTime(slot);}}
                   className="rounded-2xl font-semibold tabular-nums tracking-[0.04em]"
-                  style={{ padding: 'clamp(6px, 1.5vw, 12px) 0', fontSize: 'clamp(13px, 3.5vw, 20px)' }}
-                  style={isSelected ? {
-                    background: c.slotBgSelected,
-                    border: `1px solid ${c.slotBorderSelected}`,
-                    color: c.slotSelected
-                  } : {
-                    background: c.slotBgUnselected,
-                    border: `1px solid ${c.slotBorderUnselected}`,
-                    color: c.slotUnselected
+                  style={{
+                    padding: 'clamp(6px, 1.5vw, 12px) 0',
+                    fontSize: 'clamp(13px, 3.5vw, 20px)',
+                    ...(isSelected ? {
+                      background: c.slotBgSelected,
+                      border: `1px solid ${c.slotBorderSelected}`,
+                      color: c.slotSelected,
+                    } : {
+                      background: c.slotBgUnselected,
+                      border: `1px solid ${c.slotBorderUnselected}`,
+                      color: c.slotUnselected,
+                    }),
                   }}>
                   
                     {slot}
@@ -563,7 +642,7 @@ export default function QuickBooking() {
             })}
               {availableSlots.length === 0 &&
             <p className="col-span-4 text-center py-5 text-[15px] tracking-[0.1em]" style={{ color: c.noSlotColor, fontFamily: 'var(--font-body)' }}>
-                  ไม่มีช่วงเวลาว่าง
+                  {t('noSlots')}
                 </p>
             }
             </div>
@@ -596,13 +675,14 @@ export default function QuickBooking() {
             }}
             transition={{ duration: 0.4 }}
             className="w-full rounded-2xl font-semibold tracking-[0.25em] uppercase transition-opacity disabled:opacity-35"
-            style={{ padding: 'clamp(10px, 2.5vw, 16px)', fontSize: 'clamp(13px, 3.5vw, 20px)' }}
             style={{
+              padding: 'clamp(10px, 2.5vw, 16px)',
+              fontSize: 'clamp(13px, 3.5vw, 20px)',
               background: c.confirmBg,
               border: `1px solid ${c.confirmBorder}`,
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
-              color: c.confirmColor
+              color: c.confirmColor,
             }}>
             
                 {createBooking.isPending ? '· · ·' : t('confirmBooking')}

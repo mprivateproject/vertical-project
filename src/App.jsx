@@ -36,16 +36,14 @@ import AdminSettings from '@/pages/admin/AdminSettings';
 import ScheduleBoard from '@/pages/admin/ScheduleBoard';
 import AdminCostDashboard from '@/pages/admin/AdminCostDashboard';
 import AdminFeedback from '@/pages/admin/AdminFeedback';
+import AdminAvailability from '@/pages/admin/AdminAvailability';
 import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
 import Preferences from '@/pages/customer/Preferences';
 import FeedbackPage from '@/pages/customer/Feedback';
-<<<<<<< Updated upstream
 import About from '@/pages/customer/About';
 import Contact from '@/pages/customer/Contact';
-=======
 import Countdown from '@/pages/customer/Countdown';
->>>>>>> Stashed changes
 
 // Layouts
 import CustomerLayout from '@/components/shared/CustomerLayout';
@@ -67,12 +65,9 @@ const AuthenticatedApp = () => {
         <Route path="/selfbooking" element={<SelfBookingPage />} />
         <Route path="/preferences" element={<Preferences />} />
         <Route path="/feedback" element={<FeedbackPage />} />
-<<<<<<< Updated upstream
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-=======
         <Route path="/countdown" element={<Countdown />} />
->>>>>>> Stashed changes
       </Route>
 
       {/* Staff routes */}
@@ -91,6 +86,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/invited-members" element={<AdminInvitedMembers />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/schedule" element={<ScheduleBoard />} />
+        <Route path="/admin/availability" element={<AdminAvailability />} />
         <Route path="/admin/cost-dashboard" element={<AdminCostDashboard />} />
         <Route path="/admin/feedback" element={<AdminFeedback />} />
       </Route>
