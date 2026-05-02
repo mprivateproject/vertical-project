@@ -24,7 +24,7 @@ export default function Profile() {
     }).catch(() => {});
   }, []);
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn || !lineProfile) {
     return (
       <div className="px-5 pt-20 pb-6 space-y-6 text-center">
         <div className="w-20 h-20 rounded-full bg-secondary mx-auto flex items-center justify-center">
