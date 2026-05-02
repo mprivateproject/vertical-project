@@ -29,8 +29,8 @@ export default function Contact() {
         }}
       >
         {lang === 'th'
-          ? 'สอบถามข้อมูลหรือสำรองที่นั่งผ่านช่องทางด้านล่าง'
-          : 'For enquiries, membership referrals, or booking assistance, reach us through any of the channels below.'}
+          ? 'เริ่มต้นประสบการณ์กับเรา'
+          : 'Discover More.'}
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
