@@ -1,7 +1,3 @@
-<LineProvider>
-  <Router />
-</LineProvider>
-
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -44,8 +40,12 @@ import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
 import Price from '@/pages/customer/Price';
 import Preferences from '@/pages/customer/Preferences';
 import FeedbackPage from '@/pages/customer/Feedback';
+<<<<<<< Updated upstream
 import About from '@/pages/customer/About';
 import Contact from '@/pages/customer/Contact';
+=======
+import Countdown from '@/pages/customer/Countdown';
+>>>>>>> Stashed changes
 
 // Layouts
 import CustomerLayout from '@/components/shared/CustomerLayout';
@@ -67,8 +67,12 @@ const AuthenticatedApp = () => {
         <Route path="/selfbooking" element={<SelfBookingPage />} />
         <Route path="/preferences" element={<Preferences />} />
         <Route path="/feedback" element={<FeedbackPage />} />
+<<<<<<< Updated upstream
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+=======
+        <Route path="/countdown" element={<Countdown />} />
+>>>>>>> Stashed changes
       </Route>
 
       {/* Staff routes */}
