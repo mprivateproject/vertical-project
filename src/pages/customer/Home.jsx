@@ -102,7 +102,7 @@ export default function Home() {
 
         {/* ═══ HEADLINE ═══ */}
         <div className="flex flex-col items-center justify-center flex-1 px-6" style={{ marginTop: '8px' }}>
-          {/* We're */}
+          {/* Open */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
