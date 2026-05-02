@@ -114,6 +114,8 @@ const translations = {
     availabilityClearAll: "ล้างทั้งหมด",
     availabilityLoading: "กำลังโหลด…",
     countdownComplete: "ถึงเวลาแล้ว — ยินดีต้อนรับ",
+    therapistSchedule: "ตารางงานเทอราปิส",
+    calendarBlocks: "ล็อคปฏิทิน",
   },
   en: {
     brand: "Vertical Project",
@@ -227,6 +229,8 @@ const translations = {
     availabilityClearAll: "Clear all",
     availabilityLoading: "Loading…",
     countdownComplete: "The moment has arrived — welcome",
+    therapistSchedule: "Therapist Schedules",
+    calendarBlocks: "Calendar Blocks",
   }
 };
 
