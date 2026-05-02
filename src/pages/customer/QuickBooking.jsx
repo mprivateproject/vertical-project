@@ -70,8 +70,8 @@ export default function QuickBookingPage() {
                 style={{ fontSize: '14px', lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-body)', letterSpacing: '0.03em' }}
               >
                 {lang === 'th'
-                  ? 'คิวเดือนพ.ค. เปิดจอง วันอาทิตย์ที่ 10 เวลา 18.00 น. /n สอบถามเพิ่มเติม ติดต่อ @mprivateproject'
-                  : 'Booking opens at May 10, 6.00 pm. /n For more info please contract @mprivateproject'}
+                  ? 'คิวเดือนพ.ค. เปิดจอง วันอาทิตย์ที่ 10 เวลา 18.00 น. n/ สอบถามเพิ่มเติม ติดต่อ @mprivateproject'
+                  : 'Booking opens at May 10, 6.00 pm. n/ For more info please contract @mprivateproject'}
               </p>
 
               <button
