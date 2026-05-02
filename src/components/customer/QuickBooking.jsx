@@ -131,6 +131,27 @@ export default function QuickBooking() {
     enabled: !!selectedDate && !!ready
   });
 
+  // Fetch calendar blocks for the current month
+  const { data: calendarBlocks = [] } = useQuery({
+    queryKey: ['calendar-blocks', format(calendarMonth, 'yyyy-MM')],
+    queryFn: async () => {
+      const start = format(startOfMonth(calendarMonth), 'yyyy-MM-dd');
+      const end = format(endOfMonth(calendarMonth), 'yyyy-MM-dd');
+      const r = await liffSyncClient.call({
+        url: '/functions/liffSync', method: 'POST',
+        data: { action: 'getCalendarBlocks', startDate: start, endDate: end }
+      });
+      return r.blocks || [];
+    },
+    enabled: !!ready
+  });
+
+  const blockedDates = useMemo(() => {
+    const s = new Set();
+    calendarBlocks.forEach(b => s.add(b.block_date));
+    return s;
+  }, [calendarBlocks]);
+
   // Fetch all bookings for the current calendar month to detect fully booked days
   const { data: monthBookings = [] } = useQuery({
     queryKey: ['bookings-month', format(calendarMonth, 'yyyy-MM')],
@@ -512,16 +533,18 @@ export default function QuickBooking() {
                   const isCurrentDay = isToday(day);
                   const isPulsing = datePulse === day.toISOString();
                   const dateStr = format(day, 'yyyy-MM-dd');
-                  const isFullyBooked = !isPast && fullyBookedDates.has(dateStr);
-                  const remainingSlots = !isPast ? remainingByDate[dateStr] ?? 0 : 0;
+                  const isBlocked = !isPast && blockedDates.has(dateStr);
+                  const isFullyBooked = !isPast && !isBlocked && fullyBookedDates.has(dateStr);
+                  const isDisabled = isPast || isBlocked || isFullyBooked;
+                  const remainingSlots = !isPast && !isBlocked ? remainingByDate[dateStr] ?? 0 : 0;
 
                   cells.push(
                     <div key={day.toISOString()} className="flex flex-col items-center gap-[2px]">
                       <motion.button
-                        disabled={isPast || isFullyBooked}
-                        onClick={() => !isPast && !isFullyBooked && handleDateSelect(day)}
+                        disabled={isDisabled}
+                        onClick={() => !isDisabled && handleDateSelect(day)}
                         animate={isPulsing ? { scale: [1, 1.18, 0.96, 1] } : { scale: 1 }}
-                        whileTap={!isPast && !isFullyBooked ? { scale: 0.87 } : {}}
+                        whileTap={!isDisabled ? { scale: 0.87 } : {}}
                         transition={isPulsing ?
                         { duration: 0.35, ease: E } :
                         { type: 'spring', stiffness: 300, damping: 22 }
@@ -533,14 +556,16 @@ export default function QuickBooking() {
                           border: `1px solid ${c.daySelectedBorder}`,
                           color: c.daySelected,
                           letterSpacing: '0.02em'
-                        } : isPast ? {
+                        } : isPast || isBlocked ? {
                           width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
                           color: c.dayPast,
-                          cursor: 'not-allowed'
+                          cursor: 'not-allowed',
+                          opacity: 0.35
                         } : isFullyBooked ? {
                           width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
                           color: c.dayPast,
-                          cursor: 'not-allowed'
+                          cursor: 'not-allowed',
+                          opacity: 0.5
                         } : isCurrentDay ? {
                           width: 'clamp(28px, 10vw, 52px)', height: 'clamp(28px, 10vw, 52px)', fontSize: 'clamp(12px, 4vw, 24px)',
                           color: c.dayToday
@@ -552,13 +577,13 @@ export default function QuickBooking() {
                         {format(day, 'd')}
                       </motion.button>
                       {/* Slot indicator */}
-                      {!isPast && (
+                      {!isPast && !isBlocked && (
                       isFullyBooked ?
                       <span style={{
                         fontSize: 'clamp(5px, 1.5vw, 7px)',
-                        fontWeight: 600,
+                        fontWeight: 700,
                         letterSpacing: '0.03em',
-                        color: '#4ade80',
+                        color: '#ef4444',
                         lineHeight: 1,
                         textAlign: 'center'
                       }}>
@@ -582,7 +607,7 @@ export default function QuickBooking() {
 
                       }
                       {/* Today dot */}
-                      {isCurrentDay && !isFullyBooked &&
+                      {isCurrentDay && !isFullyBooked && !isBlocked &&
                       <div
                         className="w-[3px] h-[3px] rounded-full"
                         style={{ background: isSelected ? c.daySelected : c.todayDot }} />
