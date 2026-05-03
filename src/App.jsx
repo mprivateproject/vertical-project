@@ -28,6 +28,7 @@ const About            = lazy(() => import('@/pages/customer/About'))
 const Contact          = lazy(() => import('@/pages/customer/Contact'))
 const Countdown        = lazy(() => import('@/pages/customer/Countdown'))
 
+// Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminCalendar from '@/pages/admin/AdminCalendar';
 import AdminServices from '@/pages/admin/AdminServices';
@@ -51,7 +52,8 @@ import FeedbackPage from '@/pages/customer/Feedback';
 import About from '@/pages/customer/About';
 import Contact from '@/pages/customer/Contact';
 import Countdown from '@/pages/customer/Countdown';
-
+=======
+// ─── Staff pages ──────────────────────────────────────────────────────────────
 const StaffDashboard   = lazy(() => import('@/pages/staff/StaffDashboard'))
 
 const AdminDashboard       = lazy(() => import('@/pages/admin/AdminDashboard'))
@@ -66,10 +68,10 @@ const AdminInvitedMembers  = lazy(() => import('@/pages/admin/AdminInvitedMember
 const AdminSettings        = lazy(() => import('@/pages/admin/AdminSettings'))
 const ScheduleBoard        = lazy(() => import('@/pages/admin/ScheduleBoard'))
 const AdminCostDashboard   = lazy(() => import('@/pages/admin/AdminCostDashboard'))
-const AdminFeedback        = lazy(() => import('@/pages/admin/AdminFeedback'))
-const AdminAvailability    = lazy(() => import('@/pages/admin/AdminAvailability'))
+const AdminFeedback        = lazy((
 
-
+// ─── Page loading fallback ────────────────────────────────────────────────────
+// Replace with your own skeleton/spinner component as needed.
 const PageFallback = () => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
     <span>Loading…</span>
@@ -121,6 +123,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/therapist-schedule" element={<AdminTherapistSchedule />} />
         <Route path="/admin/calendar-blocks" element={<AdminCalendarBlocks />} />
       </Route>
+=======
         {/* Admin routes */}
         <Route element={<AdminLayout />}>
           <Route path="/admin"                          element={<AdminDashboard />} />
@@ -137,9 +140,9 @@ const AuthenticatedApp = () => {
           <Route path="/admin/availability"             element={<AdminAvailability />} />
           <Route path="/admin/cost-dashboard"           element={<AdminCostDashboard />} />
           <Route path="/admin/feedback"                 element={<AdminFeedback />} />
+          <Route path="/admin/therapist-schedule"       element={<AdminTherapistSchedule />} />
+          <Route path="/admin/calendar-blocks"          element={<AdminCalendarBlocks />} />
         </Route>
-        Stashed changes
-
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Suspense>
