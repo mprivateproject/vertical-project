@@ -11,19 +11,14 @@ import { LineProvider } from '@/lib/LineContext'
 import { SheetProvider } from '@/lib/SheetContext'
 import { ViewModeProvider } from '@/lib/ViewModeContext'
 
-// Layouts (not lazy — tiny, always needed)
 import CustomerLayout from '@/components/shared/CustomerLayout'
 import AdminLayout from '@/components/shared/AdminLayout'
 
-// ─── Customer pages ───────────────────────────────────────────────────────────
 const Home             = lazy(() => import('@/pages/customer/Home.jsx'))
 const Services         = lazy(() => import('@/pages/customer/Services'))
 const BookingFlow      = lazy(() => import('@/pages/customer/BookingFlow'))
 const BookingHistory   = lazy(() => import('@/pages/customer/BookingHistory'))
 const QuickBookingPage = lazy(() => import('@/pages/customer/QuickBooking'))
-// ⚠️  Fix: SelfBookingPage was a duplicate of QuickBooking.
-//     If /selfbooking needs different behaviour, create a separate SelfBooking.jsx.
-//     For now it reuses QuickBookingPage — rename the route element if that changes.
 const Profile          = lazy(() => import('@/pages/customer/Profile'))
 const PrivacyPolicy    = lazy(() => import('@/pages/customer/PrivacyPolicy'))
 const Price            = lazy(() => import('@/pages/customer/Price'))
@@ -32,10 +27,35 @@ const FeedbackPage     = lazy(() => import('@/pages/customer/Feedback'))
 const About            = lazy(() => import('@/pages/customer/About'))
 const Contact          = lazy(() => import('@/pages/customer/Contact'))
 const Countdown        = lazy(() => import('@/pages/customer/Countdown'))
+
+// Admin pages
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AdminCalendar from '@/pages/admin/AdminCalendar';
+import AdminServices from '@/pages/admin/AdminServices';
+import AdminCustomers from '@/pages/admin/AdminCustomers';
+import AdminCustomerDetail from '@/pages/admin/AdminCustomerDetail';
+import AdminReports from '@/pages/admin/AdminReports';
+import AdminPromotions from '@/pages/admin/AdminPromotions';
+import AdminLoyalty from '@/pages/admin/AdminLoyalty';
+import AdminInvitedMembers from '@/pages/admin/AdminInvitedMembers';
+import AdminSettings from '@/pages/admin/AdminSettings';
+import ScheduleBoard from '@/pages/admin/ScheduleBoard';
+import AdminCostDashboard from '@/pages/admin/AdminCostDashboard';
+import AdminFeedback from '@/pages/admin/AdminFeedback';
+import AdminAvailability from '@/pages/admin/AdminAvailability';
+import AdminTherapistSchedule from '@/pages/admin/AdminTherapistSchedule';
+import AdminCalendarBlocks from '@/pages/admin/AdminCalendarBlocks';
+import PrivacyPolicy from '@/pages/customer/PrivacyPolicy';
+import Price from '@/pages/customer/Price';
+import Preferences from '@/pages/customer/Preferences';
+import FeedbackPage from '@/pages/customer/Feedback';
+import About from '@/pages/customer/About';
+import Contact from '@/pages/customer/Contact';
+import Countdown from '@/pages/customer/Countdown';
+=======
 // ─── Staff pages ──────────────────────────────────────────────────────────────
 const StaffDashboard   = lazy(() => import('@/pages/staff/StaffDashboard'))
 
-// ─── Admin pages ──────────────────────────────────────────────────────────────
 const AdminDashboard       = lazy(() => import('@/pages/admin/AdminDashboard'))
 const AdminCalendar        = lazy(() => import('@/pages/admin/AdminCalendar'))
 const AdminServices        = lazy(() => import('@/pages/admin/AdminServices'))
@@ -48,10 +68,7 @@ const AdminInvitedMembers  = lazy(() => import('@/pages/admin/AdminInvitedMember
 const AdminSettings        = lazy(() => import('@/pages/admin/AdminSettings'))
 const ScheduleBoard        = lazy(() => import('@/pages/admin/ScheduleBoard'))
 const AdminCostDashboard   = lazy(() => import('@/pages/admin/AdminCostDashboard'))
-const AdminFeedback        = lazy(() => import('@/pages/admin/AdminFeedback'))
-const AdminAvailability    = lazy(() => import('@/pages/admin/AdminAvailability'))
-const AdminTherapistSchedule = lazy(() => import('@/pages/admin/AdminTherapistSchedule'))
-const AdminCalendarBlocks    = lazy(() => import('@/pages/admin/AdminCalendarBlocks'))
+const AdminFeedback        = lazy((
 
 // ─── Page loading fallback ────────────────────────────────────────────────────
 // Replace with your own skeleton/spinner component as needed.
@@ -87,6 +104,26 @@ const AuthenticatedApp = () => {
         {/* Staff routes */}
         <Route path="/staff" element={<StaffDashboard />} />
 
+      {/* Admin routes with sidebar */}
+      <Route element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/calendar" element={<AdminCalendar />} />
+        <Route path="/admin/services" element={<AdminServices />} />
+        <Route path="/admin/customers" element={<AdminCustomers />} />
+        <Route path="/admin/customers/:customerId" element={<AdminCustomerDetail />} />
+        <Route path="/admin/reports" element={<AdminReports />} />
+        <Route path="/admin/promotions" element={<AdminPromotions />} />
+        <Route path="/admin/loyalty" element={<AdminLoyalty />} />
+        <Route path="/admin/invited-members" element={<AdminInvitedMembers />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/admin/schedule" element={<ScheduleBoard />} />
+        <Route path="/admin/availability" element={<AdminAvailability />} />
+        <Route path="/admin/cost-dashboard" element={<AdminCostDashboard />} />
+        <Route path="/admin/feedback" element={<AdminFeedback />} />
+        <Route path="/admin/therapist-schedule" element={<AdminTherapistSchedule />} />
+        <Route path="/admin/calendar-blocks" element={<AdminCalendarBlocks />} />
+      </Route>
+=======
         {/* Admin routes */}
         <Route element={<AdminLayout />}>
           <Route path="/admin"                          element={<AdminDashboard />} />
@@ -106,7 +143,6 @@ const AuthenticatedApp = () => {
           <Route path="/admin/therapist-schedule"       element={<AdminTherapistSchedule />} />
           <Route path="/admin/calendar-blocks"          element={<AdminCalendarBlocks />} />
         </Route>
-
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Suspense>
