@@ -20,13 +20,6 @@ const BookingFlow      = lazy(() => import('@/pages/customer/BookingFlow'))
 const BookingHistory   = lazy(() => import('@/pages/customer/BookingHistory'))
 const QuickBookingPage = lazy(() => import('@/pages/customer/QuickBooking'))
 const Profile          = lazy(() => import('@/pages/customer/Profile'))
-const PrivacyPolicy    = lazy(() => import('@/pages/customer/PrivacyPolicy'))
-const Price            = lazy(() => import('@/pages/customer/Price'))
-const Preferences      = lazy(() => import('@/pages/customer/Preferences'))
-const FeedbackPage     = lazy(() => import('@/pages/customer/Feedback'))
-const About            = lazy(() => import('@/pages/customer/About'))
-const Contact          = lazy(() => import('@/pages/customer/Contact'))
-const Countdown        = lazy(() => import('@/pages/customer/Countdown'))
 
 // Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard';
@@ -52,7 +45,6 @@ import FeedbackPage from '@/pages/customer/Feedback';
 import About from '@/pages/customer/About';
 import Contact from '@/pages/customer/Contact';
 import Countdown from '@/pages/customer/Countdown';
-=======
 // ─── Staff pages ──────────────────────────────────────────────────────────────
 const StaffDashboard   = lazy(() => import('@/pages/staff/StaffDashboard'))
 
