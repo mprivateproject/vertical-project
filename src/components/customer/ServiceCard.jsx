@@ -9,6 +9,7 @@ export default function ServiceCard({ service, index = 0 }) {
   const name = lang === 'th' ? service.name_th : service.name_en;
   const hasDiscount = service.original_price && service.original_price > service.price;
   const discountPct = hasDiscount ? Math.round((1 - service.price / service.original_price) * 100) : 0;
+  const description = lang === 'th' ? service.description_th : service.description_en;
 
   return (
     <motion.div
@@ -18,21 +19,21 @@ export default function ServiceCard({ service, index = 0 }) {
     >
       <Link to={`/book?serviceId=${service.id}`} className="block group">
         <div
-          className="overflow-hidden rounded-2xl active:scale-[0.97] transition-transform duration-150"
+          className="overflow-hidden rounded-3xl active:scale-[0.985] transition-all duration-200"
           style={{
-            background: 'rgba(255,255,255,0.035)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            boxShadow: '0 10px 28px rgba(0,0,0,0.32)',
           }}
         >
           {/* Image */}
-          <div className="relative h-36 overflow-hidden bg-black/20">
+          <div className="relative h-40 overflow-hidden bg-black/20">
             {service.image_url ? (
               <img
                 src={service.image_url}
                 alt={name}
-                className="w-full h-full object-cover group-active:scale-[1.04] transition-transform duration-700"
-                style={{ opacity: 0.82 }}
+                className="w-full h-full object-cover group-hover:scale-[1.06] group-active:scale-[1.03] transition-transform duration-700"
+                style={{ opacity: 0.88 }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center"
@@ -50,7 +51,7 @@ export default function ServiceCard({ service, index = 0 }) {
             {/* Discount badge */}
             {hasDiscount && (
               <span
-                className="absolute top-2.5 right-2.5 px-2 py-0.5 text-[13px] font-semibold rounded-full tracking-wider"
+                className="absolute top-3 right-3 px-2.5 py-1 text-[11px] font-semibold rounded-full tracking-[0.08em]"
                 style={{
                   background: 'rgba(0,0,0,0.6)',
                   border: '1px solid rgba(255,255,255,0.15)',
@@ -66,7 +67,7 @@ export default function ServiceCard({ service, index = 0 }) {
             {/* Popular badge */}
             {service.is_popular && (
               <span
-                className="absolute top-2.5 left-2.5 px-2 py-0.5 text-[12px] font-semibold rounded-full tracking-widest uppercase"
+                className="absolute top-3 left-3 px-2.5 py-1 text-[10px] font-semibold rounded-full tracking-[0.14em] uppercase"
                 style={{
                   background: 'rgba(201,168,76,0.25)',
                   border: '1px solid rgba(201,168,76,0.4)',
@@ -81,11 +82,11 @@ export default function ServiceCard({ service, index = 0 }) {
           </div>
 
           {/* Content */}
-          <div className="px-3.5 py-3 space-y-2">
+          <div className="px-4 py-3.5 space-y-2.5">
             <h3
-              className="text-[16px] font-light leading-snug"
+              className="text-[18px] font-medium leading-snug"
               style={{
-                color: 'rgba(255,255,255,0.88)',
+                color: 'rgba(255,255,255,0.94)',
                 fontFamily: 'Georgia, "Times New Roman", serif',
                 letterSpacing: '0.01em',
               }}
@@ -93,10 +94,19 @@ export default function ServiceCard({ service, index = 0 }) {
               {name}
             </h3>
 
+            {description ? (
+              <p
+                className="text-[12px] leading-relaxed"
+                style={{ color: 'rgba(228,232,238,0.62)' }}
+              >
+                {description.length > 78 ? `${description.slice(0, 78)}...` : description}
+              </p>
+            ) : null}
+
             <div className="flex items-end justify-between">
-              <div className="flex items-center gap-1" style={{ color: 'rgba(161,165,173,0.45)' }}>
-                <Clock className="w-3 h-3" />
-                <span className="text-[13px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <div className="flex items-center gap-1.5" style={{ color: 'rgba(195,201,211,0.66)' }}>
+                <Clock className="w-3.5 h-3.5" />
+                <span className="text-[12px]" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   {service.duration_minutes} {t('minutes')}
                 </span>
               </div>
@@ -104,19 +114,26 @@ export default function ServiceCard({ service, index = 0 }) {
               <div className="text-right">
                 {hasDiscount && (
                   <span
-                    className="text-[13px] line-through block leading-none mb-0.5"
+                    className="text-[11px] line-through block leading-none mb-1"
                     style={{ color: 'rgba(161,165,173,0.3)' }}
                   >
                     ฿{service.original_price.toLocaleString()}
                   </span>
                 )}
                 <span
-                  className="text-[17px] font-semibold tabular-nums"
-                  style={{ color: 'rgba(255,255,255,0.9)', fontFamily: 'Montserrat, sans-serif' }}
+                  className="text-[19px] font-semibold tabular-nums"
+                  style={{ color: 'rgba(255,255,255,0.96)', fontFamily: 'Montserrat, sans-serif' }}
                 >
                   ฿{service.price.toLocaleString()}
                 </span>
               </div>
+            </div>
+
+            <div
+              className="pt-0.5 text-[11px] uppercase tracking-[0.12em]"
+              style={{ color: 'rgba(235,220,188,0.72)' }}
+            >
+              {lang === 'th' ? 'แตะเพื่อจองทันที' : 'Tap to book instantly'}
             </div>
           </div>
         </div>

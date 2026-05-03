@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Monitor } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import ViewModeSelector from '@/components/shared/ViewModeSelector';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -174,6 +175,53 @@ export default function Home() {
           >
             Invitations Only
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.68, duration: 0.7, ease: E }}
+            className="flex items-center gap-3 mb-6"
+          >
+            <Link
+              to="/book"
+              style={{
+                padding: '10px 18px',
+                borderRadius: '999px',
+                textDecoration: 'none',
+                background: 'linear-gradient(130deg, rgba(209,188,151,0.92) 0%, rgba(189,166,125,0.9) 100%)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: '#1d1914',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontWeight: 600,
+                fontSize: 'clamp(11px, 2.2vw, 13px)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                boxShadow: '0 10px 24px rgba(0,0,0,0.35)',
+              }}
+            >
+              {lang === 'th' ? 'จองคิวตอนนี้' : 'Book Now'}
+            </Link>
+            <Link
+              to="/services"
+              style={{
+                padding: '10px 18px',
+                borderRadius: '999px',
+                textDecoration: 'none',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(203,187,160,0.32)',
+                color: 'rgba(255,255,255,0.88)',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontWeight: 500,
+                fontSize: 'clamp(11px, 2.2vw, 13px)',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+              }}
+            >
+              {lang === 'th' ? 'ดูบริการ' : 'View Services'}
+            </Link>
+          </motion.div>
 
           {/* Location + LINE */}
           <motion.div

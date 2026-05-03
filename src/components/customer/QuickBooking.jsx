@@ -10,7 +10,7 @@ import {
 'date-fns';
 import { th, enUS } from 'date-fns/locale';
 import { Check, ChevronRight, ChevronLeft } from 'lucide-react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { normalizeStartTime } from '@/lib/time-slot-utils';
 
@@ -19,6 +19,7 @@ const SERVICES = [
 
 const DEFAULT_THERAPIST = 'M';
 const E = [0.22, 1, 0.36, 1];
+const springSoft = { type: 'spring', stiffness: 280, damping: 24 };
 
 function dayRemainingCapacity(dayDate, slots, countsMap, nowRef) {
   if (!slots?.length) return 0;
@@ -323,6 +324,7 @@ export default function QuickBooking() {
         initial={{ opacity: 0, scale: 0.92, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.55, ease: E }}
+        whileHover={{ y: -1 }}
         style={glass}
         className="p-10 text-center space-y-6">
         
@@ -341,9 +343,15 @@ export default function QuickBooking() {
       </motion.div>
       <div>
         <p className="font-semibold text-[18px] tracking-[0.08em]" style={{ color: `hsl(var(--foreground))`, fontFamily: 'var(--font-body)' }}>{t('bookingConfirmed')}</p>
-        <p className="text-[15px] mt-2 tracking-[0.05em]" style={{ color: `hsl(var(--muted-foreground) / 0.7)`, fontFamily: 'var(--font-body)' }}>
+        <motion.p
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.3 }}
+          className="text-[15px] mt-2 tracking-[0.05em]"
+          style={{ color: `hsl(var(--muted-foreground) / 0.7)`, fontFamily: 'var(--font-body)' }}
+        >
           {selectedDate && format(selectedDate, 'EEE d MMM', { locale })} · {selectedTime}
-        </p>
+        </motion.p>
       </div>
 
       {/* Action buttons */}
@@ -442,10 +450,12 @@ export default function QuickBooking() {
                 onClick={() => {haptic(6);setSelectedService(svc);}}
                 animate={{ scale: isSelected ? 1.03 : 1 }}
                 whileTap={{ scale: 0.96 }}
+                whileHover={{ y: -2 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 22 }}
                 className="flex-1 rounded-2xl text-left"
                 style={{
                   padding: 'clamp(8px, 2vw, 16px)',
+                  boxShadow: isSelected ? '0 10px 24px rgba(0,0,0,0.25)' : '0 4px 14px rgba(0,0,0,0.12)',
                   ...(isSelected ? {
                     background: c.svcBgSelected,
                     border: `1px solid ${c.svcBorderSelected}`
@@ -544,10 +554,15 @@ export default function QuickBooking() {
                         disabled={isDisabled}
                         onClick={() => !isDisabled && handleDateSelect(day)}
                         animate={isPulsing ? { scale: [1, 1.18, 0.96, 1] } : { scale: 1 }}
+<<<<<<< Updated upstream
                         whileTap={!isDisabled ? { scale: 0.87 } : {}}
+=======
+                        whileHover={!isPast && !isFullyBooked ? { y: -1 } : {}}
+                        whileTap={!isPast && !isFullyBooked ? { scale: 0.87 } : {}}
+>>>>>>> Stashed changes
                         transition={isPulsing ?
                         { duration: 0.35, ease: E } :
-                        { type: 'spring', stiffness: 300, damping: 22 }
+                        springSoft
                         }
                         className="flex items-center justify-center rounded-full font-semibold tabular-nums"
                         style={isSelected ? {
@@ -580,18 +595,29 @@ export default function QuickBooking() {
                       {!isPast && !isBlocked && (
                       isFullyBooked ?
                       <span style={{
+<<<<<<< Updated upstream
                         fontSize: 'clamp(5px, 1.5vw, 7px)',
                         fontWeight: 700,
                         letterSpacing: '0.03em',
                         color: '#ef4444',
+=======
+                        fontSize: 'clamp(8px, 1.8vw, 10px)',
+                        fontWeight: 600,
+                        letterSpacing: '0.03em',
+                        color: '#fca5a5',
+>>>>>>> Stashed changes
                         lineHeight: 1,
                         textAlign: 'center'
                       }}>
                             Full
                           </span> :
 
-                      <span style={{
-                        fontSize: 'clamp(5px, 1.5vw, 7px)',
+                      <motion.span
+                        initial={{ opacity: 0.65 }}
+                        animate={{ opacity: isSelected ? 1 : 0.85 }}
+                        transition={{ duration: 0.2 }}
+                        style={{
+                        fontSize: 'clamp(8px, 1.8vw, 10px)',
                         fontWeight: 500,
                         color: remainingSlots <= 1 ?
                         '#fb923c' :
@@ -603,7 +629,7 @@ export default function QuickBooking() {
                         opacity: 0.85
                       }}>
                             {remainingSlots}
-                          </span>)
+                          </motion.span>)
 
                       }
                       {/* Today dot */}
@@ -635,7 +661,7 @@ export default function QuickBooking() {
             <p style={{ fontSize: 'clamp(11px, 2.5vw, 16px)', color: c.labelColor, fontFamily: 'var(--font-body)', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 'clamp(4px, 1vw, 10px)' }}>
               {t('time')}
             </p>
-            <div className="grid grid-cols-4" style={{ gap: 'clamp(4px, 1.5vw, 10px)' }}>
+            <div className="grid grid-cols-3 sm:grid-cols-4" style={{ gap: 'clamp(6px, 1.5vw, 10px)' }}>
               {availableSlots.map((slot, i) => {
               const isSelected = selectedTime === slot;
               return (
@@ -644,12 +670,14 @@ export default function QuickBooking() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.4, ease: E }}
+                  whileHover={{ y: -1.5 }}
                   whileTap={{ scale: 0.93 }}
                   onClick={() => {haptic(8);setSelectedTime(slot);}}
                   className="rounded-2xl font-semibold tabular-nums tracking-[0.04em]"
                   style={{
-                    padding: 'clamp(6px, 1.5vw, 12px) 0',
+                    padding: 'clamp(8px, 1.7vw, 12px) 0',
                     fontSize: 'clamp(13px, 3.5vw, 20px)',
+                    boxShadow: isSelected ? '0 8px 20px rgba(0,0,0,0.2)' : '0 3px 10px rgba(0,0,0,0.1)',
                     ...(isSelected ? {
                       background: c.slotBgSelected,
                       border: `1px solid ${c.slotBorderSelected}`,
@@ -693,24 +721,25 @@ export default function QuickBooking() {
             onClick={() => {haptic(12);createBooking.mutate();}}
             disabled={createBooking.isPending}
             whileTap={{ scale: 0.97 }}
+            whileHover={{ y: -1.5 }}
             animate={{
               boxShadow: createBooking.isPending ?
               '0 4px 16px rgba(0,0,0,0.3)' :
               '0 0 32px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
             }}
             transition={{ duration: 0.4 }}
-            className="w-full rounded-2xl font-semibold tracking-[0.25em] uppercase transition-opacity disabled:opacity-35"
+            className="w-full rounded-2xl font-semibold tracking-[0.18em] uppercase transition-opacity disabled:opacity-35"
             style={{
               padding: 'clamp(10px, 2.5vw, 16px)',
-              fontSize: 'clamp(13px, 3.5vw, 20px)',
-              background: c.confirmBg,
-              border: `1px solid ${c.confirmBorder}`,
+              fontSize: 'clamp(13px, 3.2vw, 18px)',
+              background: 'linear-gradient(130deg, rgba(212,188,146,0.95) 0%, rgba(182,157,117,0.95) 100%)',
+              border: '1px solid rgba(255,255,255,0.2)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
-              color: c.confirmColor,
+              color: '#1f1a14',
             }}>
             
-                {createBooking.isPending ? '· · ·' : t('confirmBooking')}
+                {createBooking.isPending ? '· · ·' : `${t('confirmBooking')} ✦`}
               </motion.button>
           }
           </motion.div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLang } from '@/lib/LanguageContext';
 import QuickBooking from '@/components/customer/QuickBooking';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 
 const E = [0.22, 1, 0.36, 1];
 
@@ -10,13 +11,33 @@ export default function QuickBookingPage() {
   const [dismissed, setDismissed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background pb-32 pt-6 px-4">
+    <div
+      className="min-h-screen pb-32 pt-6 px-4"
+      style={{
+        background:
+          'radial-gradient(circle at 12% 10%, rgba(193,157,92,0.12) 0%, transparent 32%), radial-gradient(circle at 88% 18%, rgba(110,84,56,0.12) 0%, transparent 36%), hsl(var(--background))',
+      }}
+    >
       <div className="max-w-lg mx-auto">
-        <div className="mb-6">
-          <h1 className="font-display text-2xl font-semibold text-foreground">
+        <div
+          className="mb-6 rounded-3xl px-4 py-4"
+          style={{
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+          }}
+        >
+          <p className="text-[11px] uppercase tracking-[0.28em] mb-1.5" style={{ color: 'hsl(var(--muted-foreground) / 0.7)' }}>
+            <span className="inline-flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              Self Booking
+            </span>
+          </p>
+          <h1 className="font-display text-[28px] leading-tight font-semibold text-foreground">
             {lang === 'th' ? 'Reserve Your Session' : 'Reserve Your Session'}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-[14px] text-muted-foreground mt-1.5">
             {lang === 'th' ? 'เลือกบริการและเวลาที่ต้องการ' : 'Select your service and preferred time'}
           </p>
         </div>
@@ -67,7 +88,7 @@ export default function QuickBookingPage() {
               </p>
 
               <p
-                style={{ fontSize: '14px', lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-body)', letterSpacing: '0.03em' }}
+                style={{ fontSize: '14px', lineHeight: 1.7, color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-body)', letterSpacing: '0.03em', whiteSpace: 'pre-line' }}
               >
                 {lang === 'th'
                   ? 'เปิดจอง วันอาทิตย์ที่ 10 เวลา 18.00 น. สอบถามเพิ่มเติม ไลน์: @mprivateproject'
