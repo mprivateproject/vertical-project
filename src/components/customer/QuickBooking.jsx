@@ -554,12 +554,8 @@ export default function QuickBooking() {
                         disabled={isDisabled}
                         onClick={() => !isDisabled && handleDateSelect(day)}
                         animate={isPulsing ? { scale: [1, 1.18, 0.96, 1] } : { scale: 1 }}
-<<<<<<< Updated upstream
-                        whileTap={!isDisabled ? { scale: 0.87 } : {}}
-=======
                         whileHover={!isPast && !isFullyBooked ? { y: -1 } : {}}
                         whileTap={!isPast && !isFullyBooked ? { scale: 0.87 } : {}}
->>>>>>> Stashed changes
                         transition={isPulsing ?
                         { duration: 0.35, ease: E } :
                         springSoft
@@ -595,17 +591,10 @@ export default function QuickBooking() {
                       {!isPast && !isBlocked && (
                       isFullyBooked ?
                       <span style={{
-<<<<<<< Updated upstream
-                        fontSize: 'clamp(5px, 1.5vw, 7px)',
-                        fontWeight: 700,
-                        letterSpacing: '0.03em',
-                        color: '#ef4444',
-=======
                         fontSize: 'clamp(8px, 1.8vw, 10px)',
                         fontWeight: 600,
                         letterSpacing: '0.03em',
                         color: '#fca5a5',
->>>>>>> Stashed changes
                         lineHeight: 1,
                         textAlign: 'center'
                       }}>
