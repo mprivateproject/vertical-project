@@ -33,7 +33,6 @@ const About            = lazy(() => import('@/pages/customer/About'))
 const Contact          = lazy(() => import('@/pages/customer/Contact'))
 const Countdown        = lazy(() => import('@/pages/customer/Countdown'))
 
-// Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminCalendar from '@/pages/admin/AdminCalendar';
 import AdminServices from '@/pages/admin/AdminServices';
