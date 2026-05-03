@@ -26,7 +26,56 @@ const RIGHT_ITEMS = [
   { key: 'profile', icon: User, path: '/profile' },
 ];
 
+<<<<<<< Updated upstream
 export default function BottomNav() {
+=======
+// ─── Fix: NavItem moved outside BottomNav ────────────────────────────────────
+// Previously defined inside the parent, causing React to treat it as a new
+// component type on every render — unmounting/remounting all items and
+// re-firing Framer Motion animations unexpectedly.
+// Now it's a stable reference: React reconciles it correctly across renders.
+const NavItem = memo(({ icon: Icon, path, label, isActive }) => (
+  <Link
+    to={path}
+    onClick={() => haptic(6)}
+    className="flex flex-col items-center gap-[2px] px-2 py-3 transition-all active:scale-90"
+    // Fix: py-3 (12px top+bottom) improves touch target height toward 44px
+  >
+    <motion.div animate={{ scale: isActive ? 1.12 : 1 }} transition={E}>
+      <Icon
+        // Fix: w-5 h-5 (20px) — was w-2.5 h-2.5 (10px), far too small
+        strokeWidth={isActive ? 2 : 1.4}
+        className="w-5 h-5"
+        style={{
+          color: isActive ? 'rgba(255,255,255,0.92)' : 'rgba(161,165,173,0.32)',
+          filter: isActive ? 'drop-shadow(0 0 5px rgba(255,255,255,0.25))' : 'none',
+          transition: 'all 0.3s cubic-bezier(0.22,1,0.36,1)',
+        }}
+      />
+    </motion.div>
+    <AnimatePresence>
+      {isActive && (
+        <motion.span
+          initial={{ opacity: 0, y: 3 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 3 }}
+          transition={{ duration: 0.22 }}
+          className="text-[8px] tracking-[0.12em] uppercase"
+          style={{ color: 'rgba(255,255,255,0.68)', fontFamily: 'Montserrat, sans-serif', fontWeight: 500 }}
+        >
+          {label}
+        </motion.span>
+      )}
+    </AnimatePresence>
+  </Link>
+));
+
+// ─── Fix: wrapped in React.memo ───────────────────────────────────────────────
+// BottomNav only re-renders when isSheetOpen or the active path changes.
+// Previously, any useLang() or useSheet() context update (even unrelated ones)
+// would re-render the whole nav and trigger all Framer Motion checks.
+const BottomNav = memo(function BottomNav() {
+>>>>>>> Stashed changes
   const { t } = useLang();
   const { isSheetOpen } = useSheet();
   const location = useLocation();
@@ -75,22 +124,26 @@ export default function BottomNav() {
   if (isSheetOpen) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 flex flex-col items-center pb-6 px-5 gap-2">
+    <div className="fixed bottom-0 left-0 right-0 z-40 flex flex-col items-center px-5 gap-2 pb-[calc(1rem+env(safe-area-inset-bottom))]">
       {/* About / Contact micro-links */}
       <div className="flex items-center gap-4">
+<<<<<<< Updated upstream
         <Link to="/about" style={{ fontFamily: 'Inter, sans-serif', fontSize: '9px', letterSpacing: '0.18em', textTransform: 'lowercase', color: 'rgba(255,255,255,0.2)', textDecoration: 'none' }}>about</Link>
+=======
+        <Link to="/about"   style={{ fontFamily: 'Inter, sans-serif', fontSize: '10px', fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.42)', textDecoration: 'none' }}>About</Link>
+>>>>>>> Stashed changes
         <span style={{ color: 'rgba(255,255,255,0.1)', fontSize: '8px' }}>·</span>
-        <Link to="/contact" style={{ fontFamily: 'Inter, sans-serif', fontSize: '9px', letterSpacing: '0.18em', textTransform: 'lowercase', color: 'rgba(255,255,255,0.2)', textDecoration: 'none' }}>contact</Link>
+        <Link to="/contact" style={{ fontFamily: 'Inter, sans-serif', fontSize: '10px', fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.42)', textDecoration: 'none' }}>Contact</Link>
       </div>
       <nav
         className="flex items-center"
         style={{
-          background: 'rgba(16,18,22,0.75)',
+          background: 'linear-gradient(180deg, rgba(18,20,25,0.9) 0%, rgba(14,16,20,0.82) 100%)',
           backdropFilter: 'blur(28px)',
           WebkitBackdropFilter: 'blur(28px)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.1)',
           borderRadius: '32px',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05)',
+          boxShadow: '0 14px 44px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.08)',
         }}
       >
         {/* Left items */}
@@ -128,11 +181,12 @@ export default function BottomNav() {
               }}>M</span>
             </motion.div>
             <span style={{
-              fontSize: '5.5px',
+              fontSize: '8px',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.35)',
+              color: 'rgba(255,255,255,0.62)',
               fontFamily: 'Montserrat, sans-serif',
+              fontWeight: 500,
             }}>Self Booking</span>
           </Link>
         </div>
