@@ -23,12 +23,17 @@
       @keyframes pulse {
         0%, 100% { opacity: 1; transform: scale(1); }
         50%       { opacity: 0.5; transform: scale(0.95); }
+        50% { opacity: 0.5; transform: scale(0.95); 
       }
     </style>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="splash">
+        <img src="https://base44.com/logo_v2.svg" alt="Loading..." />
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
