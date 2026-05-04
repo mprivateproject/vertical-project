@@ -1,3 +1,510 @@
+/* ============================================================
+   Vertical Project Spa — index.css
+   Fixes applied vs original:
+   1. Removed SF Pro Display (Apple proprietary, not on Google Fonts)
+   2. Fixed unclosed @layer base brace (body was outside the layer)
+   3. Moved body styles inside @layer base with * and html
+   4. body background gradient defined once, overridden per theme
+   5. Added complete .light token set
+   6. Added .light body background override
+   7. Added .light glass utility overrides
+   8. Added .light scrollbar + selection overrides
+   9. Removed empty @media (min-width: 768px) html {} block
+   10. Removed duplicate --shadow-lg (conflicts with .shadow-lg utility)
+   ============================================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================================
+   BASE LAYER — tokens, resets, body
+   ============================================================ */
+
+@layer base {
+
+  /* ── Dark mode tokens (default / :root) ── */
+  :root {
+
+    /* Typography */
+    --font-body: 'Inter', 'Noto Sans Thai', -apple-system, system-ui, sans-serif;
+    --radius: 16px;
+
+    /* ── DARK MODE — Refined Charcoal + Sage + Warm Accent ── */
+
+    /* Page */
+    --background: 210 14% 10%;
+    --foreground: 210 10% 96%;
+
+    /* Surfaces */
+    --card:             210 12% 14%;
+    --card-foreground:  210 10% 96%;
+    --popover:          210 12% 14%;
+    --popover-foreground: 210 10% 96%;
+
+    /* Primary — Luxury Violet */
+    --primary:            270 45% 58%;
+    --primary-foreground: 210 14% 10%;
+
+    /* Secondary — Muted Sage Stone */
+    --secondary:            150 12% 32%;
+    --secondary-foreground: 150 10% 90%;
+
+    /* Accent — Warm Champagne */
+    --accent:            38 35% 62%;
+    --accent-foreground: 210 14% 10%;
+
+    /* Neutral layers */
+    --muted:            210 10% 22%;
+    --muted-foreground: 210 10% 70%;
+
+    /* Functional */
+    --destructive:            0 70% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* UI structure */
+    --border: 210 12% 20%;
+    --input:  210 12% 16%;
+    --ring:   270 50% 65%;
+
+    /* Teal — active states, send buttons, focus rings */
+    --accent-primary: 183 99% 22%;
+
+    /* Sidebar */
+    --sidebar-background:          210 14% 11%;
+    --sidebar-foreground:          210 10% 94%;
+    --sidebar-primary:             270 45% 58%;
+    --sidebar-primary-foreground:  210 14% 10%;
+    --sidebar-accent:              38 35% 62%;
+    --sidebar-accent-foreground:   210 14% 10%;
+    --sidebar-border:              210 12% 20%;
+    --sidebar-ring:                270 50% 65%;
+
+    /* Data viz */
+    --chart-1: #01696f;
+    --chart-2: #da7101;
+    --chart-3: #437a22;
+    --chart-4: #006494;
+    --chart-5: #a12c7b;
+
+    /* Spacing */
+    --space-xs:  4px;
+    --space-sm:  8px;
+    --space-md:  12px;
+    --space-lg:  16px;
+    --space-xl:  24px;
+    --space-2xl: 32px;
+
+    /* Elevation */
+    --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.10);
+    --elevation-2: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --elevation-3: 0 8px 24px rgba(0, 0, 0, 0.14);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40);
+    --shadow:    0 2px 8px rgba(0, 0, 0, 0.50);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.50);
+    --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.60);
+
+    /* Motion */
+    --ease-standard:  cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --ease-spring:    cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ── Light mode tokens ── */
+  .light {
+
+    /* Page — warm parchment base */
+    --background: 38 28% 94%;    /* #F5F0E8 */
+    --foreground: 220 18% 14%;   /* #1D2030 */
+
+    /* Surfaces */
+    --card:             38 22% 97%;   /* #FAF8F4 */
+    --card-foreground:  220 18% 14%;
+    --popover:          38 22% 97%;
+    --popover-foreground: 220 18% 14%;
+
+    /* Primary — Violet, deeper for light bg */
+    --primary:            270 40% 48%;   /* #7253B8 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary — Soft sage tint */
+    --secondary:            150 14% 88%;   /* #D8E8E1 */
+    --secondary-foreground: 150 20% 22%;   /* #2A4038 */
+
+    /* Accent — Richer champagne gold */
+    --accent:            38 50% 68%;    /* #D4A85A */
+    --accent-foreground: 38 40% 12%;   /* #2C1F08 */
+
+    /* Neutral layers */
+    --muted:            38 18% 89%;    /* #EDE7DA */
+    --muted-foreground: 220 12% 42%;   /* #5C6278 */
+
+    /* Functional */
+    --destructive:            0 68% 46%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* UI structure */
+    --border: 38 20% 82%;    /* #D9CFC0 */
+    --input:  38 22% 91%;    /* #EDE6DA */
+    --ring:   270 44% 55%;
+
+    /* Teal — richer for light bg */
+    --accent-primary: 183 70% 28%;   /* #0D6B72 */
+
+    /* Sidebar */
+    --sidebar-background:          38 24% 91%;    /* #EDE5D8 */
+    --sidebar-foreground:          220 18% 18%;
+    --sidebar-primary:             270 40% 48%;
+    --sidebar-primary-foreground:  0 0% 100%;
+    --sidebar-accent:              38 50% 68%;
+    --sidebar-accent-foreground:   38 40% 12%;
+    --sidebar-border:              38 20% 82%;
+    --sidebar-ring:                270 44% 55%;
+
+    /* Elevation */
+    --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --elevation-2: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --elevation-3: 0 8px 24px rgba(0, 0, 0, 0.10);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow:    0 2px 8px rgba(0, 0, 0, 0.10);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+    --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  /* ── Global resets ── */
+  * {
+    @apply border-border;
+    outline-color: hsl(var(--ring) / 0.5);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    line-height: 1.6;
+    font-weight: 400;
+    width: 100%;
+    min-height: 100%;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    /* Dark mode background — radial violet + champagne glows */
+    background:
+      radial-gradient(circle at 15% 10%, hsl(var(--primary) / 0.12), transparent 35%),
+      radial-gradient(circle at 85% 25%, hsl(var(--accent) / 0.10), transparent 40%),
+      hsl(var(--background));
+  }
+
+  /* Light mode body background — subtle warm washes */
+  .light body {
+    background:
+      radial-gradient(circle at 15% 10%, hsl(270 40% 48% / 0.06), transparent 35%),
+      radial-gradient(circle at 85% 25%, hsl(38 50% 68% / 0.08), transparent 40%),
+      hsl(38 28% 94%);
+  }
+
+}
+
+/* ============================================================
+   TYPOGRAPHY SCALE — Apple iOS system
+   ============================================================ */
+
+.type-h1 {
+  font-size: clamp(28px, 8vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: hsl(var(--foreground));
+}
+
+.type-title-2 {
+  font-size: clamp(20px, 5.5vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: hsl(var(--foreground));
+}
+
+.type-title-3 {
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: hsl(var(--foreground));
+}
+
+.type-body {
+  font-size: clamp(17px, 4.5vw, 18px);
+  font-weight: 400;
+  line-height: 1.6;
+  color: hsl(var(--foreground));
+}
+
+.type-subheadline {
+  font-size: clamp(15px, 4vw, 16px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+}
+
+.type-footnote {
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 400;
+  line-height: 1.4;
+  color: hsl(var(--muted-foreground));
+}
+
+.type-caption-1 {
+  font-size: clamp(12px, 3vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  color: hsl(var(--muted-foreground));
+}
+
+.type-caption-2 {
+  font-size: clamp(11px, 2.8vw, 12px);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 1.2;
+  color: hsl(var(--muted-foreground));
+}
+
+.type-service-name {
+  font-size: clamp(18px, 5vw, 20px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: hsl(var(--foreground));
+}
+
+.type-price {
+  font-size: clamp(20px, 6vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: hsl(var(--primary));
+}
+
+.type-calendar-header {
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: hsl(var(--foreground));
+}
+
+.type-calendar-weekday {
+  font-size: clamp(11px, 2.8vw, 12px);
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.type-calendar-date {
+  font-size: clamp(14px, 4vw, 16px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: hsl(var(--foreground));
+}
+
+.type-calendar-date-selected {
+  font-size: clamp(14px, 4vw, 16px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: hsl(var(--primary-foreground));
+}
+
+.type-time-value {
+  font-size: clamp(16px, 4.5vw, 18px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: hsl(var(--primary-foreground));
+}
+
+/* ============================================================
+   GLASS UTILITIES
+   ============================================================ */
+
+.glass-surface {
+  background: hsl(var(--card) / 0.45);
+  border: 1px solid hsl(var(--border) / 0.5);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition: all 300ms var(--ease-standard);
+}
+
+.glass-surface:hover {
+  background: hsl(var(--card) / 0.65);
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.15);
+}
+
+.glass-card {
+  background: hsl(var(--card) / 0.55);
+  border: 1px solid hsl(var(--border) / 0.6);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 hsl(var(--foreground) / 0.05);
+  transition: all 300ms var(--ease-standard);
+}
+
+.glass-card:hover {
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow:
+    0 8px 24px hsl(var(--primary) / 0.12),
+    inset 0 1px 0 hsl(var(--foreground) / 0.08);
+}
+
+.glass-nav {
+  background: hsl(var(--card) / 0.75);
+  border: 1px solid hsl(var(--border) / 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* Light mode glass overrides */
+.light .glass-surface {
+  background: hsl(var(--card) / 0.70);
+  border: 1px solid hsl(var(--border) / 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.light .glass-surface:hover {
+  background: hsl(var(--card) / 0.90);
+  border-color: hsl(var(--primary) / 0.25);
+  box-shadow: 0 4px 16px hsl(var(--primary) / 0.10);
+}
+
+.light .glass-card {
+  background: hsl(var(--card) / 0.80);
+  border: 1px solid hsl(var(--border) / 0.8);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.07),
+    inset 0 1px 0 hsl(var(--foreground) / 0.04);
+}
+
+.light .glass-card:hover {
+  border-color: hsl(var(--primary) / 0.25);
+  box-shadow:
+    0 8px 24px hsl(var(--primary) / 0.08),
+    inset 0 1px 0 hsl(var(--foreground) / 0.06);
+}
+
+.light .glass-nav {
+  background: hsl(var(--card) / 0.85);
+  border: 1px solid hsl(var(--border) / 0.8);
+}
+
+/* ============================================================
+   SHADOW UTILITIES
+   ============================================================ */
+
+.shadow-cards {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.10),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-models {
+  box-shadow:
+    0 0 20px hsl(var(--primary) / 0.20),
+    0 0 40px hsl(var(--primary) / 0.08);
+}
+
+.shadow-floating-elements {
+  box-shadow:
+    0 0 24px hsl(var(--primary) / 0.30),
+    0 0 48px hsl(var(--primary) / 0.12);
+}
+
+/* ============================================================
+   TRANSITION UTILITIES
+   ============================================================ */
+
+.transition-apple {
+  transition: all 300ms var(--ease-standard);
+}
+
+.transition-apple-fast {
+  transition: all 200ms var(--ease-standard);
+}
+
+.transition-apple-slow {
+  transition: all 400ms var(--ease-standard);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.25);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.50);
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.20);
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.38);
+}
+
+/* ============================================================
+   FOCUS & SELECTION
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid hsl(var(--accent-primary));
+  outline-offset: 2px;
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.28);
+  color: hsl(var(--foreground));
+}
+
+.light ::selection {
+  background: hsl(var(--primary) / 0.18);
+  color: hsl(var(--foreground));
+}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
