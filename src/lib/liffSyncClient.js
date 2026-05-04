@@ -1,4 +1,4 @@
-/* global liff */
+/// <reference path="../liff-globals.d.ts" />
 // ════════════════════════════════════════════════════════
 // liffSyncClient — production-grade LIFF API layer
 //

@@ -1,4 +1,4 @@
-/* global liff */
+/// <reference path="../liff-globals.d.ts" />
 // ════════════════════════════════════════════════════════
 // LineContext — SINGLE SOURCE OF TRUTH for LIFF auth
 //
@@ -9,7 +9,6 @@
 //
 // Components should guard on `synced` before calling API.
 // ════════════════════════════════════════════════════════
-/* global liff */
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { liffSyncClient } from '@/lib/liffSyncClient'
 
@@ -35,6 +34,9 @@ export const LineProvider = ({ children, onReady }) => {
     ;(async () => {
       try {
         console.log('🔄 LIFF: init start')
+        if (typeof liff === 'undefined') {
+          throw new Error('LIFF SDK not loaded')
+        }
         await liff.init({ liffId: LIFF_ID , withLoginOnExternalBrowser : true})
         console.log('✅ LIFF: init success')
 
