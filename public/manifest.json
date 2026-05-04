@@ -1,0 +1,18 @@
+{
+  "name": "Vertical Project Spa",
+  "short_name": "Vertical Project",
+  "description": "Spa bookings and customer experience",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#171b20",
+  "theme_color": "#171b20",
+  "icons": [
+    {
+      "src": "https://base44.com/logo_v2.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
