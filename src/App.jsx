@@ -134,5 +134,3 @@ export default function App({ onReady }) {
     </QueryClientProvider>
   )
 }
-
-export default App
