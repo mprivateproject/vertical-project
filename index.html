@@ -6,33 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <link rel="manifest" href="/manifest.json" />
     <title>Vertical Project Spa</title>
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { background: #ffffff; overflow: hidden; }
-      #root { min-height: 100dvh; }
-      #splash {
-        position: fixed; inset: 0;
-        background: #ffffff;
-        display: flex; align-items: center; justify-content: center;
-        z-index: 9999;
-      }
-      #splash img {
-        width: 64px;
-        animation: pulse 1.2s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(0.95); }
-      }
-    </style>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   </head>
   <body>
-    <div id="root">
-      <div id="splash">
-        <img src="https://base44.com/logo_v2.svg" alt="Loading..." />
-      </div>
-    </div>
+    <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
