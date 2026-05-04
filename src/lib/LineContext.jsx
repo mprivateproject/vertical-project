@@ -35,7 +35,7 @@ export const LineProvider = ({ children, onReady }) => {
     ;(async () => {
       try {
         console.log('🔄 LIFF: init start')
-        await liff.init({ liffId: LIFF_ID })
+        await liff.init({ liffId: LIFF_ID , withLoginOnExternalBrowser : true})
         console.log('✅ LIFF: init success')
 
         if (!liff.isLoggedIn()) {
