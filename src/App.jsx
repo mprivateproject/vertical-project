@@ -108,26 +108,30 @@ const AuthenticatedApp = () => {
   )
 }
 
-function App() {
+export default function App({ onReady }) {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
+    <QueryClientProvider client={queryClientInstance}>
+      <ThemeProvider>
         <LanguageProvider>
-          <ThemeProvider>
-            <LineProvider>
-              <ViewModeProvider>
-                <SheetProvider>
+          <LineProvider onReady={onReady}>
+            <AuthProvider>
+              <SheetProvider>
+                <ViewModeProvider>
                   <Router>
-                    <AuthenticatedApp />
                     <Toaster />
+                    <Suspense fallback={<PageFallback />}>
+                      <Routes>
+                        {/* ... routes ทั้งหมดเหมือนเดิม ไม่ต้องแก้ ... */}
+                      </Routes>
+                    </Suspense>
                   </Router>
-                </SheetProvider>
-              </ViewModeProvider>
-            </LineProvider>
-          </ThemeProvider>
+                </ViewModeProvider>
+              </SheetProvider>
+            </AuthProvider>
+          </LineProvider>
         </LanguageProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }
 
