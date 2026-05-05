@@ -120,7 +120,7 @@ export default function Home() {
               textShadow: '0 2px 24px rgba(0,0,0,0.5)',
             }}
           >
-            Soft
+            Opens 14 May
           </motion.p>
 
           {/* Opening */}
