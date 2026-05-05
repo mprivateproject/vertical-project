@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
 
 :root {
+  /* Spa custom palette */
   --color-primary: #8b6f5e;
   --color-primary-light: #c4a882;
   --color-primary-dark: #5c4a3c;
@@ -19,6 +20,29 @@
   --shadow-soft: 0 2px 20px rgba(139,111,94,0.08);
   --shadow-card: 0 4px 32px rgba(139,111,94,0.12);
   --shadow-hover: 0 8px 40px rgba(139,111,94,0.18);
+
+  /* shadcn/Tailwind HSL tokens - Warm Spa Theme */
+  --background: 40 60% 98%;
+  --foreground: 20 25% 15%;
+  --card: 35 50% 99%;
+  --card-foreground: 20 25% 15%;
+  --popover: 35 50% 99%;
+  --popover-foreground: 20 25% 15%;
+  --primary: 22 25% 45%;
+  --primary-foreground: 35 60% 97%;
+  --secondary: 30 30% 93%;
+  --secondary-foreground: 22 25% 35%;
+  --muted: 30 25% 93%;
+  --muted-foreground: 22 15% 48%;
+  --accent: 32 45% 68%;
+  --accent-primary: 22 25% 45%;
+  --accent-foreground: 22 25% 15%;
+  --destructive: 0 70% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 28 30% 88%;
+  --input: 28 30% 88%;
+  --ring: 22 25% 55%;
+  --radius: 0.75rem;
 }
 
 * {
