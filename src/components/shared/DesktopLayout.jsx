@@ -38,7 +38,7 @@ export default function DesktopLayout({ isTablet = false }) {
         style={{
           width: isTablet ? '72px' : '220px',
           flexShrink: 0,
-          display: 'flex',
+          display: pathname === '/' ? 'none' : 'flex',
           flexDirection: 'column',
           background: isDark ?
           'rgba(10,9,8,0.95)' :
