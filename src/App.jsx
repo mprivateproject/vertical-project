@@ -119,11 +119,7 @@ export default function App({ onReady }) {
                 <ViewModeProvider>
                   <Router>
                     <Toaster />
-                    <Suspense fallback={<PageFallback />}>
-                      <Routes>
-                        {/* ... routes ทั้งหมดเหมือนเดิม ไม่ต้องแก้ ... */}
-                      </Routes>
-                    </Suspense>
+                    <AuthenticatedApp />
                   </Router>
                 </ViewModeProvider>
               </SheetProvider>
