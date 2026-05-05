@@ -123,7 +123,7 @@ export default function Home() {
             Opens 14 May
           </motion.p>
 
-          {/* Opening */}
+          {/* Opens 14v May */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
