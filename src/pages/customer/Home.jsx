@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '100dvh', background: '#080604' , position: 'fixed', inset: 0, zIndex: 50}}
+      style={{ minHeight: '100dvh', background: '#080604' , position: 'fixed', inset: 0, zIndex: 9000}}
     >
       {/* ── Background photo ── */}
       <img
@@ -283,7 +283,7 @@ export default function Home() {
           position: 'fixed',
           top: '20px',
           right: '20px',
-          zIndex: 50,
+          zIndex: 9000,
           width: '36px',
           height: '36px',
           borderRadius: '50%',
