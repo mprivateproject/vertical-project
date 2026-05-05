@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '100dvh', background: '#080604' }}
+      style={{ minHeight: '100dvh', background: '#080604' , position: 'fixed', inset: 0, zIndex: 50}}
     >
       {/* ── Background photo ── */}
       <img
