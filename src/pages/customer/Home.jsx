@@ -124,24 +124,24 @@ export default function Home() {
           </motion.p>
 
           {/* Opens 14v May */}
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.34, duration: 0.85, ease: E }}
-            style={{
-              fontFamily: '"Playfair Display", Georgia, serif',
-              fontSize: 'clamp(72px, 18vw, 130px)',
-              fontWeight: 600,
-              fontStyle: 'italic',
-              letterSpacing: '0.04em',
-              color: '#FFFFFF',
-              lineHeight: 0.90,
-              marginTop: '2px',
-              textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)'
-            }} className="hidden">
-            
-            Opening
-          </motion.p>
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
 
           {/* Diamond divider */}
           <motion.div
@@ -158,23 +158,23 @@ export default function Home() {
           </motion.div>
 
           {/* INVITATIONS ONLY */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.9 }}
-            style={{
-              fontFamily: 'Inter, system-ui, sans-serif',
-              fontSize: 'clamp(10px, 2vw, 12px)',
-              fontWeight: 500,
-              letterSpacing: '0.38em',
-              color: '#CBBBA0',
-              textTransform: 'lowercase',
-              paddingLeft: '0.38em',
-              marginBottom: '20px'
-            }} className="hidden">
-            
-            Invitations Only
-          </motion.p>
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
 
           {/* Location + LINE */}
           <motion.div
