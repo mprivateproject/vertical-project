@@ -16,15 +16,23 @@ const LineContext = createContext(null)
 const LIFF_ID = '2009806106-7u8AyzZg'
 
 export const LineProvider = ({ children, onReady }) => {
-  const [loading, setLoading] = useState(true)
-  const [ready,   setReady]   = useState(false)
-  const [synced,  setSynced]  = useState(false)
-  const [profile, setProfile] = useState(null)
-  const [customer,setCustomer]= useState(null)
-  const [error,   setError]   = useState(null)
+  const [loading, setLoading]   = useState(true)
+  const [ready,   setReady]     = useState(false)
+  const [synced,  setSynced]    = useState(false)
+  const [profile, setProfile]   = useState(null)
+  const [customer,setCustomer]  = useState(null)
+  const [error,   setError]     = useState(null)
 
-  const initDoneRef = useRef(false)
-  const syncDoneRef = useRef(false)
+  const initDoneRef    = useRef(false)
+  const syncDoneRef    = useRef(false)
+  // Guard: ensure onReady is called at most once
+  const onReadyCalledRef = useRef(false)
+
+  const callOnReady = () => {
+    if (onReadyCalledRef.current) return
+    onReadyCalledRef.current = true
+    onReady?.()
+  }
 
   // ── Step 1: LIFF init + login ────────────────────────────
   useEffect(() => {
@@ -33,15 +41,15 @@ export const LineProvider = ({ children, onReady }) => {
 
     ;(async () => {
       try {
-        console.log('🔄 LIFF: init start')
+        console.log('\uD83D\uDD04 LIFF: init start')
         if (typeof liff === 'undefined') {
           throw new Error('LIFF SDK not loaded')
         }
         await liff.init({ liffId: LIFF_ID , withLoginOnExternalBrowser : true})
-        console.log('✅ LIFF: init success')
+        console.log('\u2705 LIFF: init success')
 
         if (!liff.isLoggedIn()) {
-          console.warn('🔄 LIFF: not logged in → redirect')
+          console.warn('\uD83D\uDD04 LIFF: not logged in \u2192 redirect')
           liff.login()
           return
         }
@@ -52,38 +60,36 @@ export const LineProvider = ({ children, onReady }) => {
         const prof = await liff.getProfile()
         setProfile(prof)
         setReady(true)
-        console.log('✅ LIFF: ready', { userId: prof?.userId })
-
+        console.log('\u2705 LIFF: ready', { userId: prof?.userId })
       } catch (err) {
-        console.error('❌ LIFF: init error', err)
+        console.error('\u274C LIFF: init error', err)
         setError(err)
-        onReady?.() // ← ซ่อน splash แม้ error
+        callOnReady()  // ← ซ่อน splash แม้ error
       } finally {
         setLoading(false)
       }
     })()
   }, [])
 
-  // ── Step 2: syncCustomer ─────────────────────────────────
+  // ── Step 2: syncCustomer ───────────────────────────────────
   useEffect(() => {
     if (!ready) return
     if (syncDoneRef.current) return
     syncDoneRef.current = true
 
-    console.log('🔄 SYNC: syncCustomer start')
-
+    console.log('\uD83D\uDD04 SYNC: syncCustomer start')
     liffSyncClient.syncCustomer({
       displayName: profile?.displayName,
       pictureUrl:  profile?.pictureUrl,
     }).then(result => {
-      console.log('✅ SYNC: done', { customerId: result?.customer?.id })
+      console.log('\u2705 SYNC: done', { customerId: result?.customer?.id })
       if (result?.customer) setCustomer(result.customer)
       setSynced(true)
-      onReady?.() // ← ซ่อน splash หลัง sync เสร็จสมบูรณ์
+      callOnReady()  // ← ซ่อน splash หลัง sync เสร็จสมบูรณ์
     }).catch(err => {
-      console.error('❌ SYNC: failed', err)
+      console.error('\u274C SYNC: failed', err)
       setSynced(true)
-      onReady?.() // ← ซ่อน splash แม้ sync fail
+      callOnReady()  // ← ซ่อน splash แม้ sync fail
     })
   }, [ready])
 
