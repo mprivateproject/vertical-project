@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '100dvh', background: '#080604' , position: 'fixed', inset: 0, zIndex: 9000}}
+      style={{ minHeight: '100dvh', background: '#080604' }}
     >
       {/* ── Background photo ── */}
       <img
@@ -54,7 +54,7 @@ export default function Home() {
       {/* ── Content ── */}
       <div
         className="relative z-10 flex flex-col items-center justify-between"
-        style={{ minHeight: '100dvh', paddingBottom: '60px', paddingLeft: '24px', paddingRight: '24px' }}
+        style={{ minHeight: '100dvh', paddingBottom: '60px' }}
       >
         {/* ═══ LOGO ═══ */}
         <motion.div
@@ -283,7 +283,7 @@ export default function Home() {
           position: 'fixed',
           top: '20px',
           right: '20px',
-          zIndex: 9000,
+          zIndex: 50,
           width: '36px',
           height: '36px',
           borderRadius: '50%',
