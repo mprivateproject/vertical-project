@@ -12,7 +12,7 @@ export default function Home() {
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full"
       style={{ minHeight: '100dvh', background: '#080604' }}
     >
       {/* ── Background photo ── */}
@@ -85,10 +85,9 @@ export default function Home() {
               color: 'rgba(229,211,179,0.5)',
               textTransform: 'uppercase',
               marginTop: '7px',
-              paddingLeft: '0.44em',
             }}
           >
-            {lang === 'th' ? 'M Private Project' : 'M Private Project'}
+            M Private Project
           </p>
           <div
             style={{
@@ -102,7 +101,7 @@ export default function Home() {
 
         {/* ═══ HEADLINE ═══ */}
         <div className="flex flex-col items-center justify-center flex-1 px-6" style={{ marginTop: '8px' }}>
-          {/* Open */}
+          {/* Soft */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -115,7 +114,6 @@ export default function Home() {
               color: 'rgba(255,255,255,0.78)',
               lineHeight: 1,
               textTransform: 'uppercase',
-              paddingLeft: '0.55em',
               textShadow: '0 2px 24px rgba(0,0,0,0.5)',
             }}
           >
@@ -168,7 +166,6 @@ export default function Home() {
               letterSpacing: '0.38em',
               color: '#CBBBA0',
               textTransform: 'lowercase',
-              paddingLeft: '0.38em',
               marginBottom: '20px',
             }}
           >
@@ -187,14 +184,13 @@ export default function Home() {
               style={{
                 fontFamily: 'Inter, system-ui, sans-serif',
                 fontSize: 'clamp(8px, 1.6vw, 10px)',
-                fontWeight: 350,
+                fontWeight: 300,
                 letterSpacing: '0.3em',
                 color: 'rgba(255,255,255,0.38)',
                 textTransform: 'lowercase',
-                paddingLeft: '0.3em',
               }}
             >
-              {lang === 'th' ? 'Nonthaburi' : 'Nonthaburi'}
+              Nonthaburi
             </p>
             <a
               href="https://lin.ee/qEHrpx0"
@@ -210,7 +206,7 @@ export default function Home() {
                 style={{
                   fontFamily: 'Inter, system-ui, sans-serif',
                   fontSize: 'clamp(8px, 1.6vw, 10px)',
-                  fontWeight: 350,
+                  fontWeight: 300,
                   letterSpacing: '0.24em',
                   color: 'rgba(255,255,255,0.38)',
                   textTransform: 'lowercase',
@@ -260,7 +256,7 @@ export default function Home() {
               style={{
                 fontFamily: 'Inter, system-ui, sans-serif',
                 fontSize: 'clamp(8px, 1.6vw, 10px)',
-                fontWeight: 350,
+                fontWeight: 300,
                 letterSpacing: '0.28em',
                 color: 'rgba(203,187,160,0.5)',
                 textTransform: 'lowercase',
@@ -278,6 +274,7 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.8 }}
         onClick={() => setShowSelector(true)}
+        aria-label="Change view mode"
         style={{
           position: 'fixed',
           top: '20px',
@@ -307,3 +304,4 @@ export default function Home() {
       </AnimatePresence>
     </div>
   );
+}
