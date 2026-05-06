@@ -117,7 +117,7 @@ export default function Home() {
               textShadow: '0 2px 24px rgba(0,0,0,0.5)',
             }}
           >
-            Soft
+            *
           </motion.p>
 
           {/* Opening */}
@@ -128,7 +128,7 @@ export default function Home() {
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
               fontSize: 'clamp(72px, 18vw, 130px)',
-              fontWeight: 600,
+              fontWeight: 500,
               fontStyle: 'italic',
               letterSpacing: '0.04em',
               color: '#FFFFFF',
