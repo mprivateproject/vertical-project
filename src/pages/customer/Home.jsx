@@ -137,7 +137,7 @@ export default function Home() {
               textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)',
             }}
           >
-            Opening
+            Open 14 MAY
           </motion.p>
 
           {/* Diamond divider */}
@@ -154,7 +154,7 @@ export default function Home() {
             <div style={{ width: '28px', height: '1px', background: 'rgba(203,187,160,0.3)' }} />
           </motion.div>
 
-          {/* INVITATIONS ONLY */}
+          {/* Booking opens 10 MAY, 6.00 PM. */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
