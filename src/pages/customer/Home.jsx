@@ -111,7 +111,7 @@ export default function Home() {
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
               fontSize: 'clamp(14px, 4vw, 24px)',
-              fontWeight: 300,
+              fontWeight: 600,
               letterSpacing: '0.30em',
               color: 'rgba(255,255,255,0.78)',
               lineHeight: 1,
