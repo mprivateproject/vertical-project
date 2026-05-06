@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Monitor } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import ViewModeSelector from '@/components/shared/ViewModeSelector';
 import { useLang } from '@/lib/LanguageContext';
 
@@ -13,10 +12,10 @@ export default function Home() {
 
   return (
     <div
-      className="relative w-full"
+      className="relative w-full overflow-hidden"
       style={{ minHeight: '100dvh', background: '#080604' }}
     >
-      {/* Background photo */}
+      {/* ── Background photo ── */}
       <img
         src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
         className="absolute inset-0 w-full h-full object-cover"
@@ -24,16 +23,16 @@ export default function Home() {
         alt=""
       />
 
-      {/* Cinematic gradient overlay */}
+      {/* ── Cinematic gradient overlay ── */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, rgba(5,4,3,0.72) 0%, rgba(5,4,3,0.08) 32%, rgba(5,4,3,0.12) 62%, rgba(5,4,3,0.88) 100%)'
+            'linear-gradient(180deg, rgba(5,4,3,0.72) 0%, rgba(5,4,3,0.08) 32%, rgba(5,4,3,0.12) 62%, rgba(5,4,3,0.88) 100%)',
         }}
       />
 
-      {/* Film grain */}
+      {/* ── Film grain ── */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ opacity: 0.055, mixBlendMode: 'overlay' }}
@@ -45,18 +44,18 @@ export default function Home() {
         <rect width="100%" height="100%" filter="url(#grain)" />
       </svg>
 
-      {/* Vignette */}
+      {/* ── Vignette ── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)' }}
       />
 
-      {/* Content */}
+      {/* ── Content ── */}
       <div
         className="relative z-10 flex flex-col items-center justify-between"
         style={{ minHeight: '100dvh', paddingBottom: '60px' }}
       >
-        {/* LOGO */}
+        {/* ═══ LOGO ═══ */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,7 +71,7 @@ export default function Home() {
               letterSpacing: '0.06em',
               color: '#E5D3B3',
               lineHeight: 1,
-              textShadow: '0 0 28px rgba(229,211,179,0.22)'
+              textShadow: '0 0 28px rgba(229,211,179,0.22)',
             }}
           >
             M
@@ -85,25 +84,25 @@ export default function Home() {
               letterSpacing: '0.44em',
               color: 'rgba(229,211,179,0.5)',
               textTransform: 'uppercase',
-              marginTop: '7px'
+              marginTop: '7px',
+              paddingLeft: '0.44em',
             }}
           >
-            M Private Project
+            {lang === 'th' ? 'M Private Project' : 'M Private Project'}
           </p>
           <div
             style={{
               width: '1px',
               height: '28px',
               marginTop: '14px',
-              background: 'linear-gradient(180deg, rgba(229,211,179,0.28) 0%, transparent 100%)'
+              background: 'linear-gradient(180deg, rgba(229,211,179,0.28) 0%, transparent 100%)',
             }}
           />
         </motion.div>
 
-        {/* HEADLINE */}
+        {/* ═══ HEADLINE ═══ */}
         <div className="flex flex-col items-center justify-center flex-1 px-6" style={{ marginTop: '8px' }}>
-
-          {/* Opens 14 May */}
+          {/* Open */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -111,15 +110,36 @@ export default function Home() {
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
               fontSize: 'clamp(14px, 4vw, 24px)',
-              fontWeight: 600,
+              fontWeight: 300,
               letterSpacing: '0.30em',
               color: 'rgba(255,255,255,0.78)',
               lineHeight: 1,
               textTransform: 'uppercase',
-              textShadow: '0 2px 24px rgba(0,0,0,0.5)'
+              paddingLeft: '0.55em',
+              textShadow: '0 2px 24px rgba(0,0,0,0.5)',
             }}
           >
-            Opens 14 May
+            Soft
+          </motion.p>
+
+          {/* Opening */}
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.34, duration: 0.85, ease: E }}
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: 'clamp(72px, 18vw, 130px)',
+              fontWeight: 600,
+              fontStyle: 'italic',
+              letterSpacing: '0.04em',
+              color: '#FFFFFF',
+              lineHeight: 0.90,
+              marginTop: '2px',
+              textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)',
+            }}
+          >
+            Opening
           </motion.p>
 
           {/* Diamond divider */}
@@ -136,6 +156,25 @@ export default function Home() {
             <div style={{ width: '28px', height: '1px', background: 'rgba(203,187,160,0.3)' }} />
           </motion.div>
 
+          {/* INVITATIONS ONLY */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.9 }}
+            style={{
+              fontFamily: 'Inter, system-ui, sans-serif',
+              fontSize: 'clamp(10px, 2vw, 12px)',
+              fontWeight: 500,
+              letterSpacing: '0.38em',
+              color: '#CBBBA0',
+              textTransform: 'lowercase',
+              paddingLeft: '0.38em',
+              marginBottom: '20px',
+            }}
+          >
+            Invitations Only
+          </motion.p>
+
           {/* Location + LINE */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -151,7 +190,8 @@ export default function Home() {
                 fontWeight: 350,
                 letterSpacing: '0.3em',
                 color: 'rgba(255,255,255,0.38)',
-                textTransform: 'lowercase'
+                textTransform: 'lowercase',
+                paddingLeft: '0.3em',
               }}
             >
               {lang === 'th' ? 'Nonthaburi' : 'Nonthaburi'}
@@ -173,7 +213,7 @@ export default function Home() {
                   fontWeight: 350,
                   letterSpacing: '0.24em',
                   color: 'rgba(255,255,255,0.38)',
-                  textTransform: 'lowercase'
+                  textTransform: 'lowercase',
                 }}
               >
                 LINE : @mprivateproject
@@ -196,7 +236,7 @@ export default function Home() {
               alignItems: 'center',
               gap: '6px',
               textDecoration: 'none',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             <div
@@ -208,7 +248,7 @@ export default function Home() {
                 border: '1px solid rgba(203,187,160,0.2)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(203,187,160,0.75)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -223,10 +263,10 @@ export default function Home() {
                 fontWeight: 350,
                 letterSpacing: '0.28em',
                 color: 'rgba(203,187,160,0.5)',
-                textTransform: 'lowercase'
+                textTransform: 'lowercase',
               }}
             >
-              {lang === 'th' ? '\u0e41\u0e1c\u0e19\u0e17\u0e35\u0e48\u0e01\u0e32\u0e23\u0e40\u0e14\u0e34\u0e19\u0e17\u0e32\u0e07' : 'Get Directions'}
+              {lang === 'th' ? 'แผนที่การเดินทาง' : 'Get Directions'}
             </span>
           </motion.a>
         </div>
@@ -253,7 +293,7 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         <Monitor style={{ width: '14px', height: '14px', color: 'rgba(203,187,160,0.6)' }} />
@@ -267,4 +307,3 @@ export default function Home() {
       </AnimatePresence>
     </div>
   );
-}
