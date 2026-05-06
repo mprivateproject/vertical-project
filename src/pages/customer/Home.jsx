@@ -118,7 +118,7 @@ export default function Home() {
               textTransform: 'uppercase',
               paddingLeft: '0.55em',
               textShadow: '0 2px 24px rgba(0,0,0,0.5)'
-            }} className="normal-case font-bold text-2xl">
+            }} className="normal-case font-bold text-4xl">
             
             Opens 14 May
           </motion.p>
