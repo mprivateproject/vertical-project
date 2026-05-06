@@ -17,13 +17,18 @@ export default function Home() {
       style={{ minHeight: '100dvh', background: '#080604' }}
     >
       {/* Background photo */}
-      <img
-        src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0.52, filter: 'blur(0.4px) saturate(0.85)' }}
-        alt=""
+    <div
+      className="absolute inset-0"
+      style={{
+            backgroundImage: `
+            linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.3)),
+            url('https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png')
+    `,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      filter: 'saturate(0.9)',
+              }}
       />
-
       {/* Cinematic gradient overlay */}
       <div
         className="absolute inset-0"
