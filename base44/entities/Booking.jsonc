@@ -107,9 +107,6 @@
     "create": {
       "$or": [
         {
-          "data.user_id": "{{user.id}}"
-        },
-        {
           "user_condition": {
             "role": "admin"
           }
@@ -117,6 +114,11 @@
         {
           "user_condition": {
             "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "customer"
           }
         }
       ]
@@ -124,9 +126,6 @@
     "read": {
       "$or": [
         {
-          "data.user_id": "{{user.id}}"
-        },
-        {
           "user_condition": {
             "role": "admin"
           }
@@ -135,14 +134,14 @@
           "user_condition": {
             "role": "staff"
           }
+        },
+        {
+          "data.user_id": "{{user.id}}"
         }
       ]
     },
     "update": {
       "$or": [
-        {
-          "data.user_id": "{{user.id}}"
-        },
         {
           "user_condition": {
             "role": "admin"
