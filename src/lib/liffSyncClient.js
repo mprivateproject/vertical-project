@@ -6,15 +6,18 @@
 // in ~10 minutes and CANNOT be refreshed — only a new login
 // produces a new token. Therefore:
 //
-//  • Public actions (services, therapists) → no auth needed
-//  • Private actions (syncCustomer, bookings) → send idToken
-//  • On 401 → force re-login (only cure for expired token)
+// • Public actions (services, therapists) → no auth needed
+// • Private actions (syncCustomer, bookings) → send idToken
+// • Admin actions → ALWAYS require idToken (not public)
+// • On 401 → force re-login (only cure for expired token)
 // ════════════════════════════════════════════════════════
 
 const API_BASE = '/api/apps/69df58a04843389be3df3f2e'
-const TIMEOUT = 15000
+const TIMEOUT  = 15000
 
 // Actions that do NOT require LINE identity verification (calendar browse / catalog only)
+// NOTE: Admin actions are intentionally excluded — they must always send an idToken
+// so that server-side RLS can verify the caller has an admin role.
 const PUBLIC_ACTIONS = new Set([
   'getServices',
   'getTherapists',
@@ -22,29 +25,19 @@ const PUBLIC_ACTIONS = new Set([
   'getBookingsByDate',
   'getBookingsByDateRange',
   'getAvailabilitySlots',
-  'adminGetBookingsByDate',
-  'adminUpdateBooking',
-  'adminGetAllBookings',
-  'adminGetCustomers',
-  'adminGetServices',
-  'adminSaveService',
-  'adminDeleteService',
-  'adminGetPromotions',
-  'adminSavePromotion',
-  'adminDeletePromotion',
 ])
 
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 // Get fresh idToken — null if not logged in
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 function getIdToken() {
   if (typeof liff === 'undefined' || !liff.isLoggedIn()) return null
   return liff.getIDToken() || null
 }
 
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 // Force re-login — only called when token is truly expired
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 function forceRelogin(reason) {
   console.warn('🔄 liffSyncClient: forcing re-login —', reason)
   if (typeof liff !== 'undefined') {
@@ -53,18 +46,18 @@ function forceRelogin(reason) {
   }
 }
 
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 // Core request — no retry loop, 401 = re-login
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 async function request(config) {
-  const action = config.data?.action
+  const action   = config.data?.action
   const isPublic = PUBLIC_ACTIONS.has(action)
 
   // Build headers
   const headers = { 'Content-Type': 'application/json' }
 
   if (!isPublic) {
-    // Private action — must have a valid idToken
+    // Private / admin action — must have a valid idToken
     if (typeof liff === 'undefined') {
       throw new Error('LIFF_NOT_LOADED')
     }
@@ -93,10 +86,10 @@ async function request(config) {
   let res
   try {
     res = await fetch(url, {
-      method: config.method || 'POST',
+      method:  config.method || 'POST',
       headers,
-      body: config.data ? JSON.stringify(config.data) : undefined,
-      signal: controller.signal,
+      body:    config.data ? JSON.stringify(config.data) : undefined,
+      signal:  controller.signal,
     })
   } finally {
     clearTimeout(timer)
@@ -121,18 +114,17 @@ async function request(config) {
   return data
 }
 
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 // Public API
-// ─────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────
 export const liffSyncClient = {
   syncCustomer(payload = {}) {
     return request({
-      url: '/functions/liffSync',
+      url:    '/functions/liffSync',
       method: 'POST',
-      data: { action: 'syncCustomer', profile: payload },
+      data:   { action: 'syncCustomer', profile: payload },
     })
   },
-
   call({ url, method = 'POST', data }) {
     return request({ url, method, data })
   },
