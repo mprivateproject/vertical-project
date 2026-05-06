@@ -137,7 +137,7 @@ export default function Home() {
               textShadow: '0 4px 40px rgba(0,0,0,0.6), 0 0 60px rgba(229,211,179,0.09)',
             }}
           >
-            Open 14 MAY
+            Opens 14 MAY
           </motion.p>
 
           {/* Diamond divider */}
