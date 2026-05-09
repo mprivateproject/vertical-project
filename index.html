@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
-          body { background: #fff9f4; }
+      body { background: #fff9f4; overflow: hidden; }
       #root { min-height: 100dvh; }
       #splash {
         position: fixed;
@@ -109,7 +109,7 @@
           if (splash) {
             splash.style.transition = 'opacity 0.5s ease';
             splash.style.opacity = '0';
-                      setTimeout(function() { splash.remove(); document.body.style.overflow = ''; }, 500);
+            setTimeout(function() { splash.remove(); }, 500);
           }
         }, 1200);
       });
