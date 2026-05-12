@@ -53,7 +53,7 @@ export default function Home() {
       {/* ── Content ── */}
       <div
         className="relative z-10 flex flex-col items-center justify-between"
-        style={{ minHeight: '100dvh', paddingBottom: '60px' }}
+        style={{ minHeight: '100dvh', paddingBottom: 'calc(120px + env(safe-area-inset-bottom))' }}
       >
         {/* ═══ LOGO ═══ */}
         <motion.div
