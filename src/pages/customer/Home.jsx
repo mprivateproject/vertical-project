@@ -12,21 +12,33 @@ export default function Home() {
 
   return (
     <div
-      className="relative w-full"
-      style={{ minHeight: '100dvh', background: '#080604' }}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100dvh',
+        background: '#080604',
+        overflow: 'hidden',
+      }}
     >
       {/* ── Background photo ── */}
       <img
         src="https://media.base44.com/images/public/69df58a04843389be3df3f2e/99865a990_ChatGPTImageApr19202605_04_53PM.png"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0.52, filter: 'blur(0.4px) saturate(0.85)' }}
+        style={{
+          position: 'absolute',
+          top: 0, left: 0,
+          width: '100%', height: '100%',
+          objectFit: 'cover',
+          opacity: 0.52,
+          filter: 'blur(0.4px) saturate(0.85)',
+        }}
         alt=""
       />
 
       {/* ── Cinematic gradient overlay ── */}
       <div
-        className="absolute inset-0"
         style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
           background:
             'linear-gradient(180deg, rgba(5,4,3,0.72) 0%, rgba(5,4,3,0.08) 32%, rgba(5,4,3,0.12) 62%, rgba(5,4,3,0.88) 100%)',
         }}
@@ -34,8 +46,14 @@ export default function Home() {
 
       {/* ── Film grain ── */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ opacity: 0.055, mixBlendMode: 'overlay' }}
+        style={{
+          position: 'absolute',
+          top: 0, left: 0,
+          width: '100%', height: '100%',
+          pointerEvents: 'none',
+          opacity: 0.055,
+          mixBlendMode: 'overlay',
+        }}
       >
         <filter id="grain">
           <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" />
@@ -46,14 +64,23 @@ export default function Home() {
 
       {/* ── Vignette ── */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)' }}
+        style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
+          pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(0,0,0,0.55) 100%)',
+        }}
       />
 
       {/* ── Content ── */}
       <div
-        className="relative z-10 flex flex-col items-center justify-between"
-        style={{ minHeight: '100dvh', paddingBottom: 'calc(120px + env(safe-area-inset-bottom))' }}
+        className="flex flex-col items-center justify-between"
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          height: '100%',
+          paddingBottom: 'calc(120px + env(safe-area-inset-bottom))',
+        }}
       >
         {/* ═══ LOGO ═══ */}
         <motion.div
