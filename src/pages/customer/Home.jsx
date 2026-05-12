@@ -74,12 +74,14 @@ export default function Home() {
 
       {/* ── Content ── */}
       <div
-        className="flex flex-col items-center justify-between"
+        className="flex flex-col items-center justify-center"
         style={{
           position: 'relative',
           zIndex: 10,
           height: '100%',
           paddingBottom: 'calc(120px + env(safe-area-inset-bottom))',
+          paddingTop: '60px',
+          gap: '0',
         }}
       >
         {/* ═══ LOGO ═══ */}
@@ -88,7 +90,6 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease: E }}
           className="flex flex-col items-center"
-          style={{ paddingTop: '56px' }}
         >
           <p
             style={{
@@ -127,8 +128,7 @@ export default function Home() {
         </motion.div>
 
         {/* ═══ HEADLINE ═══ */}
-        <div className="flex flex-col items-center justify-center flex-1 px-6" style={{ marginTop: '8px' }}>
-          {/* Soft */}
+        <div className="flex flex-col items-center px-6">
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -147,7 +147,6 @@ export default function Home() {
             *
           </motion.p>
 
-          {/* Opening */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -181,7 +180,6 @@ export default function Home() {
             <div style={{ width: '28px', height: '1px', background: 'rgba(203,187,160,0.3)' }} />
           </motion.div>
 
-          {/* Booking opens 10 MAY, 6.00 PM. */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
